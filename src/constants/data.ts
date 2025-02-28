@@ -1,17 +1,22 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+export type Bond = {
+  ticker: string;
+  name: string;
+  instrument: "Bond" | "Crypto" | "Stock" | "ETF"; // Fixed as "Bond" since it's consistent
+  quantity: number;
+  purchaseDate: string; // ISO format date string
+  purchasePrice: number;
+  price: number;
+  timeline: number[]; // Array of prices
+};
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-export function getData() {
+export function getData(): Bond[] {
   return [
     {
       ticker: "US10Y",
       name: "U.S. Treasury 10-Year Bond",
       instrument: "Bond",
-      quantity: 1000,
       purchaseDate: "2023-06-01",
+      quantity: 1000,
       purchasePrice: 100,
       price: 102.5,
       timeline: [

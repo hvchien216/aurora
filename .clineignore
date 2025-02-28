@@ -1,0 +1,33 @@
+# Ignore environment and credential files
+.env
+*.pem
+ *.key
+*.crt
+config/secrets.json
+
+# Ignore logs and cache files
+logs/
+*.log
+.cache/
+__pycache_/
+
+#Ignore build and output directories
+dist/
+build/
+node_modules/
+
+# Ignore specific code files (if needed)
+src/private_code/
+internal_docs/
+
+# Ignore Git and version control-related files 
+.git/
+*.gitignore
+
+# Ignore sensitive database files
+*.sqlite
+*.db
+database/backups/
+
+# My own files
+_lacegy-cline-docs/
