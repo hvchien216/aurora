@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import * as morgan from 'morgan';
+import { AppModule } from './app.module';
 import type { AppConfig, CorsConfig } from 'src/share/config/config.interface';
 
 async function bootstrap() {
@@ -9,6 +10,9 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const appConfig = configService.get<AppConfig>('app');
   const corsConfig = configService.get<CorsConfig>('cors');
+
+  app.use(morgan('combined'));
+
   app.setGlobalPrefix('v1');
   // Cors
   if (corsConfig.enabled) {

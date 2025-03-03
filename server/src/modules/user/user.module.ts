@@ -1,6 +1,8 @@
 import { Module, Provider } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserHttpController } from './user.controller';
+import { UserHttpController } from './user-http.controller';
+import { UserRPCHttpController } from './user-rpc-http.controller';
+
 import {
   TOKEN_PROVIDER,
   USER_REPOSITORY,
@@ -8,6 +10,7 @@ import {
 } from './user.di-tokens';
 import { UserPrismaRepository } from './user-prisma.repo';
 import { JwtTokenService } from 'src/share/components';
+import { ShareModule } from 'src/share/share.module';
 
 const repositories: Provider[] = [
   {
@@ -24,7 +27,8 @@ const tokenProvider: Provider = {
 };
 
 @Module({
-  controllers: [UserHttpController],
+  imports: [ShareModule],
+  controllers: [UserHttpController, UserRPCHttpController],
   providers: [...repositories, ...services, tokenProvider],
 })
 export class UserModule {}

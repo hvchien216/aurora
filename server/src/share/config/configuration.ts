@@ -1,8 +1,10 @@
 import { type Config } from './config.interface';
 
+const port = process.env.PORT || '3000';
+
 const config: Config = {
   app: {
-    port: process.env.PORT || '3000',
+    port,
   },
   cors: {
     enabled: true,
@@ -11,6 +13,9 @@ const config: Config = {
     expiresIn: '2m',
     refreshIn: '7d',
     bcryptSaltOrRound: 10,
+  },
+  rpc: {
+    introspectURL: `http://localhost:${port}/v1/rpc/introspect`,
   },
 };
 export default (): Config => config;

@@ -15,7 +15,14 @@ import {
   UserStatus,
 } from './user.model';
 import { IUserRepository, IUserService } from './user.port';
-import { AppError, ITokenProvider, UserRole } from 'src/share';
+import {
+  AppError,
+  ErrNotFound,
+  ErrTokenInvalid,
+  ITokenProvider,
+  TokenPayload,
+  UserRole,
+} from 'src/share';
 import { v7 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { SecurityConfig } from 'src/share/config/config.interface';
@@ -90,7 +97,11 @@ export class UserService implements IUserService {
       );
     }
 
-    if ([UserStatus.DELETED, UserStatus.INACTIVE].includes(user.status)) {
+    if (
+      [UserStatus.DELETED, UserStatus.INACTIVE, UserStatus.BANNED].includes(
+        user.status,
+      )
+    ) {
       throw AppError.from(ErrUserInactivated, 400);
     }
 
@@ -103,9 +114,46 @@ export class UserService implements IUserService {
     return token;
   }
 
-  // async profile(
-  //   userId: string,
-  // ): Promise<Omit<User, 'password' | 'salt'> | null> {
-  //   return 'This action returns a user profile';
-  // }
+  async profile(
+    userId: string,
+  ): Promise<Omit<User, 'password' | 'salt'> | null> {
+    const user = await this.userRepository.get(userId);
+
+    if (!user) {
+      throw AppError.from(ErrNotFound, 400);
+    }
+
+    delete user.password;
+    delete user.salt;
+
+    return user;
+  }
+
+  async introspectToken(token: string): Promise<TokenPayload> {
+    const payload = await this.tokenProvider.verifyToken(token);
+
+    if (!payload) {
+      throw AppError.from(ErrTokenInvalid, 400);
+    }
+
+    // sub is user's ID
+    const user = await this.userRepository.get(payload.sub);
+
+    if (!user) {
+      throw AppError.from(ErrNotFound, 400);
+    }
+
+    if (
+      [UserStatus.DELETED, UserStatus.INACTIVE, UserStatus.BANNED].includes(
+        user.status,
+      )
+    ) {
+      throw AppError.from(ErrUserInactivated, 400);
+    }
+
+    return {
+      sub: user.id,
+      role: user.role,
+    };
+  }
 }
