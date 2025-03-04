@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { userSchema } from './user.model';
+import { ErrTokenInvalid } from 'src/share';
 
 export const userRegistrationDTOSchema = userSchema
   .pick({
@@ -32,3 +33,12 @@ export const userCondDTOSchema = userSchema
   .partial();
 
 export interface UserCondDTO extends z.infer<typeof userCondDTOSchema> {}
+
+export const refreshTokenDTOSchema = z
+  .object({
+    token: z.string().min(1, new Error('Token is invalid').message),
+  })
+  .required();
+
+export interface RefreshTokenDTO
+  extends z.infer<typeof refreshTokenDTOSchema> {}

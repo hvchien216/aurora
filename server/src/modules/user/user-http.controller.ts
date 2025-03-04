@@ -10,7 +10,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { USER_SERVICE } from 'src/modules/user/user.di-tokens';
-import { UserLoginDTO, UserRegistrationDTO } from 'src/modules/user/user.dto';
+import {
+  RefreshTokenDTO,
+  UserLoginDTO,
+  UserRegistrationDTO,
+} from 'src/modules/user/user.dto';
 import { IUserService } from 'src/modules/user/user.port';
 import { ReqWithRequester } from 'src/share';
 import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
@@ -41,6 +45,14 @@ export class UserHttpController {
   async profile(@Request() req: ReqWithRequester) {
     const requester = req.requester;
     const data = await this.userService.profile(requester.sub);
+    return { data };
+  }
+
+  @Post('auth/rotate-token')
+  @HttpCode(HttpStatus.OK)
+  async rotateToken(@Body() dto: RefreshTokenDTO) {
+    console.log('🚀 ~ UserHttpController ~ rotateToken ~ dto:', dto);
+    const data = await this.userService.rotateToken(dto);
     return { data };
   }
 }

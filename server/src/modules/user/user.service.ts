@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { TOKEN_PROVIDER, USER_REPOSITORY } from './user.di-tokens';
 import {
+  RefreshTokenDTO,
+  refreshTokenDTOSchema,
   UserLoginDTO,
   userLoginDTOSchema,
   UserRegistrationDTO,
@@ -20,6 +22,7 @@ import {
   ErrNotFound,
   ErrTokenInvalid,
   ITokenProvider,
+  Token,
   TokenPayload,
   UserRole,
 } from 'src/share';
@@ -72,7 +75,7 @@ export class UserService implements IUserService {
     return newId;
   }
 
-  async login(dto: UserLoginDTO): Promise<string> {
+  async login(dto: UserLoginDTO): Promise<Token> {
     const data = userLoginDTOSchema.parse(dto);
 
     // 1. find user with username from DTO
@@ -105,9 +108,9 @@ export class UserService implements IUserService {
       throw AppError.from(ErrUserInactivated, 400);
     }
 
-    // 3. Return token
+    // 3. Return tokens
     const role = user.role;
-    const token = await this.tokenProvider.generateToken({
+    const token = await this.tokenProvider.generateTokens({
       sub: user.id,
       role,
     });
@@ -155,5 +158,23 @@ export class UserService implements IUserService {
       sub: user.id,
       role: user.role,
     };
+  }
+
+  async rotateToken(dto: RefreshTokenDTO): Promise<Token> {
+    const data = refreshTokenDTOSchema.parse(dto);
+
+    // 1. verify token
+    const payload = await this.tokenProvider.verifyRefreshToken(data.token);
+    if (!payload) {
+      throw AppError.from(ErrTokenInvalid, 400);
+    }
+
+    // 2. generate new tokens
+    const token = this.tokenProvider.generateTokens({
+      role: payload.role,
+      sub: payload.sub,
+    });
+
+    return token;
   }
 }
