@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { userSchema } from './user.model';
-import { ErrTokenInvalid } from 'src/share';
 
 export const userRegistrationDTOSchema = userSchema
   .pick({
