@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User as UserPrisma, UserStatus } from '@prisma/client';
-import { UserCondDTO } from './user.dto';
+import { UserCondDTO, UserUpdateDTO } from './user.dto';
 import { User } from './user.model';
 import { IUserRepository } from './user.port';
 import prisma from 'src/share/components/prisma';
@@ -42,6 +42,7 @@ export class UserPrismaRepository implements IUserRepository {
     await prisma.user.create({
       data: {
         ...user,
+        email: user.email || '',
         username: user.username || '',
         password: user.password || '',
         salt: user.salt || '',
@@ -49,6 +50,21 @@ export class UserPrismaRepository implements IUserRepository {
         lastName: user.lastName || '',
         role: user.role as UserRole,
         status: user.status as UserStatus,
+      },
+    });
+  }
+
+  async update(id: string, dto: UserUpdateDTO): Promise<void> {
+    await prisma.user.update({
+      where: { id },
+      data: {
+        username: dto.username || '',
+        password: dto.password || '',
+        salt: dto.salt || '',
+        firstName: dto.firstName || '',
+        lastName: dto.lastName || '',
+        role: dto.role as UserRole,
+        status: dto.status as UserStatus,
       },
     });
   }

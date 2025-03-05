@@ -1,9 +1,11 @@
 import { Token, TokenPayload } from 'src/share';
 import {
+  GoogleLoginDTO,
   RefreshTokenDTO,
   UserCondDTO,
   UserLoginDTO,
   UserRegistrationDTO,
+  UserUpdateDTO,
 } from './user.dto';
 import { User } from './user.model';
 
@@ -11,6 +13,7 @@ export interface IUserService {
   register(dto: UserRegistrationDTO): Promise<string>;
   login(dto: UserLoginDTO): Promise<Token>;
   profile(userId: string): Promise<Omit<User, 'password' | 'salt'> | null>;
+  validateGoogleUser(dto: GoogleLoginDTO): Promise<User>;
 
   rotateToken(dto: RefreshTokenDTO): Promise<Token>;
 
@@ -25,4 +28,5 @@ export interface IUserRepository {
   listByIds(ids: string[]): Promise<User[]>;
   // Mutation
   insert(user: User): Promise<void>;
+  update(id: string, dto: UserUpdateDTO): Promise<void>;
 }

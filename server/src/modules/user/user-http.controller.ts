@@ -17,6 +17,7 @@ import {
 } from 'src/modules/user/user.dto';
 import { IUserService } from 'src/modules/user/user.port';
 import { ReqWithRequester } from 'src/share';
+import { GoogleAuthGuard } from 'src/share/guards';
 import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
 
 @Controller()
@@ -54,5 +55,17 @@ export class UserHttpController {
     console.log('🚀 ~ UserHttpController ~ rotateToken ~ dto:', dto);
     const data = await this.userService.rotateToken(dto);
     return { data };
+  }
+
+  @Get('auth/google/login')
+  @UseGuards(GoogleAuthGuard)
+  handleGoogleLogin() {
+    return 'Google login';
+  }
+
+  @Get('auth/google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async handleGoogleCallback() {
+    return 'Google login';
   }
 }

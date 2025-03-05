@@ -61,6 +61,7 @@ export class UserService implements IUserService {
     const newId = v7();
     const newUser: User = {
       ...data,
+      email: data.email,
       password: hashPassword,
       salt,
       id: newId,
@@ -176,5 +177,11 @@ export class UserService implements IUserService {
     });
 
     return token;
+  }
+
+  async validateGoogleUser(dto: User): Promise<User> {
+    const user = await this.userRepository.findByCond({
+      email: dto.email,
+    });
   }
 }

@@ -5,6 +5,7 @@ const port = process.env.PORT || '3000';
 const config: Config = {
   app: {
     port,
+    host: `http://localhost:${port}`,
   },
   cors: {
     enabled: true,

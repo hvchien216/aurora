@@ -7,6 +7,7 @@ export interface Config {
 
 export interface AppConfig {
   port: string;
+  host: string;
 }
 
 export interface CorsConfig {
