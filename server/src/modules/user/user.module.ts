@@ -4,6 +4,7 @@ import { UserHttpController } from './user-http.controller';
 import { UserRPCHttpController } from './user-rpc-http.controller';
 
 import {
+  GOOGLE_STRATEGY_PROVIDER,
   TOKEN_PROVIDER,
   USER_REPOSITORY,
   USER_SERVICE,
@@ -11,6 +12,9 @@ import {
 import { UserPrismaRepository } from './user-prisma.repo';
 import { JwtTokenService } from 'src/share/components';
 import { ShareModule } from 'src/share/share.module';
+import { GoogleAuthGuard } from 'src/share/guards';
+import { PassportModule } from '@nestjs/passport';
+import { GoogleStrategy } from 'src/share/strategies';
 
 const repositories: Provider[] = [
   {
@@ -26,9 +30,14 @@ const tokenProvider: Provider = {
   useClass: JwtTokenService,
 };
 
+const googleAuthProvider: Provider = {
+  provide: GOOGLE_STRATEGY_PROVIDER,
+  useClass: GoogleStrategy,
+};
+
 @Module({
   imports: [ShareModule],
   controllers: [UserHttpController, UserRPCHttpController],
-  providers: [...repositories, ...services, tokenProvider],
+  providers: [...repositories, ...services, tokenProvider, googleAuthProvider],
 })
 export class UserModule {}

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User as UserPrisma, UserStatus } from '@prisma/client';
-import { UserCondDTO } from './user.dto';
+import { UserCondDTO, UserUpdateDTO } from './user.dto';
 import { User } from './user.model';
 import { IUserRepository } from './user.port';
 import prisma from 'src/share/components/prisma';
@@ -38,10 +38,11 @@ export class UserPrismaRepository implements IUserRepository {
     return data.map(this._toModel);
   }
 
-  async insert(user: User): Promise<void> {
-    await prisma.user.create({
+  async insert(user: User): Promise<User> {
+    const data = await prisma.user.create({
       data: {
         ...user,
+        email: user.email || '',
         username: user.username || '',
         password: user.password || '',
         salt: user.salt || '',
@@ -51,6 +52,25 @@ export class UserPrismaRepository implements IUserRepository {
         status: user.status as UserStatus,
       },
     });
+
+    return this._toModel(data);
+  }
+
+  async update(id: string, dto: UserUpdateDTO): Promise<User> {
+    const data = await prisma.user.update({
+      where: { id },
+      data: {
+        username: dto.username || '',
+        password: dto.password || '',
+        salt: dto.salt || '',
+        firstName: dto.firstName || '',
+        lastName: dto.lastName || '',
+        role: dto.role as UserRole,
+        status: dto.status as UserStatus,
+      },
+    });
+
+    return this._toModel(data);
   }
 
   private _toModel(data: UserPrisma): User {
