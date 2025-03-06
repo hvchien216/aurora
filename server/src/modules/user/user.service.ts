@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import { TOKEN_PROVIDER, USER_REPOSITORY } from './user.di-tokens';
 import {
+  GoogleLoginDTO,
   RefreshTokenDTO,
   refreshTokenDTOSchema,
   UserLoginDTO,
@@ -61,6 +62,7 @@ export class UserService implements IUserService {
     const newId = v7();
     const newUser: User = {
       ...data,
+      email: data.email,
       password: hashPassword,
       salt,
       id: newId,
@@ -175,6 +177,49 @@ export class UserService implements IUserService {
       sub: payload.sub,
     });
 
+    return token;
+  }
+
+  async validateGoogleUser(dto: GoogleLoginDTO): Promise<User> {
+    const user = await this.userRepository.findByCond({
+      email: dto.email,
+    });
+
+    if (user) return user;
+
+    const newId = v7();
+
+    const newUser = await this.userRepository.insert({
+      email: dto.email,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      username: dto.username,
+      password: 'SOME_RANDOM_PASSWORD', // maybe generate a random password here
+      salt: 'SOME_RANDOM_SALT', // maybe generate a random password here
+      id: newId,
+      status: UserStatus.ACTIVE,
+      role: UserRole.USER,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    return newUser;
+  }
+
+  async generateGGTokens(email: string): Promise<Token> {
+    const user = await this.userRepository.findByCond({
+      email: email,
+    });
+
+    if (!user) {
+      throw AppError.from(ErrNotFound, 400);
+    }
+
+    const role = user.role;
+    const token = await this.tokenProvider.generateTokens({
+      sub: user.id,
+      role,
+    });
     return token;
   }
 }

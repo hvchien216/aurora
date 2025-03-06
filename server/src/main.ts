@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import * as morgan from 'morgan';
 import { AppModule } from './app.module';
 import type { AppConfig, CorsConfig } from 'src/share/config/config.interface';
+import { HttpExceptionFilter } from 'src/share';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,7 @@ async function bootstrap() {
     app.enableCors();
   }
 
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(appConfig.port || 3000);
 }
 bootstrap();

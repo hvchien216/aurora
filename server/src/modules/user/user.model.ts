@@ -30,6 +30,8 @@ export const ErrInvalidUsernameAndPassword = new Error(
 export const ErrUserInactivated = new Error('User is inactivated or banned');
 export const ErrInvalidToken = new Error('Invalid token');
 
+export const ErrEmailInvalid = new Error('Invalid email');
+
 // enums
 export enum UserStatus {
   ACTIVE = 'active',
@@ -42,6 +44,7 @@ export enum UserStatus {
 // data model
 export const userSchema = z.object({
   id: z.string().uuid(),
+  email: z.string().email({ message: ErrEmailInvalid.message }),
   username: z
     .string()
     .min(3, ErrFirstNameAtLeast2Chars.message)
