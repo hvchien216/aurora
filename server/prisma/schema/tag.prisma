@@ -1,0 +1,27 @@
+model Tag {
+  id          String      @id @default(cuid())
+  name        String
+  color       String      @default("blue")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  workspaceID String      @map("workspace_id")
+  workspace   Workspace   @relation(fields: [workspaceID], references: [id])
+  links       LinksTags[]
+
+  @@map("tags")
+}
+
+model LinksTags {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  linkID String @map("link_id")
+  link   Link   @relation(fields: [linkID], references: [id])
+  tagID  String @map("tag_id")
+  tag    Tag    @relation(fields: [tagID], references: [id])
+
+  @@unique([linkID, tagID])
+  @@index([tagID])
+  @@map("links_tags")
+}

@@ -1,0 +1,32 @@
+model Link {
+  id       String  @id @default(cuid())
+  key      String
+  url      String
+  archived Boolean @default(false)
+
+  title       String?
+  description String?
+  image       String?
+  video       String?
+
+  comment String?
+
+  clicks      Int       @default(0) @map("clicks")
+  lastClicked DateTime? @map("last_clicked")
+
+  // User who created the link
+  userID String @map("user_id")
+  user   User   @relation(fields: [userID], references: [id])
+
+  // Workspace that the link belongs to
+  workspaceID String    @map("workspace_id")
+  workspace   Workspace @relation(fields: [workspaceID], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Link tags
+  tags LinksTags[]
+
+  @@map("links")
+}
