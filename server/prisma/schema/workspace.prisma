@@ -3,7 +3,7 @@ model Workspace {
   name       String
   slug       String  @unique
   logo       String?
-  inviteCode String? @unique @map("invite_ode")
+  inviteCode String? @unique @map("invite_code")
 
   totalLinks  Int @default(0) @map("total_links")
   totalClicks Int @default(0) @map("total_clicks")

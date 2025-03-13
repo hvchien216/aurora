@@ -51,7 +51,7 @@ CREATE TABLE "workspaces" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "logo" TEXT,
-    "invite_ode" TEXT,
+    "invite_code" TEXT,
     "total_links" INTEGER NOT NULL DEFAULT 0,
     "total_clicks" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -82,7 +82,7 @@ CREATE UNIQUE INDEX "links_tags_link_id_tag_id_key" ON "links_tags"("link_id", "
 CREATE UNIQUE INDEX "workspaces_slug_key" ON "workspaces"("slug");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "workspaces_invite_ode_key" ON "workspaces"("invite_ode");
+CREATE UNIQUE INDEX "workspaces_invite_code_key" ON "workspaces"("invite_code");
 
 -- CreateIndex
 CREATE INDEX "workspaces_users_workspace_id_idx" ON "workspaces_users"("workspace_id");
