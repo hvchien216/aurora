@@ -3,10 +3,9 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ErrTokenInvalid } from 'src/share/app-error';
+import { ErrTokenInvalid, ErrUnauthorized } from 'src/share/app-error';
 import { ITokenIntrospect } from 'src/share/interface';
 import {
   REMOTE_AUTH_GUARD,
@@ -30,7 +29,7 @@ export class RemoteAuthGuard implements CanActivate {
     const token = extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw ErrUnauthorized;
     }
 
     try {
@@ -45,7 +44,7 @@ export class RemoteAuthGuard implements CanActivate {
 
       request['requester'] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw ErrUnauthorized;
     }
 
     return true;
