@@ -54,7 +54,6 @@ export class UserHttpController {
   @Post('auth/rotate-token')
   @HttpCode(HttpStatus.OK)
   async rotateToken(@Body() dto: RefreshTokenDTO) {
-    console.log('🚀 ~ UserHttpController ~ rotateToken ~ dto:', dto);
     const data = await this.userService.rotateToken(dto);
     return { data };
   }
