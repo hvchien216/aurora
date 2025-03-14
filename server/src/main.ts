@@ -16,11 +16,11 @@ async function bootstrap() {
 
   app.setGlobalPrefix('v1');
   // Cors
-  if (corsConfig.enabled) {
+  if (corsConfig?.enabled) {
     app.enableCors();
   }
 
   app.useGlobalFilters(new HttpExceptionFilter());
-  await app.listen(appConfig.port || 3000);
+  await app.listen(appConfig?.port || 3000);
 }
 bootstrap();

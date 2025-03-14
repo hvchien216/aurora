@@ -40,17 +40,7 @@ export class UserPrismaRepository implements IUserRepository {
 
   async insert(user: User): Promise<User> {
     const data = await prisma.user.create({
-      data: {
-        ...user,
-        email: user.email || '',
-        username: user.username || '',
-        password: user.password || '',
-        salt: user.salt || '',
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        role: user.role as UserRole,
-        status: user.status as UserStatus,
-      },
+      data: user,
     });
 
     return this._toModel(data);
@@ -59,15 +49,7 @@ export class UserPrismaRepository implements IUserRepository {
   async update(id: string, dto: UserUpdateDTO): Promise<User> {
     const data = await prisma.user.update({
       where: { id },
-      data: {
-        username: dto.username || '',
-        password: dto.password || '',
-        salt: dto.salt || '',
-        firstName: dto.firstName || '',
-        lastName: dto.lastName || '',
-        role: dto.role as UserRole,
-        status: dto.status as UserStatus,
-      },
+      data: dto,
     });
 
     return this._toModel(data);

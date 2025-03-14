@@ -50,7 +50,8 @@ export class UserService implements IUserService {
 
     // 2. Gen salt and hash password
     const saltOrRounds =
-      this.configService.get<SecurityConfig>('security').bcryptSaltOrRound;
+      this.configService?.get<SecurityConfig>('security')?.bcryptSaltOrRound ||
+      10;
     const bcryptSaltRounds = Number.isInteger(Number(saltOrRounds))
       ? Number(saltOrRounds)
       : +saltOrRounds;
@@ -104,7 +105,7 @@ export class UserService implements IUserService {
 
     if (
       [UserStatus.DELETED, UserStatus.INACTIVE, UserStatus.BANNED].includes(
-        user.status,
+        user.status as UserStatus,
       )
     ) {
       throw AppError.from(ErrUserInactivated, 400);
@@ -128,10 +129,9 @@ export class UserService implements IUserService {
       throw AppError.from(ErrNotFound, 400);
     }
 
-    delete user.password;
-    delete user.salt;
+    const { password, salt, ...rest } = user;
 
-    return user;
+    return rest;
   }
 
   async introspectToken(token: string): Promise<TokenPayload> {
@@ -150,7 +150,7 @@ export class UserService implements IUserService {
 
     if (
       [UserStatus.DELETED, UserStatus.INACTIVE, UserStatus.BANNED].includes(
-        user.status,
+        user.status as UserStatus,
       )
     ) {
       throw AppError.from(ErrUserInactivated, 400);

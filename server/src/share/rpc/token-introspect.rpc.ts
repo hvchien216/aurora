@@ -10,7 +10,7 @@ export class TokenIntrospectRPCClient implements ITokenIntrospect {
 
   constructor(private configService: ConfigService) {
     const securityConfig = this.configService.get<RPCConfig>('rpc');
-    this.url = securityConfig.introspectURL;
+    this.url = securityConfig?.introspectURL || '';
   }
 
   async introspect(token: string): Promise<TokenIntrospectResult> {

@@ -12,10 +12,11 @@ export class JwtTokenService implements ITokenProvider {
   private readonly refreshIn: string;
   constructor(private readonly configService: ConfigService) {
     const securityConfig = this.configService.get<SecurityConfig>('security');
-    this.secretKey = configService.get<string>('JWT_ACCESS_SECRET');
-    this.refreshSecretKey = configService.get<string>('JWT_REFRESH_SECRET');
-    this.expiresIn = securityConfig.expiresIn;
-    this.refreshIn = securityConfig.refreshIn;
+    this.secretKey = configService.get<string>('JWT_ACCESS_SECRET') || '';
+    this.refreshSecretKey =
+      configService.get<string>('JWT_REFRESH_SECRET') || '';
+    this.expiresIn = securityConfig?.expiresIn || '';
+    this.refreshIn = securityConfig?.refreshIn || '';
   }
 
   async generateToken(payload: TokenPayload): Promise<string> {
