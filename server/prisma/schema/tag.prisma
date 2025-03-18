@@ -4,8 +4,8 @@ model Tag {
   color       String      @default("blue")
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
-  workspaceID String      @map("workspace_id")
-  workspace   Workspace   @relation(fields: [workspaceID], references: [id])
+  workspaceId String      @map("workspace_id")
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id])
   links       LinksTags[]
 
   @@map("tags")
@@ -16,12 +16,12 @@ model LinksTags {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  linkID String @map("link_id")
-  link   Link   @relation(fields: [linkID], references: [id])
-  tagID  String @map("tag_id")
-  tag    Tag    @relation(fields: [tagID], references: [id])
+  linkId String @map("link_id")
+  link   Link   @relation(fields: [linkId], references: [id])
+  tagId  String @map("tag_id")
+  tag    Tag    @relation(fields: [tagId], references: [id])
 
-  @@unique([linkID, tagID])
-  @@index([tagID])
+  @@unique([linkId, tagId])
+  @@index([tagId])
   @@map("links_tags")
 }

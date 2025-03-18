@@ -31,7 +31,7 @@ export class LinkPrismaRepository implements ILinkRepository {
 
   async findByWorkspace(workspaceId: string): Promise<Link[]> {
     const links = await prisma.link.findMany({
-      where: { workspaceID: workspaceId },
+      where: { workspaceId: workspaceId },
 
       orderBy: {
         createdAt: 'desc',
@@ -50,7 +50,7 @@ export class LinkPrismaRepository implements ILinkRepository {
         ...(link.description !== undefined && {
           description: link.description,
         }),
-        ...(link.workspaceID && { workspaceID: link.workspaceID }),
+        ...(link.workspaceId && { workspaceId: link.workspaceId }),
         ...(link.archived !== undefined && { archived: link.archived }),
         ...(link.key && { key: link.key }),
       },

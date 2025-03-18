@@ -10,10 +10,11 @@ import {
   Req,
 } from '@nestjs/common';
 import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
-import { LINK_SERVICE, ILinkService } from './link.port';
+import { ILinkService } from './link.port';
 import { CreateLinkDTO } from './link.model';
 import { Inject } from '@nestjs/common';
 import { ReqWithRequester } from 'src/share';
+import { LINK_SERVICE } from 'src/modules/link/link.di-tokens';
 
 @Controller('links')
 export class LinkHttpController {

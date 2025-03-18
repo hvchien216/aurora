@@ -47,8 +47,8 @@ export class WorkspaceService implements IWorkspaceService {
     const newId = v7();
     await this.workspaceRepository.addUser({
       id: newId,
-      workspaceID: createdWorkspace.id,
-      userID: ownerId,
+      workspaceId: createdWorkspace.id,
+      userId: ownerId,
       role: WorkspaceRole.OWNER,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -138,8 +138,8 @@ export class WorkspaceService implements IWorkspaceService {
 
     const workspaceUser: WorkspaceUser = {
       id: newId,
-      workspaceID: workspace.id,
-      userID: userId,
+      workspaceId: workspace.id,
+      userId: userId,
       role: WorkspaceRole.MEMBER,
       createdAt: new Date(),
       updatedAt: new Date(),

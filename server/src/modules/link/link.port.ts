@@ -23,6 +23,3 @@ export interface ILinkService {
   deleteLink(id: string, userId: string): Promise<void>;
   recordClick(id: string): Promise<void>;
 }
-
-export const LINK_REPOSITORY = Symbol('LINK_REPOSITORY');
-export const LINK_SERVICE = Symbol('LINK_SERVICE');

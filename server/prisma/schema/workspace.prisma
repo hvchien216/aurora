@@ -23,13 +23,13 @@ model WorkspacesUsers {
   role        WorkspaceRole @default(member)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
-  userID      String        @map("user_id")
-  workspaceID String        @map("workspace_id")
-  user        User          @relation(fields: [userID], references: [id], onDelete: Cascade)
-  workspace   Workspace     @relation(fields: [workspaceID], references: [id], onDelete: Cascade)
+  userId      String        @map("user_id")
+  workspaceId String        @map("workspace_id")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  @@unique([userID, workspaceID])
-  @@index([workspaceID])
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
   @@map("workspaces_users")
 }
 

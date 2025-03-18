@@ -26,8 +26,8 @@ export const workspaceSchema = z.object({
 export const workspaceUserSchema = z.object({
   id: z.string().cuid(),
   role: z.nativeEnum(WorkspaceRole).default(WorkspaceRole.MEMBER),
-  userID: z.string(),
-  workspaceID: z.string(),
+  userId: z.string(),
+  workspaceId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

@@ -15,12 +15,12 @@ model Link {
   lastClicked DateTime? @map("last_clicked")
 
   // User who created the link
-  userID String @map("user_id")
-  user   User   @relation(fields: [userID], references: [id])
+  userId String? @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id])
 
   // Workspace that the link belongs to
-  workspaceID String    @map("workspace_id")
-  workspace   Workspace @relation(fields: [workspaceID], references: [id])
+  workspaceId String?    @map("workspace_id")
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

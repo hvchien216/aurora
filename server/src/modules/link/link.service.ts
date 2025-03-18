@@ -9,7 +9,7 @@ import {
 } from './link.model';
 import { AppError } from 'src/share';
 import { v7 } from 'uuid';
-import { LINK_REPOSITORY } from './link.port';
+import { LINK_REPOSITORY } from './link.di-tokens';
 import { nanoid } from 'src/utils';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class LinkService implements ILinkService {
     private readonly linkRepository: ILinkRepository,
   ) {}
 
-  async createLink(dto: CreateLinkDTO, userID: string): Promise<Link> {
+  async createLink(dto: CreateLinkDTO, userId: string): Promise<Link> {
     // If key is provided, check if it already exists
     if (dto.key) {
       const existing = await this.linkRepository.findByKey(dto.key);
@@ -41,8 +41,8 @@ export class LinkService implements ILinkService {
       title: dto.title || null,
       description: dto.description || null,
       archived: false,
-      workspaceID: dto.workspaceID,
-      userID: userID,
+      workspaceId: dto.workspaceId,
+      userId: userId,
       createdAt: new Date(),
       updatedAt: new Date(),
       clicks: 0,
@@ -98,7 +98,7 @@ export class LinkService implements ILinkService {
       throw AppError.from(ErrLinkNotFound, 404);
     }
 
-    if (link.userID !== userId) {
+    if (link.userId !== userId) {
       throw AppError.from(ErrUnauthorizedAccess, 403);
     }
 
@@ -123,7 +123,7 @@ export class LinkService implements ILinkService {
     }
 
     // TODO: phase Multiple Users on a workspace then any user can edit a link
-    if (link.userID !== userId) {
+    if (link.userId !== userId) {
       throw AppError.from(ErrUnauthorizedAccess, 403);
     }
 

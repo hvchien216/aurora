@@ -68,9 +68,9 @@ export class WorkspacePrismaRepository implements IWorkspaceRepository {
   async removeUser(workspaceId: string, userId: string): Promise<void> {
     await prisma.workspacesUsers.delete({
       where: {
-        userID_workspaceID: {
-          userID: userId,
-          workspaceID: workspaceId,
+        userId_workspaceId: {
+          userId: userId,
+          workspaceId: workspaceId,
         },
       },
     });
@@ -83,9 +83,9 @@ export class WorkspacePrismaRepository implements IWorkspaceRepository {
   ): Promise<void> {
     await prisma.workspacesUsers.update({
       where: {
-        userID_workspaceID: {
-          userID: userId,
-          workspaceID: workspaceId,
+        userId_workspaceId: {
+          userId: userId,
+          workspaceId: workspaceId,
         },
       },
       data: { role },
@@ -94,7 +94,7 @@ export class WorkspacePrismaRepository implements IWorkspaceRepository {
 
   async getUsers(workspaceId: string): Promise<WorkspaceUser[]> {
     const data = await prisma.workspacesUsers.findMany({
-      where: { workspaceID: workspaceId },
+      where: { workspaceId: workspaceId },
       include: { user: true },
     });
 
@@ -103,7 +103,7 @@ export class WorkspacePrismaRepository implements IWorkspaceRepository {
 
   async getUserWorkspaces(userId: string): Promise<Workspace[]> {
     const workspaceUsers = await prisma.workspacesUsers.findMany({
-      where: { userID: userId },
+      where: { userId: userId },
       include: { workspace: true },
     });
 

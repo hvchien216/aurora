@@ -21,8 +21,8 @@ export const linkSchema = z.object({
   title: z.string().max(255, { message: ErrTitleTooLong.message }).nullable(),
   description: z.string().nullable(),
   archived: z.boolean().default(false),
-  workspaceID: z.string().uuid(),
-  userID: z.string().uuid(),
+  workspaceId: z.string().uuid().nullable(),
+  userId: z.string().uuid().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
   clicks: z.number().default(0),
@@ -39,7 +39,7 @@ export const createLinkDTOSchema = z.object({
     .optional(),
   title: z.string().max(255, { message: ErrTitleTooLong.message }).optional(),
   description: z.string().optional(),
-  workspaceID: z.string().uuid(),
+  workspaceId: z.string().uuid().nullable(),
   tags: z.array(z.string().uuid()).optional(),
 });
 
