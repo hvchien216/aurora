@@ -1,0 +1,39 @@
+model Workspace {
+  id         String  @id @default(cuid())
+  name       String
+  slug       String  @unique
+  logo       String?
+  inviteCode String? @unique @map("invite_code")
+
+  totalLinks  Int @default(0) @map("total_links")
+  totalClicks Int @default(0) @map("total_clicks")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users WorkspacesUsers[]
+  links Link[]
+  tags  Tag[]
+
+  @@map("workspaces")
+}
+
+model WorkspacesUsers {
+  id          String        @id @default(cuid())
+  role        WorkspaceRole @default(member)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  userId      String        @map("user_id")
+  workspaceId String        @map("workspace_id")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+  @@map("workspaces_users")
+}
+
+enum WorkspaceRole {
+  owner
+  member
+}
