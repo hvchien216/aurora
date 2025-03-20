@@ -1,26 +1,20 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "~/lib";
 import * as RechartsPrimitive from "recharts";
-
-import { cn } from "~/utils";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
 
 export type ChartConfig = {
-  [k in string]: {
-    label?: React.ReactNode;
-    icon?: React.ComponentType;
-  } & (
+  [k in string]: { label?: React.ReactNode; icon?: React.ComponentType } & (
     | { color?: string; theme?: never }
     | { color?: never; theme: Record<keyof typeof THEMES, string> }
   );
 };
 
-type ChartContextProps = {
-  config: ChartConfig;
-};
+type ChartContextProps = { config: ChartConfig };
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
@@ -301,9 +295,7 @@ const ChartLegendContent = React.forwardRef<
               ) : (
                 <div
                   className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  style={{ backgroundColor: item.color }}
                 />
               )}
               {itemConfig?.label}
