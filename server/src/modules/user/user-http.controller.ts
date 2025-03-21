@@ -75,7 +75,7 @@ export class UserHttpController {
     // Redirect to client with tokens as query params
     // TODO: redirect to client with tokens as query params
     return res.redirect(
-      `http://localhost:3000/v1?accessToken=${accessToken}&refreshToken=${refreshToken}`,
+      `http://localhost:4001/auth/callback/google?accessToken=${accessToken}&refreshToken=${refreshToken}`,
     );
   }
 }
