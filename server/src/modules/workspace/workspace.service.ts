@@ -18,6 +18,7 @@ import { generateSlug } from '../../utils/slug';
 import { generateInviteCode } from 'src/utils/invite-code';
 import { AppError } from 'src/share';
 import { v7 } from 'uuid';
+import { nanoid } from 'src/utils';
 
 @Injectable()
 export class WorkspaceService implements IWorkspaceService {
@@ -26,15 +27,34 @@ export class WorkspaceService implements IWorkspaceService {
     private readonly workspaceRepository: IWorkspaceRepository,
   ) {}
 
+  async _getRandomSlug(name: string): Promise<string> {
+    const key = generateSlug(name) + nanoid();
+
+    // Check if key already exists
+    const existing = await this.workspaceRepository.findBySlug(key);
+    if (existing) {
+      /* recursively get random key till it gets one that's available */
+      return this._getRandomSlug(name);
+    }
+
+    return key;
+  }
+
   async createWorkspace(name: string, ownerId: string): Promise<Workspace> {
     const data = createWorkspaceDTOSchema.parse({ name });
 
     const newWorkspaceId = v7();
 
+    let slug = generateSlug(data.name);
+
+    if (!slug) {
+      slug = await this._getRandomSlug(data.name);
+    }
+
     const workspace: Workspace = {
       id: newWorkspaceId,
       name: data.name,
-      slug: generateSlug(data.name),
+      slug,
       logo: null,
       inviteCode: null,
       totalLinks: 0,

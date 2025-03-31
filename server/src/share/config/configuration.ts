@@ -17,6 +17,7 @@ const config: Config = {
   },
   rpc: {
     introspectURL: `http://localhost:${port}/v1/rpc/introspect`,
+    workspacesURL: `http://localhost:${port}/v1/rpc/workspaces`,
   },
 };
 export default (): Config => config;

@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import { TOKEN_PROVIDER, USER_REPOSITORY } from './user.di-tokens';
 import {
   GoogleLoginDTO,
+  googleLoginSchema,
   RefreshTokenDTO,
   refreshTokenDTOSchema,
   UserLoginDTO,
@@ -23,6 +24,7 @@ import {
   ErrNotFound,
   ErrTokenInvalid,
   ITokenProvider,
+  IWorkspaceRPC,
   Token,
   TokenPayload,
   UserRole,
@@ -30,12 +32,14 @@ import {
 import { v7 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { SecurityConfig } from 'src/share/config/config.interface';
+import { WORKSPACE_RPC } from 'src/share/share.di-tokens';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: IUserRepository,
     @Inject(TOKEN_PROVIDER) private readonly tokenProvider: ITokenProvider,
+    @Inject(WORKSPACE_RPC) private readonly workspaceRpc: IWorkspaceRPC,
     private readonly configService: ConfigService,
   ) {}
   async register(dto: UserRegistrationDTO): Promise<string> {
@@ -75,6 +79,18 @@ export class UserService implements IUserService {
 
     // 4. Insert new uer to database
     await this.userRepository.insert(newUser);
+
+    const workSpaceName = [data.firstName, data.lastName].join(' ');
+    const workspace = await this.workspaceRpc.create(workSpaceName, newUser.id);
+
+    if (!workspace) {
+      throw ErrNotFound;
+    }
+
+    await this.userRepository.update(newUser.id, {
+      defaultWorkspace: workspace.slug,
+    });
+
     return newId;
   }
 
@@ -83,7 +99,7 @@ export class UserService implements IUserService {
 
     // 1. find user with username from DTO
     const user = await this.userRepository.findByCond({
-      username: data.username,
+      email: data.email,
     });
 
     if (!user)
@@ -181,26 +197,48 @@ export class UserService implements IUserService {
   }
 
   async validateGoogleUser(dto: GoogleLoginDTO): Promise<User> {
+    const data = googleLoginSchema.parse(dto);
     const user = await this.userRepository.findByCond({
-      email: dto.email,
+      email: data.email,
     });
 
     if (user) return user;
 
     const newId = v7();
 
+    const saltOrRounds =
+      this.configService?.get<SecurityConfig>('security')?.bcryptSaltOrRound ||
+      10;
+    const bcryptSaltRounds = Number.isInteger(Number(saltOrRounds))
+      ? Number(saltOrRounds)
+      : +saltOrRounds;
+    const randomPassword = 'SOME_RANDOM_PASSWORD'; // TODO: more secure password, using nanoid generator
+    const salt = bcrypt.genSaltSync(bcryptSaltRounds);
+    const hashPassword = await bcrypt.hash(`${randomPassword}.${salt}`, 10);
+
     const newUser = await this.userRepository.insert({
-      email: dto.email,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      username: dto.username,
-      password: 'SOME_RANDOM_PASSWORD', // maybe generate a random password here
-      salt: 'SOME_RANDOM_SALT', // maybe generate a random password here
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      username: data.username,
+      password: hashPassword,
+      salt: salt,
       id: newId,
       status: UserStatus.ACTIVE,
       role: UserRole.USER,
       createdAt: new Date(),
       updatedAt: new Date(),
+    });
+
+    const workSpaceName = [data.firstName, data.lastName].join(' ');
+    const workspace = await this.workspaceRpc.create(workSpaceName, newUser.id);
+
+    if (!workspace) {
+      throw ErrNotFound;
+    }
+
+    await this.userRepository.update(newUser.id, {
+      defaultWorkspace: workspace.slug,
     });
 
     return newUser;

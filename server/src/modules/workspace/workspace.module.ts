@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { WorkspaceHttpController } from './workspace-http.controller';
+import { WorkspaceRPCHttpController } from './workspace-rpc-http.controller';
 import { WorkspaceService } from './workspace.service';
 import { WorkspacePrismaRepository } from './workspace-prisma.repo';
 import { WORKSPACE_REPOSITORY, WORKSPACE_SERVICE } from './workspace.di-tokens';
@@ -9,7 +10,7 @@ import { RemoteAuthGuard } from 'src/share/guards';
 
 @Module({
   imports: [ShareModule],
-  controllers: [WorkspaceHttpController],
+  controllers: [WorkspaceHttpController, WorkspaceRPCHttpController],
   providers: [
     {
       provide: WORKSPACE_REPOSITORY,

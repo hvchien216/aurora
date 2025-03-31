@@ -8,6 +8,12 @@ export const createWorkspaceDTOSchema = z.object({
 
 export type CreateWorkspaceDTO = z.infer<typeof createWorkspaceDTOSchema>;
 
+export const createWorkspaceRPCDTOSchema = createWorkspaceDTOSchema.extend({
+  ownerId: z.string().uuid(),
+});
+
+export type CreateWorkspaceRPCDTO = z.infer<typeof createWorkspaceRPCDTOSchema>;
+
 // Update Workspace DTO
 export const updateWorkspaceDTOSchema = z.object({
   name: z.string().min(3).max(50).optional(),

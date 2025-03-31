@@ -13,7 +13,7 @@ export const userRegistrationDTOSchema = userSchema
 
 export const userLoginDTOSchema = userSchema
   .pick({
-    username: true,
+    email: true,
     password: true,
   })
   .required();
@@ -42,6 +42,7 @@ export const userUpdateDTOSchema = userSchema
     salt: true,
     role: true,
     status: true,
+    defaultWorkspace: true,
   })
   .partial();
 

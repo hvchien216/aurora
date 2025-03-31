@@ -1,3 +1,5 @@
+import { Workspace } from './data-model';
+
 export enum UserRole {
   ADMIN = 'admin',
   USER = 'user',
@@ -41,4 +43,10 @@ export type TokenIntrospectResult = {
 
 export interface ITokenIntrospect {
   introspect(token: string): Promise<TokenIntrospectResult>;
+}
+
+// =========WORKSPACE RPC==========
+
+export interface IWorkspaceRPC {
+  create(name: string, ownerId: string): Promise<Workspace | null>;
 }
