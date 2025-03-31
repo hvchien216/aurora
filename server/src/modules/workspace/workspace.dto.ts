@@ -18,6 +18,7 @@ export type CreateWorkspaceRPCDTO = z.infer<typeof createWorkspaceRPCDTOSchema>;
 export const updateWorkspaceDTOSchema = z.object({
   name: z.string().min(3).max(50).optional(),
   logo: z.string().url().nullable().optional(),
+  slug: z.string().trim().min(3, 'can not empty'),
 });
 
 export type UpdateWorkspaceDTO = z.infer<typeof updateWorkspaceDTOSchema>;

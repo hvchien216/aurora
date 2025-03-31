@@ -1,5 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { IWorkspaceService, IWorkspaceRepository } from './workspace.port';
+import {
+  IWorkspaceService,
+  IWorkspaceRepository,
+  IUserRPC,
+} from './workspace.port';
 import {
   Workspace,
   WorkspaceUser,
@@ -8,12 +12,13 @@ import {
   ErrInvalidInviteCode,
   ErrGenerateInviteCodeFailed,
   WorkspaceWithUserRole,
+  ErrUpdateDefaultWorkspaceFailed,
 } from './workspace.model';
 import {
   createWorkspaceDTOSchema,
   updateWorkspaceDTOSchema,
 } from './workspace.dto';
-import { WORKSPACE_REPOSITORY } from './workspace.di-tokens';
+import { USER_RPC, WORKSPACE_REPOSITORY } from './workspace.di-tokens';
 import { generateSlug } from '../../utils/slug';
 import { generateInviteCode } from 'src/utils/invite-code';
 import { AppError } from 'src/share';
@@ -25,6 +30,7 @@ export class WorkspaceService implements IWorkspaceService {
   constructor(
     @Inject(WORKSPACE_REPOSITORY)
     private readonly workspaceRepository: IWorkspaceRepository,
+    @Inject(USER_RPC) private readonly userRPC: IUserRPC,
   ) {}
 
   async _getRandomSlug(name: string): Promise<string> {
@@ -82,13 +88,26 @@ export class WorkspaceService implements IWorkspaceService {
     id: string,
     data: Partial<Workspace>,
   ): Promise<Workspace> {
-    const workspace = await this.workspaceRepository.findById(id);
-    if (!workspace) {
+    const currentWorkspaceData = await this.workspaceRepository.findById(id);
+    if (!currentWorkspaceData) {
       throw AppError.from(ErrWorkspaceNotFound, 400);
     }
 
     const validatedData = updateWorkspaceDTOSchema.parse(data);
-    return this.workspaceRepository.update(id, validatedData);
+
+    if (currentWorkspaceData.slug !== validatedData.slug) {
+      const isUpdated = await this.userRPC.updateManyDefaultWorkspace({
+        oldSlug: currentWorkspaceData.slug,
+        slug: validatedData.slug,
+      });
+      if (!isUpdated) {
+        throw AppError.from(ErrUpdateDefaultWorkspaceFailed, 400);
+      }
+    }
+
+    const result = this.workspaceRepository.update(id, validatedData);
+
+    return result;
   }
 
   async deleteWorkspace(id: string): Promise<void> {

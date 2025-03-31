@@ -39,3 +39,10 @@ export interface IWorkspaceService {
   ): Promise<void>;
   getUserWorkspaces(userId: string): Promise<WorkspaceWithUserRole[]>;
 }
+
+export interface IUserRPC {
+  updateManyDefaultWorkspace(dto: {
+    oldSlug: string;
+    slug: string;
+  }): Promise<boolean>;
+}

@@ -55,6 +55,20 @@ export class UserPrismaRepository implements IUserRepository {
     return this._toModel(data);
   }
 
+  async updateManyDefaultWorkspace(
+    oldSlug: string,
+    slug: string,
+  ): Promise<void> {
+    await prisma.user.updateMany({
+      where: {
+        defaultWorkspace: oldSlug,
+      },
+      data: {
+        defaultWorkspace: slug,
+      },
+    });
+  }
+
   private _toModel(data: UserPrisma): User {
     return { ...data, role: data.role as UserRole } as User;
   }

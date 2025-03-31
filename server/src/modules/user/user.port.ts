@@ -16,6 +16,8 @@ export interface IUserService {
   validateGoogleUser(dto: GoogleLoginDTO): Promise<User>;
   generateGGTokens(email: string): Promise<Token>;
 
+  updateDefaultWorkspace(dto: { oldSlug: string; slug: string }): Promise<void>;
+
   rotateToken(dto: RefreshTokenDTO): Promise<Token>;
 
   // rpc
@@ -30,4 +32,5 @@ export interface IUserRepository {
   // Mutation
   insert(user: User): Promise<User>;
   update(id: string, dto: UserUpdateDTO): Promise<User>;
+  updateManyDefaultWorkspace(oldSlug: string, slug: string): Promise<void>;
 }

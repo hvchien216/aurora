@@ -260,4 +260,11 @@ export class UserService implements IUserService {
     });
     return token;
   }
+
+  async updateDefaultWorkspace(dto: {
+    oldSlug: string;
+    slug: string;
+  }): Promise<void> {
+    await this.userRepository.updateManyDefaultWorkspace(dto.oldSlug, dto.slug);
+  }
 }

@@ -16,7 +16,10 @@ export class WorkspaceRPCClient implements IWorkspaceRPC {
 
   async create(name: string, ownerId: string): Promise<Workspace | null> {
     try {
-      const { data } = await axios.post(`${this.url}`, { name, ownerId });
+      const { data } = await axios.post(`${this.url}/rpc/workspaces`, {
+        name,
+        ownerId,
+      });
       const workspace = data.data;
       if (workspace) return workspace;
       return null;
