@@ -14,7 +14,7 @@ const config = {
     "^lucide-react$",
     "",
     "^types$",
-    "^~/types/(.*)$",
+    "^~/types$",
     "^~/config/(.*)$",
     "^~/hooks/(.*)$",
     "^~/components/shared/(.*)$",
