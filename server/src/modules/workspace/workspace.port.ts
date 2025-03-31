@@ -1,4 +1,9 @@
-import { Workspace, WorkspaceRole, WorkspaceUser } from './workspace.model';
+import {
+  Workspace,
+  WorkspaceRole,
+  WorkspaceUser,
+  WorkspaceWithUserRole,
+} from './workspace.model';
 
 export interface IWorkspaceRepository {
   create(workspace: Workspace): Promise<Workspace>;
@@ -15,7 +20,7 @@ export interface IWorkspaceRepository {
     role: WorkspaceRole,
   ): Promise<void>;
   getUsers(workspaceId: string): Promise<WorkspaceUser[]>;
-  getUserWorkspaces(userId: string): Promise<Workspace[]>;
+  getUserWorkspaces(userId: string): Promise<WorkspaceWithUserRole[]>;
 }
 
 export interface IWorkspaceService {
@@ -32,5 +37,12 @@ export interface IWorkspaceService {
     userId: string,
     role: WorkspaceRole,
   ): Promise<void>;
-  getUserWorkspaces(userId: string): Promise<Workspace[]>;
+  getUserWorkspaces(userId: string): Promise<WorkspaceWithUserRole[]>;
+}
+
+export interface IUserRPC {
+  updateManyDefaultWorkspace(dto: {
+    oldSlug: string;
+    slug: string;
+  }): Promise<boolean>;
 }

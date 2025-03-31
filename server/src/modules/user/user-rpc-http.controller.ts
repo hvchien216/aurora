@@ -23,4 +23,17 @@ export class UserRPCHttpController {
     const data = await this.userService.introspectToken(dto.token);
     return { data };
   }
+
+  @Post('update-default-workspace')
+  @HttpCode(HttpStatus.OK)
+  async updateDefaultWorkspace(@Body() dto: { oldSlug: string; slug: string }) {
+    try {
+      await this.userService.updateDefaultWorkspace(dto);
+      return {
+        data: true,
+      };
+    } catch {
+      return { data: false };
+    }
+  }
 }

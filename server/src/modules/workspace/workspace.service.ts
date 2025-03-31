@@ -1,5 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { IWorkspaceService, IWorkspaceRepository } from './workspace.port';
+import {
+  IWorkspaceService,
+  IWorkspaceRepository,
+  IUserRPC,
+} from './workspace.port';
 import {
   Workspace,
   WorkspaceUser,
@@ -7,33 +11,56 @@ import {
   ErrWorkspaceNotFound,
   ErrInvalidInviteCode,
   ErrGenerateInviteCodeFailed,
+  WorkspaceWithUserRole,
+  ErrUpdateDefaultWorkspaceFailed,
 } from './workspace.model';
 import {
   createWorkspaceDTOSchema,
   updateWorkspaceDTOSchema,
 } from './workspace.dto';
-import { WORKSPACE_REPOSITORY } from './workspace.di-tokens';
+import { USER_RPC, WORKSPACE_REPOSITORY } from './workspace.di-tokens';
 import { generateSlug } from '../../utils/slug';
 import { generateInviteCode } from 'src/utils/invite-code';
 import { AppError } from 'src/share';
 import { v7 } from 'uuid';
+import { nanoid } from 'src/utils';
 
 @Injectable()
 export class WorkspaceService implements IWorkspaceService {
   constructor(
     @Inject(WORKSPACE_REPOSITORY)
     private readonly workspaceRepository: IWorkspaceRepository,
+    @Inject(USER_RPC) private readonly userRPC: IUserRPC,
   ) {}
+
+  async _getRandomSlug(name: string): Promise<string> {
+    const key = generateSlug(name) + nanoid();
+
+    // Check if key already exists
+    const existing = await this.workspaceRepository.findBySlug(key);
+    if (existing) {
+      /* recursively get random key till it gets one that's available */
+      return this._getRandomSlug(name);
+    }
+
+    return key;
+  }
 
   async createWorkspace(name: string, ownerId: string): Promise<Workspace> {
     const data = createWorkspaceDTOSchema.parse({ name });
 
     const newWorkspaceId = v7();
 
+    let slug = generateSlug(data.name);
+
+    if (!slug) {
+      slug = await this._getRandomSlug(data.name);
+    }
+
     const workspace: Workspace = {
       id: newWorkspaceId,
       name: data.name,
-      slug: generateSlug(data.name),
+      slug,
       logo: null,
       inviteCode: null,
       totalLinks: 0,
@@ -61,13 +88,26 @@ export class WorkspaceService implements IWorkspaceService {
     id: string,
     data: Partial<Workspace>,
   ): Promise<Workspace> {
-    const workspace = await this.workspaceRepository.findById(id);
-    if (!workspace) {
+    const currentWorkspaceData = await this.workspaceRepository.findById(id);
+    if (!currentWorkspaceData) {
       throw AppError.from(ErrWorkspaceNotFound, 400);
     }
 
     const validatedData = updateWorkspaceDTOSchema.parse(data);
-    return this.workspaceRepository.update(id, validatedData);
+
+    if (currentWorkspaceData.slug !== validatedData.slug) {
+      const isUpdated = await this.userRPC.updateManyDefaultWorkspace({
+        oldSlug: currentWorkspaceData.slug,
+        slug: validatedData.slug,
+      });
+      if (!isUpdated) {
+        throw AppError.from(ErrUpdateDefaultWorkspaceFailed, 400);
+      }
+    }
+
+    const result = this.workspaceRepository.update(id, validatedData);
+
+    return result;
   }
 
   async deleteWorkspace(id: string): Promise<void> {
@@ -173,7 +213,7 @@ export class WorkspaceService implements IWorkspaceService {
     await this.workspaceRepository.updateUserRole(workspaceId, userId, role);
   }
 
-  async getUserWorkspaces(userId: string): Promise<Workspace[]> {
+  async getUserWorkspaces(userId: string): Promise<WorkspaceWithUserRole[]> {
     return this.workspaceRepository.getUserWorkspaces(userId);
   }
 }

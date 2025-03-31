@@ -6,6 +6,7 @@ import {
   ErrLinkNotFound,
   ErrUnauthorizedAccess,
   ErrKeyAlreadyExists,
+  ClickLinkDTO,
 } from './link.model';
 import { AppError } from 'src/share';
 import { v7 } from 'uuid';
@@ -130,12 +131,14 @@ export class LinkService implements ILinkService {
     await this.linkRepository.delete(id);
   }
 
-  async recordClick(id: string): Promise<void> {
-    const link = await this.linkRepository.findById(id);
-    if (!link) {
-      throw AppError.from(ErrLinkNotFound, 404);
-    }
+  async recordClick(dto: ClickLinkDTO, link: Link): Promise<void> {
+    // const link = await this.linkRepository.findById(id);
+    // if (!link) {
+    //   throw AppError.from(ErrLinkNotFound, 404);
+    // }
 
-    await this.linkRepository.incrementClicks(id);
+    // TODO: set link to redis cache
+    // TODO: check dto.clickId in cache, if true, no need to increment clicks
+    await this.linkRepository.incrementClicks(link.id);
   }
 }

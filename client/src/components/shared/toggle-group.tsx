@@ -2,17 +2,14 @@
 
 import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
+import { cn } from "~/lib";
 import { type VariantProps } from "class-variance-authority";
 
 import { toggleVariants } from "~/components/shared/toggle";
-import { cn } from "~/utils";
 
 const ToggleGroupContext = React.createContext<
   VariantProps<typeof toggleVariants>
->({
-  size: "default",
-  variant: "default",
-});
+>({ size: "default", variant: "default" });
 
 const ToggleGroup = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Root>,

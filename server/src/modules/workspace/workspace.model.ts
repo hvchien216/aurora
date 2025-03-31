@@ -11,6 +11,11 @@ export const ErrInvalidInviteCode = new Error('Invalid invite code');
 export const ErrGenerateInviteCodeFailed = new Error(
   'Failed to generate a unique invite code after multiple attempts',
 );
+
+export const ErrUpdateDefaultWorkspaceFailed = new Error(
+  'Failed to update default workspace',
+);
+
 export const workspaceSchema = z.object({
   id: z.string().cuid(),
   name: z.string().trim().min(3, 'can not empty'),
@@ -34,3 +39,6 @@ export const workspaceUserSchema = z.object({
 
 export type Workspace = z.infer<typeof workspaceSchema>;
 export type WorkspaceUser = z.infer<typeof workspaceUserSchema>;
+export type WorkspaceWithUserRole = z.infer<typeof workspaceSchema> & {
+  role: z.infer<typeof workspaceUserSchema.shape.role>;
+};

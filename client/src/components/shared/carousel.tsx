@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "~/lib";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { Button } from "~/components/shared/button";
-import { cn } from "~/utils";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -59,10 +59,7 @@ const Carousel = React.forwardRef<
     ref,
   ) => {
     const [carouselRef, api] = useEmblaCarousel(
-      {
-        ...opts,
-        axis: orientation === "horizontal" ? "x" : "y",
-      },
+      { ...opts, axis: orientation === "horizontal" ? "x" : "y" },
       plugins,
     );
     const [canScrollPrev, setCanScrollPrev] = React.useState(false);

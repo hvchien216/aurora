@@ -22,4 +22,6 @@ export interface SecurityConfig {
 
 export interface RPCConfig {
   introspectURL: string;
+  workspacesURL: string;
+  userURL: string;
 }

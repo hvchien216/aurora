@@ -19,3 +19,6 @@ export * from "./switch";
 export * from "./tabs";
 export * from "./tooltip";
 export * from "./badge";
+export * from "./gradient-background";
+export * from "./wordmark";
+export * from "./client-only";

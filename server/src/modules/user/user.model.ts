@@ -54,6 +54,7 @@ export const userSchema = z.object({
   salt: z.string().min(8),
   firstName: z.string().min(2, ErrFirstNameAtLeast2Chars.message),
   lastName: z.string().min(2, ErrLastNameAtLeast2Chars.message),
+  defaultWorkspace: z.string().optional(),
   role: z.nativeEnum(UserRole, ErrRoleInvalid),
   status: z.nativeEnum(UserStatus).optional(),
   createdAt: z.date(),
