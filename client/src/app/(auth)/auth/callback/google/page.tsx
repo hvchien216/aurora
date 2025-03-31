@@ -2,50 +2,46 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { LoaderIcon } from "lucide-react";
 
-type Props = {};
+import { clientSessionToken, httpRequest } from "~/lib";
+import { tryCatch } from "~/utils";
 
-const CallbackPage = (props: Props) => {
+const CallbackPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const handleCallback = async () => {
-      try {
-        // Extract tokens from URL parameters
-        const accessToken = searchParams.get("accessToken");
-        const refreshToken = searchParams.get("refreshToken");
+      const accessToken = searchParams.get("accessToken");
+      const refreshToken = searchParams.get("refreshToken");
 
-        // Handle missing tokens
-        if (!accessToken || !refreshToken) {
-          throw new Error("Authentication failed: Missing tokens");
-        }
-
-        // // Validate token format (basic validation)
-        // try {
-        //   const userData = parseToken(accessToken);
-        //   if (!userData || !userData.email) {
-        //     throw new Error("Invalid token format");
-        //   }
-        // } catch (err) {
-        //   throw new Error("Authentication failed: Invalid token format");
-        // }
-
-        // // Set cookies
-        // setAuthCookies(accessToken, refreshToken);
-
-        // Redirect to dashboard or home page
-        // router.push("/dashboard");
-        // router.refresh(); // Refresh the router to update server components
-      } catch (err: unknown) {
-        console.error("Authentication error:", err);
+      if (!accessToken || !refreshToken) {
         setError("Authentication failed");
+        return;
       }
+
+      const { error } = await tryCatch(
+        httpRequest.post(`${process.env.NEXT_PUBLIC_HOST_URL}/api/auth`, {
+          accessToken,
+          refreshToken,
+        }),
+      );
+
+      if (error) {
+        setError("Authentication failed");
+        return;
+      }
+
+      clientSessionToken.value = accessToken;
+
+      // Redirect to dashboard or home page
+      router.push("/");
+      // router.refresh(); // Refresh the router to update server components
     };
 
     if (searchParams.has("accessToken") || searchParams.has("refreshToken")) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-floating-promises
       (async () => {
         await handleCallback();
       })();
@@ -54,7 +50,19 @@ const CallbackPage = (props: Props) => {
       setError(`Authentication error: ${searchParams.get("error")}`);
     }
   }, [searchParams, router]);
-  return <div>CallbackPage</div>;
+
+  if (error) {
+    router.replace("/login");
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="flex items-center space-x-2">
+        <LoaderIcon className="size-4 animate-spin text-gray-600" />
+        <p className="text-xs text-gray-600">Completing authentication...</p>
+      </div>
+    </div>
+  );
 };
 
 export default CallbackPage;

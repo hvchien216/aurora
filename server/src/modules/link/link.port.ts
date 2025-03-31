@@ -1,4 +1,4 @@
-import { Link, CreateLinkDTO } from './link.model';
+import { Link, CreateLinkDTO, ClickLinkDTO } from './link.model';
 
 export interface ILinkRepository {
   create(link: Link): Promise<Link>;
@@ -21,5 +21,5 @@ export interface ILinkService {
     userId: string,
   ): Promise<Link>;
   deleteLink(id: string, userId: string): Promise<void>;
-  recordClick(id: string): Promise<void>;
+  recordClick(dto: ClickLinkDTO, link: Link): Promise<void>;
 }

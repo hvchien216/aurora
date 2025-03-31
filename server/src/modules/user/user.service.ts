@@ -43,7 +43,7 @@ export class UserService implements IUserService {
 
     // 1. Check username existed
     const user = await this.userRepository.findByCond({
-      username: data.username,
+      email: data.email,
     });
 
     if (user) throw AppError.from(ErrUsernameExisted, 400);

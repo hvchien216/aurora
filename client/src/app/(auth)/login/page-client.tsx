@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { GoogleButton } from "~/features/auth/ui";
 
-import { Button, Wordmark } from "~/components/shared";
-import { GoogleButton } from "~/app/features/auth/ui";
+import { Wordmark } from "~/components/shared";
 
 export default function LoginPageClient() {
   return (

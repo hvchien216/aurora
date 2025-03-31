@@ -34,3 +34,6 @@ export const workspaceUserSchema = z.object({
 
 export type Workspace = z.infer<typeof workspaceSchema>;
 export type WorkspaceUser = z.infer<typeof workspaceUserSchema>;
+export type WorkspaceWithUserRole = z.infer<typeof workspaceSchema> & {
+  role: z.infer<typeof workspaceUserSchema.shape.role>;
+};

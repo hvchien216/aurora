@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { IWorkspaceRepository } from './workspace.port';
-import { Workspace, WorkspaceRole, WorkspaceUser } from './workspace.model';
+import {
+  Workspace,
+  WorkspaceRole,
+  WorkspaceUser,
+  WorkspaceWithUserRole,
+} from './workspace.model';
 import {
   Prisma,
   WorkspacesUsers as WorkspacesUsersPrisma,
@@ -101,13 +106,16 @@ export class WorkspacePrismaRepository implements IWorkspaceRepository {
     return data.map(this._toModelUser);
   }
 
-  async getUserWorkspaces(userId: string): Promise<Workspace[]> {
+  async getUserWorkspaces(userId: string): Promise<WorkspaceWithUserRole[]> {
     const workspaceUsers = await prisma.workspacesUsers.findMany({
       where: { userId: userId },
       include: { workspace: true },
     });
 
-    return workspaceUsers.map((wu) => wu.workspace);
+    return workspaceUsers.map((wu) => ({
+      ...wu.workspace,
+      role: wu.role as WorkspaceRole,
+    }));
   }
 
   private _toModelUser(data: WorkspacesUsersPrisma): WorkspaceUser {

@@ -44,3 +44,18 @@ export const createLinkDTOSchema = z.object({
 });
 
 export type CreateLinkDTO = z.infer<typeof createLinkDTOSchema>;
+
+export const validDomainRegex = new RegExp(
+  /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
+);
+export const clickLinkDTOSchema = z.object({
+  key: z.string().regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message }),
+  clickId: z.string().uuid(),
+  domain: z
+    .string()
+    .min(1, 'Missing required `domain` parameter.')
+    .refine((v) => validDomainRegex.test(v), { message: 'Invalid domain' }),
+  isBot: z.boolean().optional(),
+});
+
+export type ClickLinkDTO = z.infer<typeof clickLinkDTOSchema>;

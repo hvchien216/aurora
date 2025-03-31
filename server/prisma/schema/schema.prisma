@@ -27,6 +27,8 @@ model User {
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime    @updatedAt @map("updated_at") @db.Timestamp(0)
 
+  defaultWorkspace String?
+
   workspaces WorkspacesUsers[]
   links      Link[]
 

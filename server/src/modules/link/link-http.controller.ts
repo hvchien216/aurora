@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
 import { ILinkService } from './link.port';
-import { CreateLinkDTO } from './link.model';
+import { ClickLinkDTO, CreateLinkDTO } from './link.model';
 import { Inject } from '@nestjs/common';
 import { ReqWithRequester } from 'src/share';
 import { LINK_SERVICE } from 'src/modules/link/link.di-tokens';
@@ -40,7 +40,13 @@ export class LinkHttpController {
   @Get('key/:key')
   async getLinkByKey(@Param('key') key: string) {
     const data = await this.linkService.getLinkByKey(key);
-    await this.linkService.recordClick(data.id);
+    return { data };
+  }
+
+  @Post('click')
+  async click(@Body() dto: ClickLinkDTO) {
+    const data = await this.linkService.getLinkByKey(dto.key);
+    await this.linkService.recordClick(dto, data);
     return { data };
   }
 
@@ -76,9 +82,9 @@ export class LinkHttpController {
     return { data: true };
   }
 
-  @Post(':id/click')
-  async recordClick(@Param('id') id: string) {
-    await this.linkService.recordClick(id);
-    return { data: true };
-  }
+  // @Post(':id/click')
+  // async recordClick(@Param('id') id: string) {
+  //   await this.linkService.recordClick(id);
+  //   return { data: true };
+  // }
 }

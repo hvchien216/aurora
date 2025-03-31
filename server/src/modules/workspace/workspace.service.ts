@@ -7,6 +7,7 @@ import {
   ErrWorkspaceNotFound,
   ErrInvalidInviteCode,
   ErrGenerateInviteCodeFailed,
+  WorkspaceWithUserRole,
 } from './workspace.model';
 import {
   createWorkspaceDTOSchema,
@@ -173,7 +174,7 @@ export class WorkspaceService implements IWorkspaceService {
     await this.workspaceRepository.updateUserRole(workspaceId, userId, role);
   }
 
-  async getUserWorkspaces(userId: string): Promise<Workspace[]> {
+  async getUserWorkspaces(userId: string): Promise<WorkspaceWithUserRole[]> {
     return this.workspaceRepository.getUserWorkspaces(userId);
   }
 }
