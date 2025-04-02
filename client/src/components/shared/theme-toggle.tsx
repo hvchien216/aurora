@@ -13,7 +13,7 @@ import {
 } from "~/components/shared";
 
 export function ThemeToggle() {
-  const { theme, themes, setTheme } = useTheme();
+  const { theme, themes, resolvedTheme, setTheme } = useTheme();
 
   /* Update theme-color meta tag
    * when theme is updated */
@@ -23,19 +23,25 @@ export function ThemeToggle() {
     if (metaThemeColor) metaThemeColor.setAttribute("content", themeColor);
   }, [theme]);
 
-  const currentTheme = theme ?? "light";
+  const currentTheme = theme ?? resolvedTheme ?? "light";
   const isDark = currentTheme.startsWith("dark");
   const baseTheme = isDark ? currentTheme.replace("dark-", "") : currentTheme;
 
   // Determine the next theme
   const toggleTheme = () => {
-    const nextTheme = isDark
-      ? themes.includes(baseTheme)
-        ? baseTheme // Switch to light version
-        : "light"
-      : themes.includes(`dark-${baseTheme}`)
-        ? `dark-${baseTheme}` // Switch to dark variant
-        : "dark";
+    let nextTheme = "";
+
+    if (currentTheme === "dark") {
+      nextTheme = "light"; // If it's "dark", toggle to "light"
+    } else if (currentTheme === "light") {
+      nextTheme = "dark"; // If it's "light", toggle to "dark"
+    } else if (isDark) {
+      nextTheme = themes.includes(baseTheme) ? baseTheme : "light"; // Switch to light version
+    } else {
+      nextTheme = themes.includes(`dark-${baseTheme}`)
+        ? `dark-${baseTheme}`
+        : "dark"; // Switch to dark variant
+    }
 
     setTheme(nextTheme);
   };
