@@ -21,6 +21,7 @@ const config = {
     "^~/components/(.*)$",
     "^~/lib$",
     "^~/utils$",
+    "^~/constants$",
     "^~/styles/(.*)$",
     "^~/app/(.*)$",
     "",

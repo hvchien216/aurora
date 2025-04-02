@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
-import "./globals.css";
+import "~/styles/globals.css";
+import "~/styles/themes.css";
 
 import { cookies } from "next/headers";
 import { SessionInjector } from "~/providers";
