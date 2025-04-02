@@ -2,15 +2,20 @@
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { cn } from "~/utils/utils";
-import { cva, VariantProps } from "class-variance-authority";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Button } from "~/components/shared/button";
 import { Input } from "~/components/shared/input";
 import { Separator } from "~/components/shared/separator";
-import { Sheet, SheetContent } from "~/components/shared/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from "~/components/shared/sheet";
 import { Skeleton } from "~/components/shared/skeleton";
 import {
   Tooltip,
@@ -18,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/shared/tooltip";
+import { cn } from "~/lib";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -203,6 +209,9 @@ const Sidebar = React.forwardRef<
     if (isMobile) {
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+          <VisuallyHidden asChild>
+            <SheetTitle />
+          </VisuallyHidden>
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
@@ -214,6 +223,9 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
+            <VisuallyHidden asChild>
+              <SheetDescription />
+            </VisuallyHidden>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
