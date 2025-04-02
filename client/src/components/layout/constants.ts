@@ -30,7 +30,8 @@ export const SIDEBAR_DATA: SidebarData = {
       items: [
         {
           title: "Dashboard",
-          url: "/",
+          // TODO: fix this url, should be a fn take in slug as dynamic param
+          url: "/w/ho-van-chien",
           icon: LayoutDashboardIcon,
         },
       ],

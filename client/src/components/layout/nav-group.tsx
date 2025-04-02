@@ -71,9 +71,12 @@ const SidebarMenuLink = ({ item, href }: { item: NavLink; href: string }) => {
         asChild
         isActive={checkIsActive(href, item)}
         tooltip={item.title}
+        className="group/menu-button h-9 gap-3 rounded-md bg-gradient-to-r font-medium hover:bg-transparent hover:from-sidebar-accent hover:to-sidebar-accent/40 data-[active=true]:from-primary/20 data-[active=true]:to-primary/5 [&>svg]:size-auto"
       >
         <Link href={item.url} onClick={() => setOpenMobile(false)}>
-          {item.icon && <item.icon />}
+          {item.icon && (
+            <item.icon className="text-muted-foreground/60 group-data-[active=true]/menu-button:text-primary" />
+          )}
           <span>{item.title}</span>
           {item.badge && <NavBadge>{item.badge}</NavBadge>}
         </Link>
