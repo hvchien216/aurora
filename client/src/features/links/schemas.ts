@@ -27,3 +27,6 @@ export const linkSchema = z.object({
 });
 
 export type Link = z.infer<typeof linkSchema>;
+
+export const createLinkSchema = linkSchema.pick({ key: true });
+export type CreateLink = z.infer<typeof createLinkSchema>;

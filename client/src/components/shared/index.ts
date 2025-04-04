@@ -22,6 +22,7 @@ export * from "./badge";
 export * from "./sidebar";
 export * from "./collapsible";
 export * from "./skeleton";
+export * from "./form";
 export * from "./drawer";
 export * from "./gradient-background";
 export * from "./wordmark";

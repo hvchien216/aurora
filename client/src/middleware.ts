@@ -13,4 +13,4 @@ export const config = {
   ],
 };
 
-export default chain([withLink, withAuth, withWorkspace]);
+export default chain([withLink]);
