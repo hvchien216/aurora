@@ -35,4 +35,11 @@ export const createLinkSchema = linkSchema.pick({
   title: true,
   description: true,
 });
+
 export type CreateLink = z.infer<typeof createLinkSchema>;
+
+export const getMetaTagsSchema = linkSchema.pick({
+  url: true,
+});
+
+export type GetMetaTags = z.infer<typeof getMetaTagsSchema>;
