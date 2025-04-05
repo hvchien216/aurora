@@ -17,6 +17,9 @@ const LinkBuilderForm = (props: Props) => {
     resolver: zodResolver(createLinkSchema),
     defaultValues: {
       url: "",
+      title: "",
+      image: "",
+      description: "",
     },
   });
 

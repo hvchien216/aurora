@@ -1,7 +1,6 @@
 "use client";
 
-import React, { Fragment, useState } from "react";
-import { CreateLink } from "~/features/links/schemas";
+import React, { Fragment, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Earth } from "lucide-react";
 
@@ -16,6 +15,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/shared";
+import { useDebounceValue } from "~/hooks";
+import { getDomainWithoutWWW } from "~/utils";
+import { useGetMetaTagsQuery } from "~/features/links/hooks";
+import { type CreateLink } from "~/features/links/schemas";
 
 import {
   DefaultOGPreview,
@@ -25,8 +28,6 @@ import {
   XOGPreview,
 } from "./open-graph-previews";
 
-type Props = {};
-const tabs1 = ["default", "x", "linkedin", "facebook"] as const;
 const tabs = [
   {
     label: "Default",
@@ -53,11 +54,34 @@ const tabs = [
     id: "facebook",
   },
 ];
-const LinkPreview = (props: Props) => {
+const LinkPreview = () => {
   const { watch, setValue } = useFormContext<CreateLink>();
-  const { title, description } = watch();
+  const [url, image, title, description] = watch([
+    "url",
+    "image",
+    "title",
+    "description",
+  ]);
+  const debouncedUrl = useDebounceValue(url, 450);
 
-  const image = "";
+  const { data: metaTagData, isLoading: isGeneratingMetatag } =
+    useGetMetaTagsQuery(
+      { url: debouncedUrl },
+      {
+        enabled: url.length > 0,
+      },
+    );
+
+  useEffect(() => {
+    if (metaTagData) {
+      setValue("title", metaTagData.title);
+      setValue("description", metaTagData.description);
+      setValue("image", metaTagData.image);
+    }
+  }, [metaTagData, setValue]);
+
+  const host = getDomainWithoutWWW(debouncedUrl) ?? null;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -100,10 +124,12 @@ const LinkPreview = (props: Props) => {
               <OGPreview
                 title={title}
                 description={description}
-                hostname={"https://lewis.codes"} //TODO: get host value
-                // password={password}
+                hostname={host}
               >
-                <ImagePreview image={image} />
+                <ImagePreview
+                  image={image || null}
+                  isGeneratingMetatag={isGeneratingMetatag}
+                />
               </OGPreview>
             </TabsContent>
           );

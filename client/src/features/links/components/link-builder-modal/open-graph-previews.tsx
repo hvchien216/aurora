@@ -1,12 +1,12 @@
 import { useMemo, type PropsWithChildren } from "react";
-import { type CreateLink } from "~/features/links/schemas";
-import { useIsMobile } from "~/hooks";
 import { useFormContext } from "react-hook-form";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { Image, LoaderCircle } from "lucide-react";
 
 import { ShimmerDots } from "~/components/shared";
+import { useIsMobile } from "~/hooks";
 import { cn } from "~/lib";
+import { type CreateLink } from "~/features/links/schemas";
 
 type OGPreviewProps = PropsWithChildren<{
   title: string | null;
@@ -147,10 +147,14 @@ const XOGPreview: React.FC<OGPreviewProps> = ({
   );
 };
 
-const ImagePreview = ({ image }: { image: string | null }) => {
+const ImagePreview = ({
+  image,
+  isGeneratingMetatag,
+}: {
+  image: string | null;
+  isGeneratingMetatag?: boolean;
+}) => {
   const isMobile = useIsMobile();
-
-  const isGeneratingMetatag = false;
 
   const previewImage = useMemo(() => {
     if (isGeneratingMetatag) {
@@ -162,11 +166,13 @@ const ImagePreview = ({ image }: { image: string | null }) => {
     }
     if (image) {
       return (
-        <img
-          src={image}
-          alt="Preview"
-          className={cn("h-full w-full rounded-[inherit] object-cover")}
-        />
+        <div className="relative isolate flex aspect-[1200/630] w-full flex-col items-center justify-center overflow-hidden rounded-md border border-neutral-300 bg-white shadow-sm transition-all hover:bg-neutral-50">
+          <img
+            src={image}
+            alt="Preview"
+            className={cn("h-full w-full rounded-[inherit] object-cover")}
+          />
+        </div>
       );
     } else {
       return (
