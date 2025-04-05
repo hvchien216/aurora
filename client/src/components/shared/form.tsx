@@ -3,7 +3,6 @@
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
-import { cn } from "~/lib";
 import {
   Controller,
   ControllerProps,
@@ -14,6 +13,7 @@ import {
 } from "react-hook-form";
 
 import { Label } from "~/components/shared/label";
+import { cn } from "~/lib";
 
 const Form = FormProvider;
 
@@ -82,19 +82,28 @@ const FormItem = React.forwardRef<
 });
 FormItem.displayName = "FormItem";
 
+interface FormLabelProps
+  extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> {
+  required?: boolean;
+}
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => {
+  FormLabelProps
+>(({ className, children, ...props }, ref) => {
   const { error, formItemId } = useFormField();
 
   return (
-    <Label
-      ref={ref}
-      className={cn(error && "text-destructive", className)}
-      htmlFor={formItemId}
-      {...props}
-    />
+    <>
+      <Label
+        ref={ref}
+        className={cn(error && "text-destructive", className)}
+        htmlFor={formItemId}
+        {...props}
+      >
+        {children}
+        {props.required && <span className="ml-0.5 text-destructive">*</span>}
+      </Label>
+    </>
   );
 });
 FormLabel.displayName = "FormLabel";
