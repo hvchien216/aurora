@@ -15,6 +15,7 @@ export const linkSchema = z.object({
   id: z.string().uuid(),
   key: z.string().regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message }),
   url: z.string().url({ message: ErrInvalidURL.message }),
+  image: z.string().nullish(),
   title: z.string().max(255, { message: ErrTitleTooLong.message }).nullable(),
   description: z.string().nullable(),
   archived: z.boolean().default(false),
@@ -27,3 +28,11 @@ export const linkSchema = z.object({
 });
 
 export type Link = z.infer<typeof linkSchema>;
+
+export const createLinkSchema = linkSchema.pick({
+  url: true,
+  image: true,
+  title: true,
+  description: true,
+});
+export type CreateLink = z.infer<typeof createLinkSchema>;

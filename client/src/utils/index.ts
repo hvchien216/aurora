@@ -3,3 +3,4 @@ export * from "./try-catch";
 export * from "./is-client";
 export * from "./keys";
 export * from "./url";
+export * from "./resize-image";
