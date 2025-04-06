@@ -11,7 +11,7 @@ export interface ILinkRepository {
 }
 
 export interface ILinkService {
-  createLink(dto: CreateLinkDTO, userId: string): Promise<Link>;
+  createLink(dto: CreateLinkDTO, userId?: string): Promise<Link>;
   getLink(id: string): Promise<Link>;
   getLinkByKey(key: string): Promise<Link>;
   getWorkspaceLinks(workspaceId: string, userId: string): Promise<Link[]>;
