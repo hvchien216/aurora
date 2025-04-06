@@ -1,8 +1,4 @@
-import {
-  QueryFunction,
-  useQuery,
-  UseQueryOptions,
-} from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 
 import { customFetcher } from "~/lib";
 import { injectParams } from "~/utils";
@@ -18,21 +14,6 @@ type Response = {
 type Variables = {
   url: string;
 };
-
-// export const useGetMetaTagsQuery = <TData = Response>(
-//   variables: Variables,
-//   options?: Omit<UseQueryOptions<TData>, "queryKey" | "queryFn">,
-// ) => {
-//   return useQuery<TData>({
-//     ...options,
-//     queryKey: [GET_METATAGS, variables],
-//     queryFn: customMutator<Response, Variables>(
-//       "post",
-//       `${process.env.NEXT_PUBLIC_HOST_URL}/api/metatags`,
-//       variables,
-//     ) as QueryFunction<TData>,
-//   });
-// };
 
 export const useGetMetaTagsQuery = <TData = Response>(
   variables: Variables,
@@ -50,7 +31,7 @@ export const useGetMetaTagsQuery = <TData = Response>(
   return useQuery<TData>({
     ...options,
     queryKey: [GET_METATAGS, variables],
-    queryFn: customFetcher<Response>(url) as QueryFunction<TData>,
+    queryFn: customFetcher<TData>(url),
     retry: false,
   });
 };
