@@ -68,7 +68,7 @@ const LinkPreview = () => {
     useGetMetaTagsQuery(
       { url: debouncedUrl },
       {
-        enabled: url.length > 0,
+        enabled: debouncedUrl?.length > 0,
       },
     );
 

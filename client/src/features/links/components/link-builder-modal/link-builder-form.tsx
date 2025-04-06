@@ -1,35 +1,46 @@
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createLinkSchema, type CreateLink } from "~/features/links/schemas";
 import { useForm } from "react-hook-form";
 
 import { RHFInput } from "~/components/rhf";
 import { Button, DialogFooter, Form, InfoTooltip } from "~/components/shared";
 import { cn } from "~/lib";
+import { useCreateLinkMutation } from "~/features/links/hooks";
+import { createLinkSchema, type CreateLink } from "~/features/links/schemas";
 
 import LinkPreview from "./link-preview";
 
-type Props = {};
+type Props = {
+  handleClose: () => void;
+};
 
-const LinkBuilderForm = (props: Props) => {
-  // 1. Define your form.
+const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
+  const { mutateAsync } = useCreateLinkMutation({
+    onSuccess: () => {
+      handleClose();
+    },
+    onError: () => {
+      // TODO: toast err, set field error message
+    },
+  });
+
   const form = useForm<CreateLink>({
     resolver: zodResolver(createLinkSchema),
     defaultValues: {
       url: "",
-      title: "",
-      image: "",
-      description: "",
+      image: null,
+      title: null,
+      description: null,
+      workspaceId: null,
+      key: undefined,
     },
+    mode: "onChange",
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: CreateLink) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
-
+  const onSubmit = async (values: CreateLink) => {
+    await mutateAsync(values);
+  };
+  const { isDirty, isValid, isSubmitting } = form.formState;
   return (
     <Form {...form}>
       <form
@@ -73,7 +84,13 @@ const LinkBuilderForm = (props: Props) => {
           </div>
         </div>
         <DialogFooter className="bg-neutral-50 px-5 py-3 sm:items-center">
-          <Button type="submit">Create Link</Button>
+          <Button
+            type="submit"
+            disabled={!isDirty || !isValid}
+            loading={isSubmitting}
+          >
+            Create Link
+          </Button>
         </DialogFooter>
       </form>
     </Form>
