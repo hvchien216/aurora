@@ -7,17 +7,28 @@ import {
   ErrUnauthorizedAccess,
   ErrKeyAlreadyExists,
   ClickLinkDTO,
+  LinkCondDTO,
+  linkCondDTOSchema,
+  ErrWorkspaceNotFound,
 } from './link.model';
-import { AppError } from 'src/share';
+import {
+  AppError,
+  IWorkspaceRPC,
+  Paginated,
+  PagingDTO,
+  pagingDTOSchema,
+} from 'src/share';
 import { v7 } from 'uuid';
 import { LINK_REPOSITORY } from './link.di-tokens';
 import { nanoid } from 'src/utils';
+import { WORKSPACE_RPC } from 'src/share/share.di-tokens';
 
 @Injectable()
 export class LinkService implements ILinkService {
   constructor(
     @Inject(LINK_REPOSITORY)
     private readonly linkRepository: ILinkRepository,
+    @Inject(WORKSPACE_RPC) private readonly workspaceRpc: IWorkspaceRPC,
   ) {}
 
   async createLink(dto: CreateLinkDTO, userId: string): Promise<Link> {
@@ -82,11 +93,28 @@ export class LinkService implements ILinkService {
     return link;
   }
 
-  async getWorkspaceLinks(
-    workspaceId: string,
-    userId: string,
-  ): Promise<Link[]> {
-    return this.linkRepository.findByWorkspace(workspaceId);
+  async listInWorkspace(
+    cond: LinkCondDTO,
+    paging: PagingDTO,
+  ): Promise<Paginated<Link>> {
+    cond = linkCondDTOSchema.parse(cond);
+    console.log('🚀 ~ LinkService ~ cond:', cond);
+    paging = pagingDTOSchema.parse(paging);
+
+    const { workspaceSlug, ...restCond } = cond;
+
+    const workspace = await this.workspaceRpc.findBySlug(cond.workspaceSlug);
+    console.log('🚀 ~ LinkService ~ workspace:', workspace);
+
+    if (!workspace) {
+      throw AppError.from(ErrWorkspaceNotFound, 400);
+    }
+
+    const condition = {
+      ...restCond,
+      workspaceId: workspace.id,
+    };
+    return await this.linkRepository.list(condition, paging);
   }
 
   async updateLink(

@@ -49,4 +49,5 @@ export interface ITokenIntrospect {
 
 export interface IWorkspaceRPC {
   create(name: string, ownerId: string): Promise<Workspace | null>;
+  findBySlug(slug: string): Promise<Workspace | null>;
 }

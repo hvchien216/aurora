@@ -8,16 +8,18 @@ import {
   Param,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import {
   RemoteAuthGuard,
   RemoteAuthGuardOptional,
 } from 'src/share/guards/auth.guard';
 import { ILinkService } from './link.port';
-import { ClickLinkDTO, CreateLinkDTO } from './link.model';
+import { ClickLinkDTO, CreateLinkDTO, LinkCondDTO } from './link.model';
 import { Inject } from '@nestjs/common';
-import { ReqWithRequester, ReqWithRequesterOpt } from 'src/share';
+import { PagingDTO, ReqWithRequester, ReqWithRequesterOpt } from 'src/share';
 import { LINK_SERVICE } from 'src/modules/link/link.di-tokens';
+import { paginatedResponse } from 'src/share/utils';
 
 @Controller('links')
 export class LinkHttpController {
@@ -38,6 +40,19 @@ export class LinkHttpController {
     return { data };
   }
 
+  @Get('workspace')
+  @UseGuards(RemoteAuthGuard)
+  async getWorkspaceLinks(
+    @Query() dto: LinkCondDTO,
+    @Query() paging: PagingDTO,
+  ) {
+    const data = await this.linkService.listInWorkspace(dto, paging);
+
+    return {
+      data: paginatedResponse(data, dto),
+    };
+  }
+
   @Get(':id')
   @UseGuards(RemoteAuthGuard)
   async getLink(@Param('id') id: string) {
@@ -55,20 +70,6 @@ export class LinkHttpController {
   async click(@Body() dto: ClickLinkDTO) {
     const data = await this.linkService.getLinkByKey(dto.key);
     await this.linkService.recordClick(dto, data);
-    return { data };
-  }
-
-  // TODO: add pagination
-  @Get('workspace/:workspaceId')
-  @UseGuards(RemoteAuthGuard)
-  async getWorkspaceLinks(
-    @Param('workspaceId') workspaceId: string,
-    @Req() req: ReqWithRequester,
-  ) {
-    const data = await this.linkService.getWorkspaceLinks(
-      workspaceId,
-      req.requester.sub,
-    );
     return { data };
   }
 
