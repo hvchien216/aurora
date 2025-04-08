@@ -104,7 +104,6 @@ export class LinkService implements ILinkService {
     const { workspaceSlug, ...restCond } = cond;
 
     const workspace = await this.workspaceRpc.findBySlug(cond.workspaceSlug);
-    console.log('🚀 ~ LinkService ~ workspace:', workspace);
 
     if (!workspace) {
       throw AppError.from(ErrWorkspaceNotFound, 400);
