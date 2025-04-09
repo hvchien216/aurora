@@ -5,3 +5,6 @@ export * from "./keys";
 export * from "./url";
 export * from "./resize-image";
 export * from "./is-nil";
+export * from "./nformatter";
+export * from "./pluralize";
+export * from "./domains";

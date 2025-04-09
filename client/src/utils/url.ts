@@ -9,19 +9,6 @@ export const isValidUrl = (url: string) => {
   }
 };
 
-export const getDomainWithoutWWW = (url: string) => {
-  if (isValidUrl(url)) {
-    return new URL(url).hostname.replace(/^www\./, "");
-  }
-  try {
-    if (url.includes(".") && !url.includes(" ")) {
-      return new URL(`https://${url}`).hostname.replace(/^www\./, "");
-    }
-  } catch (e) {
-    return null;
-  }
-};
-
 function addParams(location: string, qs: string | null = null) {
   if (qs) {
     const questionMarkPosition = location.indexOf("?");
@@ -65,9 +52,7 @@ export function injectParams(
         params.push(`${param}=${value}`);
         break;
       case "number":
-        if (!Number.isFinite(value)) {
-          params.push(`${param}=${value}`);
-        }
+        params.push(`${param}=${value}`);
         break;
       default:
       // ignore
@@ -75,4 +60,46 @@ export function injectParams(
   }
 
   return addParams(location, params.join("&"));
+}
+
+export function getValue<V>(
+  value: string | number | null | undefined,
+  defaultValue?: V,
+) {
+  return !isNil(value)
+    ? typeof value === "string" && value == ""
+      ? value
+      : value
+    : defaultValue;
+}
+
+export function getPage(
+  value: string | number | null | undefined,
+  defaultValue = 1,
+) {
+  if (!value) {
+    return defaultValue;
+  }
+
+  if (typeof value === "string") {
+    value = Number(value);
+  }
+
+  if (Number.isNaN(value)) {
+    return defaultValue;
+  }
+
+  return Math.max(defaultValue, value);
+}
+
+export function getSortBy<V extends string>(
+  value: string | null | undefined,
+  values: V[],
+  defaultValue: V | undefined,
+) {
+  if (values.includes(value as any)) {
+    return value as V;
+  }
+
+  return defaultValue;
 }
