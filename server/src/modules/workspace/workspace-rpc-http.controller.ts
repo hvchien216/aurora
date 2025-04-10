@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Post,
 } from '@nestjs/common';
 import { WORKSPACE_SERVICE } from 'src/modules/workspace/workspace.di-tokens';
@@ -28,6 +29,13 @@ export class WorkspaceRPCHttpController {
       dto.name,
       dto.ownerId,
     );
+    return { data };
+  }
+
+  @Get(':slug')
+  async getWorkspaceBySlug(@Param('slug') slug: string) {
+    const data = await this.workspaceService.getWorkspaceBySlug(slug);
+
     return { data };
   }
 }

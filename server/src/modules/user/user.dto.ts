@@ -63,7 +63,7 @@ export const googleLoginSchema = userSchema
   .pick({
     firstName: true,
     lastName: true,
-    username: true,
+    // username: true,
     email: true,
   })
   .required();

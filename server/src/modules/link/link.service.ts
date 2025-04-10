@@ -7,17 +7,28 @@ import {
   ErrUnauthorizedAccess,
   ErrKeyAlreadyExists,
   ClickLinkDTO,
+  LinkCondDTO,
+  linkCondDTOSchema,
+  clickLinkDTOSchema,
 } from './link.model';
-import { AppError } from 'src/share';
+import {
+  AppError,
+  IWorkspaceRPC,
+  Paginated,
+  PagingDTO,
+  pagingDTOSchema,
+} from 'src/share';
 import { v7 } from 'uuid';
 import { LINK_REPOSITORY } from './link.di-tokens';
 import { nanoid } from 'src/utils';
+import { WORKSPACE_RPC } from 'src/share/share.di-tokens';
 
 @Injectable()
 export class LinkService implements ILinkService {
   constructor(
     @Inject(LINK_REPOSITORY)
     private readonly linkRepository: ILinkRepository,
+    @Inject(WORKSPACE_RPC) private readonly workspaceRpc: IWorkspaceRPC,
   ) {}
 
   async createLink(dto: CreateLinkDTO, userId: string): Promise<Link> {
@@ -82,11 +93,30 @@ export class LinkService implements ILinkService {
     return link;
   }
 
-  async getWorkspaceLinks(
-    workspaceId: string,
-    userId: string,
-  ): Promise<Link[]> {
-    return this.linkRepository.findByWorkspace(workspaceId);
+  async listInWorkspace(
+    cond: LinkCondDTO,
+    paging: PagingDTO,
+  ): Promise<Paginated<Link>> {
+    cond = linkCondDTOSchema.parse(cond);
+    paging = pagingDTOSchema.parse(paging);
+
+    const { workspaceSlug, ...restCond } = cond;
+
+    const workspace = await this.workspaceRpc.findBySlug(cond.workspaceSlug);
+
+    if (!workspace) {
+      return {
+        data: [],
+        paging,
+        total: 0,
+      };
+    }
+
+    const condition = {
+      ...restCond,
+      workspaceId: workspace.id,
+    };
+    return await this.linkRepository.list(condition, paging);
   }
 
   async updateLink(
@@ -131,14 +161,32 @@ export class LinkService implements ILinkService {
     await this.linkRepository.delete(id);
   }
 
-  async recordClick(dto: ClickLinkDTO, link: Link): Promise<void> {
-    // const link = await this.linkRepository.findById(id);
-    // if (!link) {
-    //   throw AppError.from(ErrLinkNotFound, 404);
-    // }
+  async recordClick(dto: ClickLinkDTO): Promise<Link> {
+    const { key, isBot } = clickLinkDTOSchema.parse(dto);
 
+    const link = await this.getLinkByKey(key);
+    if (!link) {
+      throw AppError.from(ErrLinkNotFound, 404);
+    }
+
+    if (isBot) return link;
     // TODO: set link to redis cache
     // TODO: check dto.clickId in cache, if true, no need to increment clicks
+    // const cacheKey = `recordClick:${key}:${ip}`;
+
+    //  only record 1 click per hour
+    // const cachedClickId = await redis.get<string>(cacheKey);
+    // if (cachedClickId) {
+    //   return link;
+    // }
+
+    // cache the click ID in Redis for 1 hour
+    // redis.set(cacheKey, clickId, {
+    //   ex: 60 * 60,
+    // }),
+
     await this.linkRepository.incrementClicks(link.id);
+
+    return link;
   }
 }

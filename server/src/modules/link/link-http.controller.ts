@@ -8,13 +8,18 @@ import {
   Param,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
-import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
+import {
+  RemoteAuthGuard,
+  RemoteAuthGuardOptional,
+} from 'src/share/guards/auth.guard';
 import { ILinkService } from './link.port';
-import { ClickLinkDTO, CreateLinkDTO } from './link.model';
+import { ClickLinkDTO, CreateLinkDTO, LinkCondDTO } from './link.model';
 import { Inject } from '@nestjs/common';
-import { ReqWithRequester } from 'src/share';
+import { PagingDTO, ReqWithRequester, ReqWithRequesterOpt } from 'src/share';
 import { LINK_SERVICE } from 'src/modules/link/link.di-tokens';
+import { paginatedResponse } from 'src/share/utils';
 
 @Controller('links')
 export class LinkHttpController {
@@ -24,10 +29,28 @@ export class LinkHttpController {
   ) {}
 
   @Post()
-  @UseGuards(RemoteAuthGuard)
-  async createLink(@Body() dto: CreateLinkDTO, @Req() req: ReqWithRequester) {
-    const data = await this.linkService.createLink(dto, req.requester.sub);
+  @UseGuards(RemoteAuthGuardOptional)
+  async createLink(
+    @Body() dto: CreateLinkDTO,
+    @Req() req: ReqWithRequesterOpt,
+  ) {
+    const requester = req.requester;
+
+    const data = await this.linkService.createLink(dto, requester?.sub);
     return { data };
+  }
+
+  @Get('workspace')
+  @UseGuards(RemoteAuthGuard)
+  async getWorkspaceLinks(
+    @Query() dto: LinkCondDTO,
+    @Query() paging: PagingDTO,
+  ) {
+    const data = await this.linkService.listInWorkspace(dto, paging);
+
+    return {
+      data: paginatedResponse(data, dto),
+    };
   }
 
   @Get(':id')
@@ -45,22 +68,7 @@ export class LinkHttpController {
 
   @Post('click')
   async click(@Body() dto: ClickLinkDTO) {
-    const data = await this.linkService.getLinkByKey(dto.key);
-    await this.linkService.recordClick(dto, data);
-    return { data };
-  }
-
-  // TODO: add pagination
-  @Get('workspace/:workspaceId')
-  @UseGuards(RemoteAuthGuard)
-  async getWorkspaceLinks(
-    @Param('workspaceId') workspaceId: string,
-    @Req() req: ReqWithRequester,
-  ) {
-    const data = await this.linkService.getWorkspaceLinks(
-      workspaceId,
-      req.requester.sub,
-    );
+    const data = await this.linkService.recordClick(dto);
     return { data };
   }
 

@@ -63,7 +63,7 @@ export class WorkspaceHttpController {
   @UseGuards(RemoteAuthGuardOptional)
   async getWorkspaceExists(@Param('slug') slug: string) {
     const data = await this.workspaceService.getWorkspaceBySlug(slug);
-    return { data: !!data?.id };
+    return { data };
   }
 
   @Put(':id')

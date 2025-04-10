@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 // Business errors
+export const ErrWorkspaceNotFound = new Error('Workspace not found');
+
 export const ErrLinkNotFound = new Error('Link not found');
 export const ErrInvalidURL = new Error('Invalid URL');
 export const ErrTitleTooLong = new Error(
@@ -50,12 +52,21 @@ export const validDomainRegex = new RegExp(
 );
 export const clickLinkDTOSchema = z.object({
   key: z.string().regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message }),
-  clickId: z.string().uuid(),
-  domain: z
-    .string()
-    .min(1, 'Missing required `domain` parameter.')
-    .refine((v) => validDomainRegex.test(v), { message: 'Invalid domain' }),
+  clickId: z.string(),
+  ip: z.string(),
+  // domain: z
+  //   .string()
+  //   .min(1, 'Missing required `domain` parameter.')
+  //   .refine((v) => validDomainRegex.test(v), { message: 'Invalid domain' }),
   isBot: z.boolean().optional(),
 });
 
 export type ClickLinkDTO = z.infer<typeof clickLinkDTOSchema>;
+
+// TODO: allow filter by tags, domain, ...
+export const linkCondDTOSchema = z.object({
+  title: z.string().optional(),
+  workspaceSlug: z.string(),
+});
+
+export type LinkCondDTO = z.infer<typeof linkCondDTOSchema>;

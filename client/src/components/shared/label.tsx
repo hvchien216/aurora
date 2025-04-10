@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
-import { cn } from "~/lib";
 import { cva, type VariantProps } from "class-variance-authority";
 
+import { cn } from "~/lib";
+
 const labelVariants = cva(
-  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+  "select-none text-sm font-medium leading-4 text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-50 group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50",
 );
 
 const Label = React.forwardRef<

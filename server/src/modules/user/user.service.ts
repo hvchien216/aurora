@@ -33,6 +33,7 @@ import { v7 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { SecurityConfig } from 'src/share/config/config.interface';
 import { WORKSPACE_RPC } from 'src/share/share.di-tokens';
+import { generateSlug, nanoid } from 'src/utils';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -206,6 +207,14 @@ export class UserService implements IUserService {
 
     const newId = v7();
 
+    // user can change their in dashboard later
+    const _fullName = [data.firstName, data.lastName].join(' ');
+    let username = generateSlug(_fullName);
+
+    if (!username) {
+      username = await this._getUsername(_fullName);
+    }
+
     const saltOrRounds =
       this.configService?.get<SecurityConfig>('security')?.bcryptSaltOrRound ||
       10;
@@ -220,7 +229,7 @@ export class UserService implements IUserService {
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
-      username: data.username,
+      username: username,
       password: hashPassword,
       salt: salt,
       id: newId,
@@ -242,6 +251,19 @@ export class UserService implements IUserService {
     });
 
     return newUser;
+  }
+
+  async _getUsername(name: string): Promise<string> {
+    const username = generateSlug(name) + nanoid();
+
+    const existing = await this.userRepository.findByCond({
+      username,
+    });
+    if (existing) {
+      return this._getUsername(name);
+    }
+
+    return username;
   }
 
   async generateGGTokens(email: string): Promise<Token> {

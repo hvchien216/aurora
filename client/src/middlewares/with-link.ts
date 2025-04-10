@@ -1,15 +1,16 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextFetchEvent, NextRequest } from "next/server";
-import { type Link } from "~/features/links";
 
 import { extractUrl, httpRequest, nanoid } from "~/lib";
 import { tryCatch } from "~/utils";
+import { type Link } from "~/features/links";
 
 import { type CustomMiddleware } from "./chain";
 import {
   addClickIdCookie,
   detectBot,
+  getClientIp,
   isAuthRoute,
   isPrivateRoute,
   isPublicRoute,
@@ -33,14 +34,16 @@ export function withLink(middleware: CustomMiddleware) {
     if (!clickId) {
       clickId = nanoid(16);
     }
+
     const isBot = detectBot(req);
+    const ip = getClientIp(req);
 
     const { data, error } = await tryCatch<Link>(
-      httpRequest.post(`/v1/links/click`, { domain, key, clickId, isBot }),
+      httpRequest.post(`/v1/links/click`, { domain, key, clickId, isBot, ip }),
     );
 
     if (error) {
-      return NextResponse.rewrite(new URL(`/`, req.url));
+      return NextResponse.redirect(new URL(`/`, req.url));
     }
 
     // TODO: add new column `expiredUrl` & `expiresAt` then redirect to expiredUrl

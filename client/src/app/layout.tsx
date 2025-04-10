@@ -1,24 +1,14 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 
-import "./globals.css";
+import "~/styles/globals.css";
+import "~/styles/themes.css";
 
 import { cookies } from "next/headers";
 import { SessionInjector } from "~/providers";
 
 import { Toaster } from "~/components/shared/toaster";
+import { inter } from "~/styles/fonts";
 import RootProviders from "~/app/providers";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -35,9 +25,7 @@ export default async function RootLayout({
   const refreshToken = cookieStore.get("refreshToken");
   return (
     <html lang="en" className="mdl-js" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${inter.variable} antialiased`}>
         {/* keep SessionInjector outside to allow RootProviders caching. */}
         <SessionInjector
           initialSessionToken={{

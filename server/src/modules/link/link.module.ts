@@ -4,6 +4,8 @@ import { LinkService } from './link.service';
 import { LinkPrismaRepository } from './link-prisma.repo';
 import { LINK_SERVICE, LINK_REPOSITORY } from './link.di-tokens';
 import { ShareModule } from 'src/share/share.module';
+import { REMOTE_AUTH_GUARD } from 'src/share/share.di-tokens';
+import { RemoteAuthGuard } from 'src/share/guards';
 
 @Module({
   imports: [ShareModule],
@@ -16,6 +18,10 @@ import { ShareModule } from 'src/share/share.module';
     {
       provide: LINK_REPOSITORY,
       useClass: LinkPrismaRepository,
+    },
+    {
+      provide: REMOTE_AUTH_GUARD,
+      useClass: RemoteAuthGuard,
     },
   ],
 })

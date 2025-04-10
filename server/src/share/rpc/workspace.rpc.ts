@@ -27,4 +27,15 @@ export class WorkspaceRPCClient implements IWorkspaceRPC {
       return null;
     }
   }
+
+  async findBySlug(slug: string): Promise<Workspace | null> {
+    try {
+      const { data } = await axios.get(`${this.url}/rpc/workspaces/${slug}`);
+      const workspace = data.data;
+      if (workspace) return workspace;
+      return null;
+    } catch (error) {
+      return null;
+    }
+  }
 }

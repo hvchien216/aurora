@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ILinkRepository } from './link.port';
-import { Link } from './link.model';
+import { Link, LinkCondDTO } from './link.model';
 import prisma from 'src/share/components/prisma';
+import { Paginated, PagingDTO } from 'src/share';
 
 @Injectable()
 export class LinkPrismaRepository implements ILinkRepository {
@@ -29,16 +30,40 @@ export class LinkPrismaRepository implements ILinkRepository {
     return link;
   }
 
-  async findByWorkspace(workspaceId: string): Promise<Link[]> {
-    const links = await prisma.link.findMany({
-      where: { workspaceId: workspaceId },
+  async list(
+    cond: Omit<LinkCondDTO, 'workspaceSlug'> & { workspaceId: string },
+    paging: PagingDTO,
+  ): Promise<Paginated<Link>> {
+    const { workspaceId, title: _title, ...rest } = cond;
 
+    let where = {
+      ...rest,
+    };
+
+    if (workspaceId) {
+      where = {
+        ...where,
+        workspaceId: workspaceId,
+      } as Omit<LinkCondDTO, 'workspaceSlug'> & { workspaceId: string };
+    }
+
+    const total = await prisma.link.count({ where });
+
+    const skip = (paging.page - 1) * paging.limit;
+
+    const result = await prisma.link.findMany({
+      where,
+      take: paging.limit,
+      skip,
       orderBy: {
-        createdAt: 'desc',
+        id: 'desc',
       },
     });
-
-    return links;
+    return {
+      data: result,
+      paging,
+      total,
+    };
   }
 
   async update(id: string, link: Partial<Link>): Promise<Link> {
