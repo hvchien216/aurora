@@ -103,3 +103,13 @@ export function getSortBy<V extends string>(
 
   return defaultValue;
 }
+
+export const getPrettyUrl = (url?: string | null) => {
+  if (!url) return "";
+  // remove protocol (http/https) and www.
+  // also remove trailing slash
+  return url
+    .replace(/(^\w+:|^)\/\//, "")
+    .replace("www.", "")
+    .replace(/\/$/, "");
+};
