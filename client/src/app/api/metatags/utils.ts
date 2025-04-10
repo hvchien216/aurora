@@ -28,7 +28,7 @@ function fetchWithTimeout(
 export const getHtml = async (url: string) => {
   return await fetchWithTimeout(url, {
     headers: {
-      "User-Agent": "Lew",
+      "User-Agent": "Aurora | Lew Metatags API (/metatags)",
     },
   })
     .then((r) => r.text())
