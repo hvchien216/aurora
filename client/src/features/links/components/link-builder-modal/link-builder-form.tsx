@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { RHFInput } from "~/components/rhf";
 import { Button, DialogFooter, Form, InfoTooltip } from "~/components/shared";
 import { cn } from "~/lib";
-import { useCreateLinkMutation } from "~/features/links/hooks";
+import {
+  useCreateLinkMutation,
+  useInvalidateLinksWorkspace,
+} from "~/features/links/hooks";
 import { createLinkSchema, type CreateLink } from "~/features/links/schemas";
+import { useGeWorkSpaceBySlugQuery } from "~/features/workspaces/hooks";
 
 import LinkPreview from "./link-preview";
 
@@ -15,14 +21,9 @@ type Props = {
 };
 
 const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
-  const { mutateAsync } = useCreateLinkMutation({
-    onSuccess: () => {
-      handleClose();
-    },
-    onError: () => {
-      // TODO: toast err, set field error message
-    },
-  });
+  const { slug } = useParams<{ slug: string }>();
+
+  const invalidateLinksWorkspace = useInvalidateLinksWorkspace();
 
   const form = useForm<CreateLink>({
     resolver: zodResolver(createLinkSchema),
@@ -37,8 +38,33 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
     mode: "onChange",
   });
 
+  const { data: ws } = useGeWorkSpaceBySlugQuery({ slug });
+
+  useEffect(() => {
+    if (ws) {
+      form.setValue("workspaceId", ws.id);
+    }
+  }, [ws, form]);
+
+  const { mutateAsync } = useCreateLinkMutation({
+    onSuccess: () => {
+      handleClose();
+      invalidateLinksWorkspace();
+    },
+  });
+
   const onSubmit = async (values: CreateLink) => {
-    await mutateAsync(values);
+    const mutationPromise = mutateAsync({ ...values, key: "DHLc79l" });
+
+    toast.promise(mutationPromise, {
+      loading: "Creating...",
+      success: "Your link has been created successfully",
+      error: (err) => {
+        return err.message;
+      },
+    });
+
+    await mutationPromise;
   };
   const { isDirty, isValid, isSubmitting } = form.formState;
   return (

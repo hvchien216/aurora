@@ -1,7 +1,7 @@
 import { type ReactNode } from "react";
 import { QueryClientProvider, ThemeProvider } from "~/providers";
 
-import { Toaster } from "~/components/shared/toaster";
+import { Toaster } from "~/components/shared/sonner";
 import { TooltipProvider } from "~/components/shared";
 import { THEMES } from "~/constants";
 
