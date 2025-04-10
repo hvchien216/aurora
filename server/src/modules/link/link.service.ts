@@ -9,7 +9,7 @@ import {
   ClickLinkDTO,
   LinkCondDTO,
   linkCondDTOSchema,
-  ErrWorkspaceNotFound,
+  clickLinkDTOSchema,
 } from './link.model';
 import {
   AppError,
@@ -98,7 +98,6 @@ export class LinkService implements ILinkService {
     paging: PagingDTO,
   ): Promise<Paginated<Link>> {
     cond = linkCondDTOSchema.parse(cond);
-    console.log('🚀 ~ LinkService ~ cond:', cond);
     paging = pagingDTOSchema.parse(paging);
 
     const { workspaceSlug, ...restCond } = cond;
@@ -106,7 +105,11 @@ export class LinkService implements ILinkService {
     const workspace = await this.workspaceRpc.findBySlug(cond.workspaceSlug);
 
     if (!workspace) {
-      throw AppError.from(ErrWorkspaceNotFound, 400);
+      return {
+        data: [],
+        paging,
+        total: 0,
+      };
     }
 
     const condition = {
@@ -158,14 +161,32 @@ export class LinkService implements ILinkService {
     await this.linkRepository.delete(id);
   }
 
-  async recordClick(dto: ClickLinkDTO, link: Link): Promise<void> {
-    // const link = await this.linkRepository.findById(id);
-    // if (!link) {
-    //   throw AppError.from(ErrLinkNotFound, 404);
-    // }
+  async recordClick(dto: ClickLinkDTO): Promise<Link> {
+    const { key, isBot } = clickLinkDTOSchema.parse(dto);
 
+    const link = await this.getLinkByKey(key);
+    if (!link) {
+      throw AppError.from(ErrLinkNotFound, 404);
+    }
+
+    if (isBot) return link;
     // TODO: set link to redis cache
     // TODO: check dto.clickId in cache, if true, no need to increment clicks
+    // const cacheKey = `recordClick:${key}:${ip}`;
+
+    //  only record 1 click per hour
+    // const cachedClickId = await redis.get<string>(cacheKey);
+    // if (cachedClickId) {
+    //   return link;
+    // }
+
+    // cache the click ID in Redis for 1 hour
+    // redis.set(cacheKey, clickId, {
+    //   ex: 60 * 60,
+    // }),
+
     await this.linkRepository.incrementClicks(link.id);
+
+    return link;
   }
 }

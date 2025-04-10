@@ -28,5 +28,5 @@ export interface ILinkService {
     userId: string,
   ): Promise<Link>;
   deleteLink(id: string, userId: string): Promise<void>;
-  recordClick(dto: ClickLinkDTO, link: Link): Promise<void>;
+  recordClick(dto: ClickLinkDTO): Promise<Link>;
 }

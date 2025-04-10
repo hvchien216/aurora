@@ -52,11 +52,12 @@ export const validDomainRegex = new RegExp(
 );
 export const clickLinkDTOSchema = z.object({
   key: z.string().regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message }),
-  clickId: z.string().uuid(),
-  domain: z
-    .string()
-    .min(1, 'Missing required `domain` parameter.')
-    .refine((v) => validDomainRegex.test(v), { message: 'Invalid domain' }),
+  clickId: z.string(),
+  ip: z.string(),
+  // domain: z
+  //   .string()
+  //   .min(1, 'Missing required `domain` parameter.')
+  //   .refine((v) => validDomainRegex.test(v), { message: 'Invalid domain' }),
   isBot: z.boolean().optional(),
 });
 

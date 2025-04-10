@@ -68,8 +68,7 @@ export class LinkHttpController {
 
   @Post('click')
   async click(@Body() dto: ClickLinkDTO) {
-    const data = await this.linkService.getLinkByKey(dto.key);
-    await this.linkService.recordClick(dto, data);
+    const data = await this.linkService.recordClick(dto);
     return { data };
   }
 
