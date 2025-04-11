@@ -39,5 +39,5 @@ export function linkConstructorSimple({
 }) {
   const protocol = process.env.NODE_ENV !== "development" ? "https" : "http";
 
-  return `${protocol}://${domain}${key === "_root" ? "" : `/${key}`}`;
+  return `${protocol}://${domain}${`/${key}`}`;
 }
