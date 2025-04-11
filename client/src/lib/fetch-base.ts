@@ -5,6 +5,10 @@ import { tryCatch } from "~/utils/try-catch";
 import { handleErr, type ServerError } from "./app-error";
 import { clientSessionToken } from "./session-token";
 
+interface CustomRequestInit extends RequestInit {
+  auth?: boolean;
+}
+
 type GetToken = (type: "AT" | "RT") => Promise<string | null>;
 
 const ErrUnauthorized = 401;
@@ -21,12 +25,17 @@ class FetchRequest {
   // Build headers by injecting content-type and tokens
   private async _buildHeaders(
     url: string,
-    options: RequestInit,
+    options: CustomRequestInit,
   ): Promise<Record<string, string>> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       ...(options.headers as Record<string, string>),
     };
+
+    // Skip auth if explicitly disabled
+    const shouldInjectToken = options.auth !== false;
+
+    if (!shouldInjectToken) return headers;
 
     if (isClient()) {
       if (this._getToken) {
@@ -129,7 +138,7 @@ class FetchRequest {
 
   async _handleRequest<T>(
     url: string,
-    options: RequestInit = {},
+    options: CustomRequestInit = {},
     signal?: AbortSignal,
   ): Promise<T> {
     const headers = await this._buildHeaders(url, options);

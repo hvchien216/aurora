@@ -1,3 +1,7 @@
+interface CustomRequestInit extends RequestInit {
+  auth?: boolean;
+}
+
 interface IFetchRequest {
   _handleRequest<T>(
     url: string,
@@ -12,14 +16,31 @@ class HttpRequest {
     this._baseRequest = baseRequest;
   }
 
-  async get<T>(url: string, signal?: AbortSignal): Promise<T> {
-    return this._baseRequest._handleRequest<T>(url, { method: "GET" }, signal);
-  }
-
-  async post<T>(url: string, data?: unknown, signal?: AbortSignal): Promise<T> {
+  async get<T>(
+    url: string,
+    options: CustomRequestInit = {},
+    signal?: AbortSignal,
+  ): Promise<T> {
     return this._baseRequest._handleRequest<T>(
       url,
       {
+        ...options,
+        method: "GET",
+      },
+      signal,
+    );
+  }
+
+  async post<T>(
+    url: string,
+    data?: unknown,
+    options: CustomRequestInit = {},
+    signal?: AbortSignal,
+  ): Promise<T> {
+    return this._baseRequest._handleRequest<T>(
+      url,
+      {
+        ...options,
         method: "POST",
         body: JSON.stringify(data),
       },

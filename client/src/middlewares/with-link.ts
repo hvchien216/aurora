@@ -39,7 +39,11 @@ export function withLink(middleware: CustomMiddleware) {
     const ip = getClientIp(req);
 
     const { data, error } = await tryCatch<Link>(
-      httpRequest.post(`/v1/links/click`, { domain, key, clickId, isBot, ip }),
+      httpRequest.post(
+        `/v1/links/click`,
+        { key, clickId, isBot, ip },
+        { auth: false },
+      ),
     );
 
     if (error) {
