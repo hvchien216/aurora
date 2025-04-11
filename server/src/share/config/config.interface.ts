@@ -3,6 +3,7 @@ export interface Config {
   cors: CorsConfig;
   security: SecurityConfig;
   rpc: RPCConfig;
+  redis: RedisConfig;
 }
 
 export interface AppConfig {
@@ -24,4 +25,9 @@ export interface RPCConfig {
   introspectURL: string;
   workspacesURL: string;
   userURL: string;
+}
+
+export interface RedisConfig {
+  url: string;
+  defaultTTL: number;
 }

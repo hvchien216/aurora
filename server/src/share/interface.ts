@@ -51,3 +51,10 @@ export interface IWorkspaceRPC {
   create(name: string, ownerId: string): Promise<Workspace | null>;
   findBySlug(slug: string): Promise<Workspace | null>;
 }
+
+export interface ICacheService {
+  get(key: string): Promise<string | null>;
+  set(key: string, value: string, ttlInSeconds?: number): Promise<void>;
+  getObject<T>(key: string): Promise<T | null>;
+  setObject(key: string, value: object, ttlInSeconds?: number): Promise<void>;
+}
