@@ -16,6 +16,7 @@ export const customMutator = <TData, TVariables>(
     const promise = httpRequest[method]<TData>(
       url,
       variables,
+      {},
       controller.signal,
     );
 

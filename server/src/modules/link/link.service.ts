@@ -13,6 +13,7 @@ import {
 } from './link.model';
 import {
   AppError,
+  ICacheService,
   IWorkspaceRPC,
   Paginated,
   PagingDTO,
@@ -21,7 +22,7 @@ import {
 import { v7 } from 'uuid';
 import { LINK_REPOSITORY } from './link.di-tokens';
 import { nanoid } from 'src/utils';
-import { WORKSPACE_RPC } from 'src/share/share.di-tokens';
+import { CACHE_SERVICE, WORKSPACE_RPC } from 'src/share/share.di-tokens';
 
 @Injectable()
 export class LinkService implements ILinkService {
@@ -29,6 +30,8 @@ export class LinkService implements ILinkService {
     @Inject(LINK_REPOSITORY)
     private readonly linkRepository: ILinkRepository,
     @Inject(WORKSPACE_RPC) private readonly workspaceRpc: IWorkspaceRPC,
+    @Inject(CACHE_SERVICE)
+    private readonly cacheService: ICacheService,
   ) {}
 
   async createLink(dto: CreateLinkDTO, userId: string): Promise<Link> {
@@ -61,7 +64,11 @@ export class LinkService implements ILinkService {
       lastClicked: null,
     };
 
-    return this.linkRepository.create(newLink);
+    const link = await this.linkRepository.create(newLink);
+
+    await this.cacheService.setObject(`link:${key}`, link, 5 * 60);
+
+    return link;
   }
 
   async _getRandomKey(): Promise<string> {
@@ -86,10 +93,17 @@ export class LinkService implements ILinkService {
   }
 
   async getLinkByKey(key: string): Promise<Link> {
-    const link = await this.linkRepository.findByKey(key);
+    let link = await this.cacheService.getObject<Link>(`link:${key}`);
+
+    if (!link) {
+      link = await this.linkRepository.findByKey(key);
+    }
     if (!link) {
       throw AppError.from(ErrLinkNotFound, 404);
     }
+
+    await this.cacheService.setObject(`link:${key}`, link, 5 * 60);
+
     return link;
   }
 
@@ -162,30 +176,35 @@ export class LinkService implements ILinkService {
   }
 
   async recordClick(dto: ClickLinkDTO): Promise<Link> {
-    const { key, isBot } = clickLinkDTOSchema.parse(dto);
+    const { key, ip, isBot, clickId } = clickLinkDTOSchema.parse(dto);
+    let link = await this.cacheService.getObject<Link>(`link:${key}`);
 
-    const link = await this.getLinkByKey(key);
+    if (!link) {
+      link = await this.getLinkByKey(key);
+    }
+
     if (!link) {
       throw AppError.from(ErrLinkNotFound, 404);
     }
 
-    if (isBot) return link;
-    // TODO: set link to redis cache
-    // TODO: check dto.clickId in cache, if true, no need to increment clicks
-    // const cacheKey = `recordClick:${key}:${ip}`;
+    await this.cacheService.setObject(`link:${key}`, link, 5 * 60);
 
-    //  only record 1 click per hour
-    // const cachedClickId = await redis.get<string>(cacheKey);
-    // if (cachedClickId) {
-    //   return link;
-    // }
+    if (isBot) return link;
+    const cacheKey = `recordClick:${key}:${ip}`;
+
+    const cachedClickId = await this.cacheService.get(cacheKey);
+    if (cachedClickId) {
+      return link;
+    }
 
     // cache the click ID in Redis for 1 hour
-    // redis.set(cacheKey, clickId, {
-    //   ex: 60 * 60,
-    // }),
+    const AN_HOUR = 60 * 60;
 
-    await this.linkRepository.incrementClicks(link.id);
+    //  only record 1 click per hour
+    await Promise.allSettled([
+      this.cacheService.set(cacheKey, clickId, AN_HOUR),
+      this.linkRepository.incrementClicks(link.id),
+    ]);
 
     return link;
   }

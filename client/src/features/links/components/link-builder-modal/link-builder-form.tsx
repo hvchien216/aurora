@@ -54,7 +54,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
   });
 
   const onSubmit = async (values: CreateLink) => {
-    const mutationPromise = mutateAsync({ ...values, key: "DHLc79l" });
+    const mutationPromise = mutateAsync({ ...values });
 
     toast.promise(mutationPromise, {
       loading: "Creating...",

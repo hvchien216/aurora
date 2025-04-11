@@ -11,7 +11,7 @@ export const customFetcher = <TData>(
       once: true,
     });
 
-    const promise = httpRequest.get<TData>(url, controller.signal);
+    const promise = httpRequest.get<TData>(url, {}, controller.signal);
 
     return promise;
   };
