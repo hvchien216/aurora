@@ -3,3 +3,4 @@ export const REMOTE_AUTH_GUARD = Symbol('REMOTE_AUTH_GUARD');
 export const USER_RPC = Symbol('USER_RPC');
 export const WORKSPACE_RPC = Symbol('WORKSPACE_RPC');
 export const CACHE_SERVICE = Symbol('CACHE_SERVICE');
+export const CLOUD_STORAGE = Symbol('CLOUD_STORAGE');

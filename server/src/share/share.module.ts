@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import {
   CACHE_SERVICE,
+  CLOUD_STORAGE,
   TOKEN_INTROSPECTOR,
   WORKSPACE_RPC,
 } from './share.di-tokens';
@@ -8,6 +9,7 @@ import { TokenIntrospectRPCClient, WorkspaceRPCClient } from './rpc';
 import { RedisClient } from './components';
 import { ConfigService } from '@nestjs/config';
 import { RedisConfig } from 'src/share/config/config.interface';
+import { StorageService } from 'src/share/components/storage';
 
 @Module({
   providers: [
@@ -29,7 +31,11 @@ import { RedisConfig } from 'src/share/config/config.interface';
       },
       inject: [ConfigService],
     },
+    {
+      provide: CLOUD_STORAGE,
+      useClass: StorageService,
+    },
   ],
-  exports: [TOKEN_INTROSPECTOR, WORKSPACE_RPC, CACHE_SERVICE],
+  exports: [TOKEN_INTROSPECTOR, WORKSPACE_RPC, CACHE_SERVICE, CLOUD_STORAGE],
 })
 export class ShareModule {}

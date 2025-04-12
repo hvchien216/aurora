@@ -58,3 +58,54 @@ export interface ICacheService {
   getObject<T>(key: string): Promise<T | null>;
   setObject(key: string, value: object, ttlInSeconds?: number): Promise<void>;
 }
+
+// =========CLOUD STORAGE CONFIGURATION==========
+
+export interface FileMetadata {
+  key: string;
+  fileName: string;
+  mimeType: string;
+  sizeInBytes: number;
+  url: string;
+}
+
+export interface SignedUrlResponse {
+  url: string;
+  key: string;
+}
+export interface IStorageProvider {
+  /**
+   * Upload a file buffer to storage
+   */
+  uploadFile(
+    fileBuffer: Buffer,
+    fileName: string,
+    mimeType: string,
+    prefix?: string,
+  ): Promise<FileMetadata>;
+
+  /**
+   * Generate a presigned URL for client-side upload
+   */
+  getSignedUploadUrl(
+    fileName: string,
+    mimeType: string,
+    prefix?: string,
+    expiresInSeconds?: number,
+  ): Promise<SignedUrlResponse>;
+
+  /**
+   * Generate a presigned URL for downloading a file
+   */
+  getSignedDownloadUrl(key: string, expiresInSeconds?: number): Promise<string>;
+
+  /**
+   * Get a public URL (if the file is accessible publicly)
+   */
+  getPublicUrl(key: string): string;
+
+  /**
+   * Delete a file from storage
+   */
+  deleteFile(key: string): Promise<void>;
+}
