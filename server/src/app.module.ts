@@ -6,6 +6,7 @@ import configuration from 'src/share/config/configuration';
 import { UserModule } from 'src/modules/user/user.module';
 import { WorkspaceModule } from 'src/modules/workspace/workspace.module';
 import { LinkModule } from 'src/modules/link/link.module';
+import { UploadModule } from 'src/modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LinkModule } from 'src/modules/link/link.module';
     UserModule,
     WorkspaceModule,
     LinkModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
