@@ -4,6 +4,7 @@ export interface Config {
   security: SecurityConfig;
   rpc: RPCConfig;
   redis: RedisConfig;
+  storage: CloudStorageConfig;
 }
 
 export interface AppConfig {
@@ -30,4 +31,19 @@ export interface RPCConfig {
 export interface RedisConfig {
   url: string;
   defaultTTL: number;
+}
+
+export enum StorageProvider {
+  S3 = 's3',
+  R2 = 'r2',
+}
+export interface CloudStorageConfig {
+  provider: StorageProvider;
+  bucket: string;
+  region: string;
+  endpoint?: string; // For R2
+  accessKeyId: string;
+  secretAccessKey: string;
+  maxSizeInBytes: number;
+  allowedMimeTypes: string[];
 }
