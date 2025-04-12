@@ -50,6 +50,7 @@ const config: Config = {
       'video/webm',
       'video/ogg',
     ],
+    cloudfrontDomain: process.env.CLOUDFRONT_DOMAIN || '',
   },
 };
 export default (): Config => config;

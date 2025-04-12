@@ -46,4 +46,5 @@ export interface CloudStorageConfig {
   secretAccessKey: string;
   maxSizeInBytes: number;
   allowedMimeTypes: string[];
+  cloudfrontDomain: string;
 }

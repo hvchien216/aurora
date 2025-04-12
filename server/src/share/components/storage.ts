@@ -188,6 +188,10 @@ export class StorageService implements IStorageProvider {
     }
 
     // For S3
+    if (this.config.cloudfrontDomain) {
+      return `https://${this.config.cloudfrontDomain}/${key}`;
+    }
+
     return `https://${this.config.bucket}.s3.${this.config.region}.amazonaws.com/${key}`;
   }
 
