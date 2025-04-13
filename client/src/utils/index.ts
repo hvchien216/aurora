@@ -9,3 +9,4 @@ export * from "./nformatter";
 export * from "./pluralize";
 export * from "./domains";
 export * from "./link-constructor";
+export * from "./metadata-constructor";
