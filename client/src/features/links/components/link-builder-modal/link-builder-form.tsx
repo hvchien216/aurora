@@ -30,6 +30,8 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
     defaultValues: {
       url: "",
       image: null,
+      video: null,
+      proxy: false,
       title: null,
       description: null,
       workspaceId: null,

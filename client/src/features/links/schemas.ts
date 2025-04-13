@@ -17,8 +17,10 @@ export const linkSchema = z.object({
     .string()
     .regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message })
     .max(190),
+  proxy: z.boolean().default(false),
   url: z.string().url({ message: ErrInvalidURL.message }),
   image: z.string().nullish(),
+  video: z.string().nullish(),
   title: z.string().max(255, { message: ErrTitleTooLong.message }).nullable(),
   description: z.string().nullable(),
   archived: z.boolean().default(false),
@@ -34,8 +36,10 @@ export type Link = z.infer<typeof linkSchema>;
 
 export const createLinkSchema = linkSchema
   .pick({
+    proxy: true,
     url: true,
     image: true,
+    video: true,
     title: true,
     description: true,
     workspaceId: true,
