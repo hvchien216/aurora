@@ -20,8 +20,11 @@ export const linkSchema = z.object({
   id: z.string().uuid(),
   key: z.string().regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message }),
   url: z.string().url({ message: ErrInvalidURL.message }),
+  proxy: z.boolean().optional(),
   title: z.string().max(255, { message: ErrTitleTooLong.message }).nullable(),
   description: z.string().nullable(),
+  image: z.string().nullable(),
+  video: z.string().nullable(),
   archived: z.boolean().default(false),
   workspaceId: z.string().uuid().nullable(),
   userId: z.string().uuid().nullable(),
@@ -39,7 +42,10 @@ export const createLinkDTOSchema = z.object({
     .string()
     .regex(/^[a-zA-Z0-9-]+$/, { message: ErrInvalidKey.message })
     .optional(),
+  proxy: z.boolean().optional(),
   title: z.string().max(255, { message: ErrTitleTooLong.message }).optional(),
+  image: z.string().nullish(),
+  video: z.string().nullish(),
   description: z.string().optional(),
   workspaceId: z.string().uuid().nullable(),
   tags: z.array(z.string().uuid()).optional(),

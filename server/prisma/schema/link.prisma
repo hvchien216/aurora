@@ -6,6 +6,7 @@ model Link {
   expiresAt  DateTime? @map("expires_at") // when the link expires – stored on Redis via ttl
   expiredUrl String?   @map("expired_url") // URL to redirect the user to when the link is expired
 
+  proxy       Boolean @default(false)
   title       String?
   description String?
   image       String?
