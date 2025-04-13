@@ -54,6 +54,7 @@
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^12.6.3",
     "he": "^1.2.0",
+    "html-escaper": "^3.0.3",
     "input-otp": "^1.4.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.469.0",

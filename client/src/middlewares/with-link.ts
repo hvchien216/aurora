@@ -53,6 +53,15 @@ export function withLink(middleware: CustomMiddleware) {
     // TODO: add new column `expiredUrl` & `expiresAt` then redirect to expiredUrl
     // or redirect to Expired page
 
+    if (isBot && data.proxy) {
+      return addClickIdCookie(
+        NextResponse.rewrite(
+          new URL(`/proxy/${encodeURIComponent(key)}`, req.url),
+        ),
+        { clickId, path: `/${originalKey}` },
+      );
+    }
+
     return addClickIdCookie(NextResponse.redirect(new URL(data.url, req.url)), {
       clickId,
       path: `/${originalKey}`,
