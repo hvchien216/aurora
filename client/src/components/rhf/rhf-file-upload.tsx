@@ -31,13 +31,18 @@ interface RHFFileUploadProps extends TextareaAutosizeProps {
 
   dropzoneProps?: Pick<
     UploadDropzoneProps,
-    "allowedMimeTypes" | "maxFileSize" | "maxFiles" | "className"
+    | "allowedMimeTypes"
+    | "maxFileSize"
+    | "maxFiles"
+    | "className"
+    | "transformFile"
   >;
 }
 
 interface UploadDropzoneProps {
   value: FileWithPreview[];
   onChange: (value: FileWithPreview[]) => void;
+  transformFile?: (file: File) => Promise<File>;
   allowedMimeTypes: string[];
   maxFileSize: number;
   maxFiles: number;
@@ -47,7 +52,8 @@ interface UploadDropzoneProps {
 
 const UploadDropzone = ({
   value,
-  onChange,
+  onChange: propOnChange,
+  transformFile,
   allowedMimeTypes,
   maxFileSize,
   maxFiles,
@@ -57,7 +63,34 @@ const UploadDropzone = ({
   const upload = useUpload({
     value: value || [],
     defaultValue: value || [],
-    onChange,
+    onChange: (files) => {
+      if (transformFile) {
+        // wrap the async work so this callback returns void
+        (async () => {
+          try {
+            const transformed = await Promise.all(
+              files.map(async (fw) => {
+                if (fw.url) return fw;
+                const resized = await transformFile(fw.originalFile);
+                return {
+                  ...fw,
+                  originalFile: resized,
+                  preview: URL.createObjectURL(resized),
+                  url: undefined,
+                };
+              }),
+            );
+            propOnChange(transformed);
+          } catch (err) {
+            console.error("Resize error:", err);
+            // optionally pass through the original files
+            propOnChange(files);
+          }
+        })();
+      } else {
+        propOnChange(files);
+      }
+    },
     allowedMimeTypes,
     maxFileSize,
     maxFiles,
@@ -118,6 +151,7 @@ export const RHFFileUpload = ({
               maxFiles={maxFiles}
               className={dropzoneProps?.className}
               disabled={disabled}
+              transformFile={dropzoneProps?.transformFile}
             />
           </FormControl>
           <FormMessage />

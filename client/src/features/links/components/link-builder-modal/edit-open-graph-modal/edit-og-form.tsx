@@ -5,6 +5,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { RHFFileUpload, RHFTextAreaAutoSize } from "~/components/rhf";
 import { Button, DialogFooter, Form } from "~/components/shared";
 import { useEnterSubmit } from "~/hooks";
+import { resizeImageToFile } from "~/utils";
 import {
   OG_IMAGE_FILE_UPLOAD_CONFIGURATION,
   ogLinkFormDataSchema,
@@ -43,6 +44,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
     handleClose();
   };
   const { isDirty, isValid, isSubmitting } = form.formState;
+  console.log("🚀 ~ form.formState:", form.getValues());
 
   return (
     <Form {...form}>
@@ -61,7 +63,9 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
             dropzoneProps={{
               ...OG_IMAGE_FILE_UPLOAD_CONFIGURATION,
               className: "aspect-[1200/630]",
+              transformFile: resizeImageToFile,
             }}
+            description="Recommended: 1200 x 630 pixels"
           />
           <RHFTextAreaAutoSize
             name="title"
