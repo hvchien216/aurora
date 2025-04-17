@@ -15,6 +15,7 @@ type Variables = UploadPayload;
 
 function createUploadFormData(payload: Variables): FormData {
   const formData = new FormData();
+
   formData.append("file", payload.file);
   return formData;
 }
@@ -34,9 +35,7 @@ export const useUploadMutation = <
     mutationFn: (variables: TVariables) => {
       const formData = createUploadFormData(variables);
       return customMutator<TData, FormData>("post", `/v1/upload`, formData, {
-        headers: {
-          "Content-Type": undefined as any, // just a tricky to passed type checking
-        },
+        headers: {},
       })();
     },
   });
