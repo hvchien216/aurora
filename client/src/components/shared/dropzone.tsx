@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  type PropsWithChildren,
-} from "react";
-import { CheckCircle, File, Loader2, Upload, X } from "lucide-react";
+import { createContext, useContext, type PropsWithChildren } from "react";
+import { CloudUpload, File, Upload, X } from "lucide-react";
 
-import { Button } from "~/components/shared";
-import { type UseUploadReturn } from "~/hooks";
+import { BlurImageNative, Button, ShimmerDots } from "~/components/shared";
+import { useIsMobile, type UseUploadReturn } from "~/hooks";
 import { cn } from "~/lib";
 
 export const formatBytes = (
@@ -39,7 +34,6 @@ const DropzoneContext = createContext<DropzoneContextType | undefined>(
   undefined,
 );
 
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type DropzoneProps = UseUploadReturn & {
   className?: string;
 };
@@ -51,21 +45,23 @@ const Dropzone = ({
   getInputProps,
   ...restProps
 }: PropsWithChildren<DropzoneProps>) => {
-  const isSuccess = restProps.isSuccess;
   const isActive = restProps.isDragActive;
   const isInvalid =
     (restProps.isDragActive && restProps.isDragReject) ||
-    (restProps.errors.length > 0 && !restProps.isSuccess) ||
-    restProps.files.some((file) => file.errors.length !== 0);
+    restProps.files.some(
+      (file) => file.errors?.length !== 0 && file.errors !== undefined,
+    );
 
   return (
     <DropzoneContext.Provider value={{ ...restProps }}>
       <div
         {...getRootProps({
           className: cn(
-            "border-2 border-gray-300 rounded-lg p-6 text-center bg-card transition-colors duration-300 text-foreground",
+            "relative rounded-lg border border-gray-300  bg-card text-center text-foreground transition-colors duration-300",
             className,
-            isSuccess ? "border-solid" : "border-dashed",
+            restProps.files.length >= restProps.maxFiles
+              ? "border-solid"
+              : "border-dashed",
             isActive && "border-primary bg-primary/10",
             isInvalid && "border-destructive bg-destructive/10",
           ),
@@ -77,65 +73,85 @@ const Dropzone = ({
     </DropzoneContext.Provider>
   );
 };
+
 const DropzoneContent = ({ className }: { className?: string }) => {
-  const {
-    files,
-    setFiles,
-    onUpload,
-    isUploading,
-    successes,
-    errors,
-    maxFileSize,
-    maxFiles,
-    isSuccess,
-  } = useDropzoneContext();
+  const { files, handleRemoveFile, maxFileSize, maxFiles } =
+    useDropzoneContext();
 
-  const exceedMaxFiles = files.length > maxFiles;
+  // const exceedMaxFiles = files.length > maxFiles;
 
-  const handleRemoveFile = useCallback(
-    (fileName: string) => {
-      setFiles(files.filter((file) => file.name !== fileName));
-    },
-    [files, setFiles],
-  );
+  // ----- NEW LOGIC FOR SINGLE FILE CASE -----
+  // If maxFiles is 1 and one file is present, render a full-cover preview.
+  if (maxFiles === 1 && files.length === 1) {
+    const file = files[0];
 
-  if (isSuccess) {
     return (
-      <div
-        className={cn(
-          "flex flex-row items-center justify-center gap-x-2",
-          className,
+      <div className={cn("relative size-full", className)}>
+        {file?.type?.startsWith("image/") || file?.url?.startsWith("http") ? (
+          <BlurImageNative
+            src={file?.preview || file?.url}
+            alt={file?.name || file?.url}
+            className="size-full rounded-lg object-cover"
+          />
+        ) : (
+          <div className="flex size-full items-center justify-center rounded-lg bg-muted">
+            <File size={18} />
+          </div>
         )}
-      >
-        <CheckCircle size={16} className="text-primary" />
-        <p className="text-sm text-primary">
-          Successfully uploaded {files.length} file{files.length > 1 ? "s" : ""}
-        </p>
+        {/* Remove button */}
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="absolute right-2 top-2 z-10 h-8 w-fit px-1.5"
+          onClick={() => handleRemoveFile(file!)}
+        >
+          <X className="mx-px size-4" />
+        </Button>
+        {/* Status overlay */}
+        {Number(file?.errors?.length) > 0 ? (
+          <p className="absolute bottom-2 left-2 rounded bg-white/70 px-1 text-xs text-destructive">
+            {file?.errors
+              .map((e) =>
+                e.message.startsWith("File is larger than")
+                  ? `File is larger than ${formatBytes(
+                      maxFileSize,
+                      2,
+                    )} (Size: ${formatBytes(file.size, 2)})`
+                  : e.message,
+              )
+              .join(", ")}
+          </p>
+        ) : null}
       </div>
     );
   }
+  // ----- END SINGLE FILE LOGIC -----
 
+  // If not in the single file case, retain the multi-file rendering logic:
   return (
-    <div className={cn("flex flex-col", className)}>
+    <div className={cn("flex flex-col px-2", className)}>
       {files.map((file, idx) => {
-        const fileError = errors.find((e) => e.name === file.name);
-        const isSuccessfullyUploaded = !!successes.find((e) => e === file.name);
-
         return (
           <div
             key={`${file.name}-${idx}`}
             className="flex items-center gap-x-4 border-b py-2 first:mt-4 last:mb-4"
           >
-            {file.type.startsWith("image/") ? (
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted">
-                <img
-                  src={file.preview}
-                  alt={file.name}
-                  className="object-cover"
-                />
+            {file?.type?.startsWith("image/") || file.url ? (
+              <div className="relative">
+                <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted">
+                  <BlurImageNative
+                    src={file.preview || file.url}
+                    alt={file.name || file.url}
+                    className="object-cover"
+                  />
+                </div>
+                {file?.url?.startsWith("http") && (
+                  <CloudUpload className="absolute -right-2 top-0 z-10 size-3.5 rounded-full border bg-white/70 p-0.5 text-green-500" />
+                )}
               </div>
             ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded border bg-muted">
+              <div className="flex size-10 items-center justify-center rounded border bg-muted">
                 <File size={18} />
               </div>
             )}
@@ -144,112 +160,94 @@ const DropzoneContent = ({ className }: { className?: string }) => {
               <p title={file.name} className="max-w-full truncate text-sm">
                 {file.name}
               </p>
-              {file.errors.length > 0 ? (
+              {file.errors?.length > 0 ? (
                 <p className="text-xs text-destructive">
                   {file.errors
                     .map((e) =>
                       e.message.startsWith("File is larger than")
-                        ? `File is larger than ${formatBytes(maxFileSize, 2)} (Size: ${formatBytes(file.size, 2)})`
+                        ? `File is larger than ${formatBytes(
+                            maxFileSize,
+                            2,
+                          )} (Size: ${formatBytes(file.size, 2)})`
                         : e.message,
                     )
                     .join(", ")}
                 </p>
-              ) : isUploading && !isSuccessfullyUploaded ? (
-                <p className="text-xs text-muted-foreground">
-                  Uploading file...
-                </p>
-              ) : !!fileError ? (
-                <p className="text-xs text-destructive">
-                  Failed to upload: {fileError.message}
-                </p>
-              ) : isSuccessfullyUploaded ? (
-                <p className="text-xs text-primary">
-                  Successfully uploaded file
-                </p>
-              ) : (
+              ) : file.size != undefined ? (
                 <p className="text-xs text-muted-foreground">
                   {formatBytes(file.size, 2)}
                 </p>
-              )}
+              ) : null}
             </div>
 
-            {!isUploading && !isSuccessfullyUploaded && (
-              <Button
-                size="icon"
-                variant="link"
-                className="shrink-0 justify-self-end text-muted-foreground hover:text-foreground"
-                onClick={() => handleRemoveFile(file.name)}
-              >
-                <X />
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="link"
+              size="icon"
+              className="px-0.5 text-muted-foreground"
+              onClick={() => handleRemoveFile(file!)}
+            >
+              <X className="size-4" />
+            </Button>
           </div>
         );
       })}
-      {exceedMaxFiles && (
+      {/* {exceedMaxFiles && (
         <p className="mt-2 text-left text-sm text-destructive">
-          You may upload only up to {maxFiles} files, please remove{" "}
-          {files.length - maxFiles} file
-          {files.length - maxFiles > 1 ? "s" : ""}.
+          You may upload only up to {maxFiles} file
+          {maxFiles > 1 ? "s" : ""}, please remove {files.length - maxFiles}{" "}
+          {files.length - maxFiles > 1 ? "files" : "file"}.
         </p>
-      )}
-      {files.length > 0 && !exceedMaxFiles && (
-        <div className="mt-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onUpload}
-            disabled={
-              files.some((file) => file.errors.length !== 0) || isUploading
-            }
-          >
-            {isUploading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
-            ) : (
-              <>Upload files</>
-            )}
-          </Button>
-        </div>
-      )}
+      )} */}
     </div>
   );
 };
 
 const DropzoneEmptyState = ({ className }: { className?: string }) => {
-  const { maxFiles, maxFileSize, inputRef, isSuccess } = useDropzoneContext();
+  const { maxFiles, inputRef, maxFileSize, files } = useDropzoneContext();
+  const isMobile = useIsMobile();
 
-  if (isSuccess) {
+  if (maxFiles === 1 && files.length > 0) {
     return null;
   }
 
   return (
-    <div className={cn("flex flex-col items-center gap-y-2", className)}>
-      <Upload size={20} className="text-muted-foreground" />
-      <p className="text-sm">
-        Upload{!!maxFiles && maxFiles > 1 ? ` ${maxFiles}` : ""} file
-        {!maxFiles || maxFiles > 1 ? "s" : ""}
-      </p>
-      <div className="flex flex-col items-center gap-y-1">
-        <p className="text-xs text-muted-foreground">
-          Drag and drop or{" "}
-          <a
-            onClick={() => inputRef.current?.click()}
-            className="cursor-pointer underline transition hover:text-foreground"
-          >
-            select {maxFiles === 1 ? `file` : "files"}
-          </a>{" "}
-          to upload
-        </p>
-        {maxFileSize !== Number.POSITIVE_INFINITY && (
-          <p className="text-xs text-muted-foreground">
-            Maximum file size: {formatBytes(maxFileSize, 2)}
-          </p>
+    <>
+      {!isMobile && (
+        <ShimmerDots className="pointer-events-none opacity-30 [mask-image:radial-gradient(40%_80%,transparent_50%,black)]" />
+      )}
+      <div
+        className={cn(
+          "flex flex-col items-center gap-y-2",
+          files.length === 0 && "h-full justify-center",
+          className,
         )}
+      >
+        <Upload size={20} className="text-muted-foreground" />
+        <p className="text-sm">
+          Upload
+          {!!maxFiles && maxFiles > 1 ? ` ${maxFiles}` : ""} file
+          {(!maxFiles || maxFiles > 1) && "s"}
+        </p>
+        <div className="flex flex-col items-center gap-y-1">
+          <p className="text-xs text-muted-foreground">
+            Drag and drop or{" "}
+            <a
+              onClick={() => inputRef.current?.click()}
+              className="cursor-pointer underline transition hover:text-foreground"
+            >
+              select {maxFiles === 1 ? `file` : "files"}
+            </a>{" "}
+            to upload
+          </p>
+          {maxFileSize !== Number.POSITIVE_INFINITY && (
+            <p className="text-xs text-muted-foreground">
+              Maximum file size: {formatBytes(maxFileSize, 2)}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

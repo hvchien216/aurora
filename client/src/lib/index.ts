@@ -9,3 +9,4 @@ export * from "./custom-fetcher";
 export * from "./custom-mutator";
 export * from "./time-ago";
 export * from "./punycode";
+export * from "./file-schema-constructor";

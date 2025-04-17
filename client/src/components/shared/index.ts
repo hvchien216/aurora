@@ -36,3 +36,4 @@ export * from "./data-table";
 export * from "./copy-button";
 export * from "./blur-image";
 export * from "./link-logo";
+export * from "./dropzone";
