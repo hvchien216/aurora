@@ -6,12 +6,17 @@ import { toast } from "sonner";
 
 import { RHFInput } from "~/components/rhf";
 import { Button, DialogFooter, Form, InfoTooltip } from "~/components/shared";
+import { useUploadMutation } from "~/hooks";
 import { cn } from "~/lib";
+import { getFirst } from "~/utils";
 import {
   useCreateLinkMutation,
   useInvalidateLinksWorkspace,
 } from "~/features/links/hooks";
-import { createLinkSchema, type CreateLink } from "~/features/links/schemas";
+import {
+  createLinkFormSchema,
+  type CreateLinkForm,
+} from "~/features/links/schemas";
 import { useGeWorkSpaceBySlugQuery } from "~/features/workspaces/hooks";
 
 import LinkPreview from "./link-preview";
@@ -25,11 +30,11 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
 
   const invalidateLinksWorkspace = useInvalidateLinksWorkspace();
 
-  const form = useForm<CreateLink>({
-    resolver: zodResolver(createLinkSchema),
+  const form = useForm<CreateLinkForm>({
+    resolver: zodResolver(createLinkFormSchema),
     defaultValues: {
       url: "",
-      image: null,
+      image: [],
       video: null,
       proxy: false,
       title: null,
@@ -55,8 +60,29 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
     },
   });
 
-  const onSubmit = async (values: CreateLink) => {
-    const mutationPromise = mutateAsync({ ...values });
+  const { mutateAsync: uploadMutationAsync } = useUploadMutation();
+
+  const onSubmit = async (values: CreateLinkForm) => {
+    const { image, ...restValues } = values;
+
+    const _img = getFirst(image);
+    const localFile = !_img?.url ? _img?.originalFile : null;
+
+    const mutationPromise = (async () => {
+      let imgUrl = _img?.url;
+
+      if (localFile) {
+        const response = await uploadMutationAsync({
+          file: localFile,
+        });
+        imgUrl = response.url;
+      }
+
+      return mutateAsync({
+        ...restValues,
+        image: imgUrl,
+      });
+    })();
 
     toast.promise(mutationPromise, {
       loading: "Creating...",
@@ -69,6 +95,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
     await mutationPromise;
   };
   const { isDirty, isValid, isSubmitting } = form.formState;
+
   return (
     <Form {...form}>
       <form

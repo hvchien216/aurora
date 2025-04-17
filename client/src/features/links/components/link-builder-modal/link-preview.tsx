@@ -2,10 +2,11 @@
 
 import React, { Fragment, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import { Earth } from "lucide-react";
+import { Earth, PenIcon } from "lucide-react";
 
 import { Facebook, LinkedIn, XTwitter } from "~/components/shared/icons";
 import {
+  Button,
   InfoTooltip,
   Tabs,
   TabsContent,
@@ -16,10 +17,11 @@ import {
   TooltipTrigger,
 } from "~/components/shared";
 import { useDebounceValue } from "~/hooks";
-import { getDomainWithoutWWW } from "~/utils";
+import { getDomainWithoutWWW, getFirst, getUploadedFileName } from "~/utils";
 import { useGetMetaTagsQuery } from "~/features/links/hooks";
-import { type CreateLink } from "~/features/links/schemas";
+import { type CreateLinkForm } from "~/features/links/schemas";
 
+import EditOpenGraphModal from "./edit-open-graph-modal";
 import {
   DefaultOGPreview,
   FacebookOGPreview,
@@ -55,7 +57,7 @@ const tabs = [
   },
 ];
 const LinkPreview = () => {
-  const { watch, setValue } = useFormContext<CreateLink>();
+  const { watch, setValue } = useFormContext<CreateLinkForm>();
   const [url, image, title, description] = watch([
     "url",
     "image",
@@ -72,18 +74,30 @@ const LinkPreview = () => {
       },
     );
 
+  const [openOGModal, setOpenOGModal] = React.useState(false);
+
   useEffect(() => {
     if (metaTagData) {
-      setValue("title", metaTagData.title);
-      setValue("description", metaTagData.description);
-      setValue("image", metaTagData.image);
+      setValue("title", metaTagData.title, { shouldDirty: true });
+      setValue("description", metaTagData.description, { shouldDirty: true });
+      setValue(
+        "image",
+        [
+          {
+            url: metaTagData?.image ? metaTagData.image : undefined,
+          },
+        ],
+        { shouldDirty: true, shouldValidate: true },
+      );
     }
   }, [metaTagData, setValue]);
 
   const host = getDomainWithoutWWW(debouncedUrl) ?? null;
+  const imgUrl = getFirst(image)?.url || getFirst(image)?.preview;
 
   return (
     <>
+      <EditOpenGraphModal open={openOGModal} setOpen={setOpenOGModal} />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-medium text-foreground">
@@ -121,16 +135,36 @@ const LinkPreview = () => {
           const OGPreview = tab.children;
           return (
             <TabsContent key={tab.id} value={tab.id}>
-              <OGPreview
-                title={title}
-                description={description}
-                hostname={host}
-              >
-                <ImagePreview
-                  image={image || null}
-                  isGeneratingMetatag={isGeneratingMetatag}
-                />
-              </OGPreview>
+              <div className="relative">
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="absolute right-2 top-2 z-10 h-8 w-fit px-1.5"
+                      onClick={() => setOpenOGModal(true)}
+                      disabled={isGeneratingMetatag}
+                    >
+                      <PenIcon className="mx-px size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    Open the Edit Open Graph Modal
+                  </TooltipContent>
+                </Tooltip>
+
+                <OGPreview
+                  title={title}
+                  description={description}
+                  hostname={host}
+                >
+                  <ImagePreview
+                    image={imgUrl || null}
+                    isGeneratingMetatag={isGeneratingMetatag}
+                  />
+                </OGPreview>
+              </div>
             </TabsContent>
           );
         })}
