@@ -18,10 +18,7 @@ export const fileErrorSchema = z.object({
 
 const fileUploadSchema = z.object({
   url: z.string().url().optional(),
-  name: z.string(),
-  size: z.number().optional(),
-  type: z.string().optional(),
-  lastModified: z.number().optional(),
+  originalFile: z.instanceof(File).optional(),
   preview: z.string().optional(),
   errors: z.array(fileErrorSchema).optional(),
 });
@@ -31,14 +28,16 @@ export function fileSchemaConstructor(config: UploadOptions) {
     fileUploadSchema
       .refine(
         (f) => {
+          if (f.url) return true;
+
           if (!config.allowedMimeTypes?.length) return true;
 
           return config.allowedMimeTypes.some((type) => {
             if (type.endsWith("/*")) {
               const prefix = type.split("/")[0];
-              return f?.type?.startsWith(`${prefix}/`);
+              return f?.originalFile?.type?.startsWith(`${prefix}/`);
             }
-            return f.type === type;
+            return f?.originalFile?.type === type;
           });
         },
         {
@@ -46,7 +45,9 @@ export function fileSchemaConstructor(config: UploadOptions) {
         },
       )
       .refine(
-        (f) => !config.maxFileSize || (f?.size || 0) <= config.maxFileSize,
+        (f) =>
+          !config.maxFileSize ||
+          (f?.originalFile?.size || 0) <= config.maxFileSize,
         {
           message: `File must be smaller than ${(config?.maxFileSize || 0) / 1024 / 1024}MB`,
         },

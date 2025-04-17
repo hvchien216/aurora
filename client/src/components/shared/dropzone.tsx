@@ -1,11 +1,20 @@
 "use client";
 
 import { createContext, useContext, type PropsWithChildren } from "react";
+import { get } from "http";
 import { CloudUpload, File, Upload, X } from "lucide-react";
 
-import { BlurImageNative, Button, ShimmerDots } from "~/components/shared";
+import {
+  BlurImageNative,
+  Button,
+  ShimmerDots,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/shared";
 import { useIsMobile, type UseUploadReturn } from "~/hooks";
 import { cn } from "~/lib";
+import { getUploadedFileName } from "~/utils";
 
 export const formatBytes = (
   bytes: number,
@@ -83,14 +92,19 @@ const DropzoneContent = ({ className }: { className?: string }) => {
   // ----- NEW LOGIC FOR SINGLE FILE CASE -----
   // If maxFiles is 1 and one file is present, render a full-cover preview.
   if (maxFiles === 1 && files.length === 1) {
-    const file = files[0];
+    const fileWithPreview = files[0];
+    const previewUrl = fileWithPreview?.preview || fileWithPreview?.url;
+    const fileName =
+      fileWithPreview?.originalFile?.name ||
+      getUploadedFileName(fileWithPreview?.url || "");
 
     return (
       <div className={cn("relative size-full", className)}>
-        {file?.type?.startsWith("image/") || file?.url?.startsWith("http") ? (
+        {fileWithPreview?.originalFile?.type?.startsWith("image/") ||
+        fileWithPreview?.url?.startsWith("http") ? (
           <BlurImageNative
-            src={file?.preview || file?.url}
-            alt={file?.name || file?.url}
+            src={previewUrl}
+            alt={fileName}
             className="size-full rounded-lg object-cover"
           />
         ) : (
@@ -99,25 +113,30 @@ const DropzoneContent = ({ className }: { className?: string }) => {
           </div>
         )}
         {/* Remove button */}
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="absolute right-2 top-2 z-10 h-8 w-fit px-1.5"
-          onClick={() => handleRemoveFile(file!)}
-        >
-          <X className="mx-px size-4" />
-        </Button>
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="absolute right-2 top-2 z-10 h-8 w-fit px-1.5"
+              onClick={() => handleRemoveFile(fileWithPreview!)}
+            >
+              <X className="mx-px size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Remove</TooltipContent>
+        </Tooltip>
         {/* Status overlay */}
-        {Number(file?.errors?.length) > 0 ? (
+        {Number(fileWithPreview?.errors?.length) > 0 ? (
           <p className="absolute bottom-2 left-2 rounded bg-white/70 px-1 text-xs text-destructive">
-            {file?.errors
+            {fileWithPreview?.errors
               .map((e) =>
                 e.message.startsWith("File is larger than")
                   ? `File is larger than ${formatBytes(
                       maxFileSize,
                       2,
-                    )} (Size: ${formatBytes(file.size, 2)})`
+                    )} (Size: ${formatBytes(fileWithPreview?.originalFile?.size, 2)})`
                   : e.message,
               )
               .join(", ")}
@@ -131,22 +150,29 @@ const DropzoneContent = ({ className }: { className?: string }) => {
   // If not in the single file case, retain the multi-file rendering logic:
   return (
     <div className={cn("flex flex-col px-2", className)}>
-      {files.map((file, idx) => {
+      {files.map((fileWithPreview, idx) => {
+        const previewUrl = fileWithPreview?.preview || fileWithPreview?.url;
+        const fileName =
+          fileWithPreview?.originalFile?.name ||
+          getUploadedFileName(fileWithPreview?.url || "");
+        const fileSize = fileWithPreview?.originalFile?.size || 0;
+        const isOnCloud = fileWithPreview?.url?.startsWith("http");
         return (
           <div
-            key={`${file.name}-${idx}`}
+            key={`${fileWithPreview?.originalFile?.name}-${idx}`}
             className="flex items-center gap-x-4 border-b py-2 first:mt-4 last:mb-4"
           >
-            {file?.type?.startsWith("image/") || file.url ? (
+            {fileWithPreview?.originalFile?.type?.startsWith("image/") ||
+            isOnCloud ? (
               <div className="relative">
                 <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted">
                   <BlurImageNative
-                    src={file.preview || file.url}
-                    alt={file.name || file.url}
+                    src={previewUrl}
+                    alt={fileName}
                     className="object-cover"
                   />
                 </div>
-                {file?.url?.startsWith("http") && (
+                {isOnCloud && (
                   <CloudUpload className="absolute -right-2 top-0 z-10 size-3.5 rounded-full border bg-white/70 p-0.5 text-green-500" />
                 )}
               </div>
@@ -157,38 +183,43 @@ const DropzoneContent = ({ className }: { className?: string }) => {
             )}
 
             <div className="flex shrink grow flex-col items-start truncate">
-              <p title={file.name} className="max-w-full truncate text-sm">
-                {file.name}
+              <p title={fileName} className="max-w-full truncate text-sm">
+                {fileName}
               </p>
-              {file.errors?.length > 0 ? (
+              {fileWithPreview.errors?.length > 0 ? (
                 <p className="text-xs text-destructive">
-                  {file.errors
+                  {fileWithPreview.errors
                     .map((e) =>
                       e.message.startsWith("File is larger than")
                         ? `File is larger than ${formatBytes(
                             maxFileSize,
                             2,
-                          )} (Size: ${formatBytes(file.size, 2)})`
+                          )} (Size: ${formatBytes(fileSize, 2)})`
                         : e.message,
                     )
                     .join(", ")}
                 </p>
-              ) : file.size != undefined ? (
+              ) : !isOnCloud ? (
                 <p className="text-xs text-muted-foreground">
-                  {formatBytes(file.size, 2)}
+                  {formatBytes(fileSize, 2)}
                 </p>
               ) : null}
             </div>
 
-            <Button
-              type="button"
-              variant="link"
-              size="icon"
-              className="px-0.5 text-muted-foreground"
-              onClick={() => handleRemoveFile(file!)}
-            >
-              <X className="size-4" />
-            </Button>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="link"
+                  size="icon"
+                  className="px-0.5 text-muted-foreground"
+                  onClick={() => handleRemoveFile(fileWithPreview!)}
+                >
+                  <X className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Remove</TooltipContent>
+            </Tooltip>
           </div>
         );
       })}
@@ -218,7 +249,7 @@ const DropzoneEmptyState = ({ className }: { className?: string }) => {
       )}
       <div
         className={cn(
-          "flex flex-col items-center gap-y-2",
+          "flex flex-col items-center gap-y-2 pt-2",
           files.length === 0 && "h-full justify-center",
           className,
         )}

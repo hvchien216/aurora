@@ -7,7 +7,8 @@ import {
 
 import { useControllableState } from "./use-controllable-state"; // adjust path as needed
 
-export interface FileWithPreview extends File {
+export interface FileWithPreview {
+  originalFile: File; // use this for uploading
   preview?: string;
   url?: string; // cloud image url
   errors: readonly FileError[];
@@ -45,18 +46,18 @@ export const useUpload = (options: UseUploadOptions) => {
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       const validFiles = acceptedFiles
-        .filter((file) => !files.find((x) => x.name === file.name))
-        .map((file) => {
-          (file as FileWithPreview).preview = URL.createObjectURL(file);
-          (file as FileWithPreview).errors = [];
-          return file as FileWithPreview;
-        });
+        .filter((file) => !files.find((x) => x.originalFile.name === file.name))
+        .map((file) => ({
+          originalFile: file,
+          preview: URL.createObjectURL(file),
+          errors: [],
+        }));
 
-      const invalidFiles = fileRejections.map(({ file, errors }) => {
-        (file as FileWithPreview).preview = URL.createObjectURL(file);
-        (file as FileWithPreview).errors = errors;
-        return file as FileWithPreview;
-      });
+      const invalidFiles = fileRejections.map(({ file, errors }) => ({
+        originalFile: file,
+        preview: URL.createObjectURL(file),
+        errors: errors,
+      }));
 
       setFiles([...files, ...validFiles, ...invalidFiles]);
     },
@@ -73,7 +74,7 @@ export const useUpload = (options: UseUploadOptions) => {
     maxSize: maxFileSize,
     maxFiles: maxFiles,
     multiple: maxFiles != 1,
-    disabled: files.length > maxFiles || disabled,
+    disabled: files.length >= maxFiles || disabled,
   });
 
   useEffect(() => {
