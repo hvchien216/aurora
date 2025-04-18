@@ -1,3 +1,5 @@
+"use client";
+
 import type * as React from "react";
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 
