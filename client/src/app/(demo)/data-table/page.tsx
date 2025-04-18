@@ -1,16 +1,5 @@
-import React, { useState } from "react";
-import { type ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-
-import { Table } from "~/components/shared";
-import { cn, getData } from "~/utils";
-
-import "~/styles/globals.css";
-
-type Props = {};
-
-const Page = (props: Props) => {
-  const [rowData, setRowData] = useState(getData());
+const Page = () => {
+  // const [rowData, setRowData] = useState(getData());
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
   //     setRowData((rowData) =>
@@ -44,12 +33,7 @@ const Page = (props: Props) => {
   //   return () => clearInterval(intervalId);
   // }, [updateInterval]);
 
-  return (
-    <div className={cn("h-4")}>
-      <MoreHorizontal />
-      <Table />
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Page;
