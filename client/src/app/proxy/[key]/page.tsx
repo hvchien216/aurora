@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { unescape } from "html-escaper";
 
-import { BlurImage } from "~/components/shared";
+import { BlurImage, BlurImageNative } from "~/components/shared/blur-image";
 import { httpRequest } from "~/lib";
 import { getApexDomain, metadataConstructor, tryCatch } from "~/utils";
 import { GOOGLE_FAVICON_URL } from "~/constants";
@@ -12,12 +12,14 @@ export const runtime = "edge";
 export async function generateMetadata({
   params,
 }: {
-  params: { key: string };
+  params: Promise<{ key: string }>;
 }) {
-  const key = decodeURIComponent(params.key); // key can potentially be encoded
+  const { key } = await params;
 
   const { data, error } = await tryCatch<Link>(
-    httpRequest.post(`/v1/links/key/${key}`, { key }, { auth: false }),
+    httpRequest.get(`/v1/links/key/${decodeURIComponent(key)}`, {
+      auth: false,
+    }),
   );
 
   if (error) {
@@ -43,12 +45,14 @@ export async function generateMetadata({
 export default async function ProxyPage({
   params,
 }: {
-  params: { key: string };
+  params: Promise<{ key: string }>;
 }) {
-  const key = decodeURIComponent(params.key);
+  const { key } = await params;
 
   const { data, error } = await tryCatch<Link>(
-    httpRequest.post(`/v1/links/key/${key}`, { key }, { auth: false }),
+    httpRequest.get(`/v1/links/key/${decodeURIComponent(key)}`, {
+      auth: false,
+    }),
   );
 
   if (error) {
@@ -69,7 +73,7 @@ export default async function ProxyPage({
   return (
     <main className="flex h-screen w-screen items-center justify-center">
       <div className="mx-5 w-full max-w-lg overflow-hidden rounded-lg border border-neutral-200 sm:mx-0">
-        <img
+        <BlurImageNative
           src={data.image || ""}
           alt={unescape(data.title || "")}
           className="w-full object-cover"
@@ -80,7 +84,7 @@ export default async function ProxyPage({
             height={20}
             src={`${GOOGLE_FAVICON_URL}${apexDomain}`}
             alt={unescape(data.title || "")}
-            className="mt-1 h-6 w-6"
+            className="mt-1 size-6"
           />
           <div className="flex flex-col space-y-3">
             <h1 className="font-bold text-neutral-700">

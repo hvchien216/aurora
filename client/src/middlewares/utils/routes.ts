@@ -1,4 +1,4 @@
-export const PUBLIC_ROUTE_PATTERNS = [/^\/$/];
+export const PUBLIC_ROUTE_PATTERNS = [/^\/$/, /^\/proxy(\/.*)?$/];
 
 export const AUTH_ROUTE_PATTERNS = [
   /^\/login$/,
