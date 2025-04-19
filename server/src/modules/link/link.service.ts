@@ -53,8 +53,11 @@ export class LinkService implements ILinkService {
       id: v7(),
       key: key,
       url: dto.url,
+      proxy: dto.proxy || false,
       title: dto.title || null,
       description: dto.description || null,
+      image: dto.image || null,
+      video: dto.video || null,
       archived: false,
       workspaceId: dto.workspaceId,
       userId: userId,
@@ -154,6 +157,8 @@ export class LinkService implements ILinkService {
         throw AppError.from(ErrKeyAlreadyExists, 400);
       }
     }
+
+    // TODO: when updating the key, set redis again
 
     return this.linkRepository.update(id, {
       ...dto,

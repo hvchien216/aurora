@@ -70,6 +70,9 @@ export class LinkPrismaRepository implements ILinkRepository {
     const updated = await prisma.link.update({
       where: { id },
       data: {
+        ...(link.proxy !== undefined && { proxy: link.proxy }),
+        ...(link.image !== undefined && { image: link.image }),
+        ...(link.video !== undefined && { video: link.video }),
         ...(link.title !== undefined && { title: link.title }),
         ...(link.url && { url: link.url }),
         ...(link.description !== undefined && {

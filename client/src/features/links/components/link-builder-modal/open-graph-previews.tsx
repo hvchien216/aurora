@@ -189,7 +189,7 @@ const ImagePreview = ({
         </div>
       );
     }
-  }, [image, isGeneratingMetatag]);
+  }, [image, isGeneratingMetatag, isMobile]);
 
   return <>{previewImage}</>;
 };

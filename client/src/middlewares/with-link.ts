@@ -18,7 +18,7 @@ import {
 
 export function withLink(middleware: CustomMiddleware) {
   return async (req: NextRequest, ev: NextFetchEvent, res: NextResponse) => {
-    const { domain, path, key, fullKey: originalKey } = extractUrl(req);
+    const { path, key, fullKey: originalKey } = extractUrl(req);
 
     // empty string is home page
     if (key === "") {
@@ -28,7 +28,6 @@ export function withLink(middleware: CustomMiddleware) {
     if (isPublicRoute(path) || isAuthRoute(path) || isPrivateRoute(path)) {
       return middleware(req, ev, res);
     }
-
     const cookieStore = await cookies();
     let clickId = cookieStore.get("click_id")?.value;
     if (!clickId) {
@@ -52,6 +51,15 @@ export function withLink(middleware: CustomMiddleware) {
 
     // TODO: add new column `expiredUrl` & `expiresAt` then redirect to expiredUrl
     // or redirect to Expired page
+
+    if (isBot && data.proxy) {
+      return addClickIdCookie(
+        NextResponse.rewrite(
+          new URL(`/proxy/${encodeURIComponent(key)}`, req.url),
+        ),
+        { clickId, path: `/${originalKey}` },
+      );
+    }
 
     return addClickIdCookie(NextResponse.redirect(new URL(data.url, req.url)), {
       clickId,

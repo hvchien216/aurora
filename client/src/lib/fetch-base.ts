@@ -28,8 +28,11 @@ class FetchRequest {
     options: CustomRequestInit,
   ): Promise<Record<string, string>> {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      ...(options.headers as Record<string, string>),
+      ...(options.hasOwnProperty("headers")
+        ? (options.headers as Record<string, string>)
+        : {
+            "Content-Type": "application/json",
+          }),
     };
 
     // Skip auth if explicitly disabled

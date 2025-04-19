@@ -10,6 +10,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "480px",
+      },
       fontFamily: {
         default: ["var(--font-inter)", "system-ui", "sans-serif"],
       },

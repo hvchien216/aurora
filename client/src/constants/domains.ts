@@ -19,3 +19,5 @@ export const SPECIAL_APEX_DOMAINS = new Set([
   "fly.dev",
   "web.app",
 ]);
+
+export const HOME_DOMAIN = `https://${process.env.NEXT_PUBLIC_DOMAIN}`;

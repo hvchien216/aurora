@@ -42,7 +42,7 @@ class HttpRequest {
       {
         ...options,
         method: "POST",
-        body: JSON.stringify(data),
+        body: data instanceof FormData ? data : JSON.stringify(data),
       },
       signal,
     );
