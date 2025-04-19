@@ -1,17 +1,16 @@
 "use client";
 
-import Link from "next/Link";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Workspace } from "~/features/workspaces";
 
-import { useToast } from "~/hooks/use-toast";
 import { Button, GradientBackground, Wordmark } from "~/components/shared";
-import { AppError, clientSessionToken, httpRequest } from "~/lib";
+import { httpRequest } from "~/lib";
 import { tryCatch } from "~/utils";
+import { type Workspace } from "~/features/workspaces";
 
 export default function Home() {
   const router = useRouter();
-  const { toast } = useToast();
+  // const { toast } = useToast();
 
   const onClick = async () => {
     // console.log("clientSessionToken.value", clientSessionToken.value);
