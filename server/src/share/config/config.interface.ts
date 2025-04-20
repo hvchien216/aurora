@@ -10,6 +10,7 @@ export interface Config {
 export interface AppConfig {
   port: string;
   host: string;
+  clientAuthCallbackURL: string;
 }
 
 export interface CorsConfig {

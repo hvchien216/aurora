@@ -11,6 +11,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { USER_SERVICE } from 'src/modules/user/user.di-tokens';
 import {
   RefreshTokenDTO,
@@ -19,6 +20,7 @@ import {
 } from 'src/modules/user/user.dto';
 import { IUserService } from 'src/modules/user/user.port';
 import { ReqWithRequester } from 'src/share';
+import { AppConfig } from 'src/share/config/config.interface';
 import { GoogleAuthGuard } from 'src/share/guards';
 import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
 
@@ -26,6 +28,7 @@ import { RemoteAuthGuard } from 'src/share/guards/auth.guard';
 export class UserHttpController {
   constructor(
     @Inject(USER_SERVICE) private readonly userService: IUserService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('register')
@@ -67,6 +70,8 @@ export class UserHttpController {
   @Get('auth/google/callback')
   @UseGuards(GoogleAuthGuard)
   async handleGoogleCallback(@Req() req, @Res() res) {
+    const appConfig = this.configService.get<AppConfig>('app');
+
     const user = req.user; // Get authenticated user from Passport
 
     const { accessToken, refreshToken } =
@@ -75,7 +80,7 @@ export class UserHttpController {
     // Redirect to client with tokens as query params
     // TODO: redirect to client with tokens as query params
     return res.redirect(
-      `http://localhost:4001/auth/callback/google?accessToken=${accessToken}&refreshToken=${refreshToken}`,
+      `${appConfig?.clientAuthCallbackURL}?accessToken=${accessToken}&refreshToken=${refreshToken}`,
     );
   }
 }

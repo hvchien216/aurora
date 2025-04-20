@@ -14,6 +14,9 @@ const config: Config = {
   app: {
     port,
     host: `http://localhost:${port}`,
+    clientAuthCallbackURL:
+      process.env.CLIENT_AUTH_GOOGLE_CALLBACK_URL ||
+      'http://localhost:4001/auth/callback/google',
   },
   cors: {
     enabled: true,
