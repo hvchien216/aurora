@@ -13,7 +13,7 @@ const port = process.env.PORT || '3000';
 const config: Config = {
   app: {
     port,
-    host: `http://localhost:${port}`,
+    host: process.env.HOST || `http://localhost:${port}`,
     clientAuthCallbackURL:
       process.env.CLIENT_AUTH_GOOGLE_CALLBACK_URL ||
       'http://localhost:4001/auth/callback/google',
