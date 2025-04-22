@@ -47,6 +47,7 @@ export function BlurImageNative({
   ...rest
 }: BlurImageNativeProps) {
   const [loading, setLoading] = useState(true);
+  console.log("🚀 ~ loading:", loading);
   const [src, setSrc] = useState(initialSrc);
 
   useEffect(() => {
@@ -54,14 +55,18 @@ export function BlurImageNative({
     setLoading(true);
   }, [initialSrc]);
 
-  const handleLoad = () => setLoading(false);
+  function handleLoad() {
+    console.log("✅ image loaded");
+    setLoading(false);
+  }
 
-  const handleError = () => {
+  function handleError(e: React.SyntheticEvent<HTMLImageElement, Event>) {
+    console.log("❌ image failed to load", e);
     if (fallback) {
       setSrc(`https://avatar.vercel.sh/${encodeURIComponent(alt)}`);
     }
     setLoading(false);
-  };
+  }
 
   return (
     <div className="relative h-full w-full">
