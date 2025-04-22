@@ -36,6 +36,8 @@ export function withLink(middleware: CustomMiddleware) {
 
     const isBot = detectBot(req);
     const ip = getClientIp(req);
+    console.log("🚀 ~ return ~ isBot:", isBot, "------", key);
+    console.log("🚀 ~ return ~ ip:", ip, "------", key);
 
     const { data, error } = await tryCatch<Link>(
       httpRequest.post(
