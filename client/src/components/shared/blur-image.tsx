@@ -47,7 +47,6 @@ export function BlurImageNative({
   ...rest
 }: BlurImageNativeProps) {
   const [loading, setLoading] = useState(true);
-  console.log("🚀 ~ loading:", loading);
   const [src, setSrc] = useState(initialSrc);
 
   useEffect(() => {
@@ -55,10 +54,7 @@ export function BlurImageNative({
     setLoading(true);
   }, [initialSrc]);
 
-  function handleLoad() {
-    console.log("✅ image loaded");
-    setLoading(false);
-  }
+  const handleLoad = () => setLoading(false);
 
   function handleError(e: React.SyntheticEvent<HTMLImageElement, Event>) {
     console.log("❌ image failed to load", e);
