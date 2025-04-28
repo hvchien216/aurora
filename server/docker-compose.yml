@@ -5,12 +5,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
+    expose:
+      - '3000'
     depends_on:
       - postgres
+      - redis
     env_file:
       - .env
+    environment:
+      - VIRTUAL_HOST=api.leww.space
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=api.leww.space
+      - LETSENCRYPT_EMAIL=hvchien216@gmail.com
 
   postgres:
     image: postgres:15

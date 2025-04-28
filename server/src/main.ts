@@ -21,6 +21,7 @@ async function bootstrap() {
   }
 
   app.useGlobalFilters(new HttpExceptionFilter());
-  await app.listen(appConfig?.port || 3000);
+  await app.listen(appConfig?.port || 3000, '0.0.0.0');
+  console.info(`server running on ${await app.getUrl()}`);
 }
 bootstrap();
