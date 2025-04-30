@@ -1,3 +1,4 @@
+import { injectParams } from "@leww/utils";
 import {
   useQuery,
   useQueryClient,
@@ -6,7 +7,6 @@ import {
 
 import type { ListResponse, PagingParams } from "~/types";
 import { customFetcher } from "~/lib";
-import { injectParams } from "~/utils";
 import { type Link } from "~/features/links/schemas";
 
 import { GET_LINKS_LIST } from "./query-keys";

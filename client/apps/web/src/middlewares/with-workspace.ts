@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextFetchEvent, NextRequest } from "next/server";
-import { type Workspace } from "~/features/workspaces";
 import {
   isAuthRoute,
   isPrivateRoute,
@@ -8,6 +7,7 @@ import {
 } from "~/middlewares/utils";
 
 import { extractUrl, httpRequest } from "~/lib";
+import { type Workspace } from "~/features/workspaces";
 
 import { type CustomMiddleware } from "./chain";
 

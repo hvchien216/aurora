@@ -1,4 +1,4 @@
-import { isNil } from "./is-nil";
+import { isNil } from "@leww/utils";
 
 export const isValidUrl = (url: string) => {
   try {

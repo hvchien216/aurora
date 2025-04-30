@@ -1,7 +1,7 @@
+import { injectParams } from "@leww/utils";
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 
 import { customFetcher } from "~/lib";
-import { injectParams } from "~/utils";
 
 import { GET_METATAGS } from "./query-keys";
 

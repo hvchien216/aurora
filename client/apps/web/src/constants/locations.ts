@@ -1,4 +1,4 @@
-import { injectParams } from "~/utils";
+import { injectParams } from "@leww/utils";
 
 export type LinksListOptions = {
   page?: number;

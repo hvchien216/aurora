@@ -20,6 +20,9 @@ importers:
       '@leww/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@leww/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@radix-ui/react-accordion':
         specifier: ^1.2.2
         version: 1.2.8(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
