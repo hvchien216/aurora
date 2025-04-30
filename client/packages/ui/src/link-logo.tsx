@@ -1,8 +1,6 @@
 import { ImageProps } from "next/image";
-import { cn } from "@leww/utils";
 import { Globe } from "lucide-react";
-
-import { GOOGLE_FAVICON_URL } from "~/constants";
+import { cn, GOOGLE_FAVICON_URL } from "@leww/utils";
 
 import { BlurImage } from "./blur-image";
 

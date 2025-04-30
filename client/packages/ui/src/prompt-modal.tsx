@@ -9,15 +9,10 @@ import {
 } from "react";
 import { GlobeIcon } from "lucide-react";
 
-import { Button, type ButtonProps } from "~/components/shared/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/shared/dialog";
-import { Input, type InputProps } from "~/components/shared/input";
-import { useIsMobile } from "~/hooks";
+import { Button, type ButtonProps } from "./button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
+import { useIsMobile } from "./hooks";
+import { Input, type InputProps } from "./input";
 
 type PromptModelProps = {
   title: string;

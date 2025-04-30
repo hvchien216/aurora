@@ -1,11 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@leww/utils";
 import { OTPInput, OTPInputContext } from "input-otp";
 import { Minus } from "lucide-react";
+import { cn } from "@leww/utils";
 
-const InputOTP = React.forwardRef<
+const InputOTP: React.ForwardRefExoticComponent<
+  React.ComponentPropsWithoutRef<typeof OTPInput> &
+    React.RefAttributes<React.ElementRef<typeof OTPInput>>
+> = React.forwardRef<
   React.ElementRef<typeof OTPInput>,
   React.ComponentPropsWithoutRef<typeof OTPInput>
 >(({ className, containerClassName, ...props }, ref) => (

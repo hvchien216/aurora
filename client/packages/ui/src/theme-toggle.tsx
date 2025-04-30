@@ -4,13 +4,13 @@ import { useEffect } from "react";
 import { useTheme } from "next-themes";
 import { MoonIcon, SunIcon } from "lucide-react";
 
+import { Button } from "./button";
 import {
-  Button,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "~/components/shared";
+} from "./tooltip";
 
 export function ThemeToggle() {
   const { theme, themes, resolvedTheme, setTheme } = useTheme();

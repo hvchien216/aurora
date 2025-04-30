@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@leww/utils";
 import { useTheme } from "next-themes";
 import {
   CheckIcon,
@@ -10,24 +9,15 @@ import {
   RepeatIcon,
   SunIcon,
 } from "lucide-react";
+import { baseColors, cn } from "@leww/utils";
 
-import {
-  Button,
-  DialogTitle,
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-  Label,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Skeleton,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/shared";
-import { baseColors } from "~/constants";
+import { Button } from "./button";
+import { DialogTitle } from "./dialog";
+import { Drawer, DrawerContent, DrawerTrigger } from "./drawer";
+import { Label } from "./label";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Skeleton } from "./skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export function ThemeCustomizer() {
   return (

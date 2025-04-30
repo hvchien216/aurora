@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@leww/utils";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
@@ -12,10 +11,11 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form";
+import { cn } from "@leww/utils";
 
-import { Label } from "~/components/shared/label";
+import { Label } from "./label";
 
-const Form = FormProvider;
+const Form: typeof FormProvider = FormProvider;
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,

@@ -1,19 +1,14 @@
 "use client";
 
 import { createContext, useContext, type PropsWithChildren } from "react";
-import { cn, getUploadedFileName } from "@leww/utils";
-import { get } from "http";
 import { CloudUpload, File, Upload, X } from "lucide-react";
+import { cn, getUploadedFileName } from "@leww/utils";
 
-import {
-  BlurImageNative,
-  Button,
-  ShimmerDots,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/shared";
-import { useIsMobile, type UseUploadReturn } from "~/hooks";
+import { BlurImageNative } from "./blur-image";
+import { Button } from "./button";
+import { useIsMobile, type UseUploadReturn } from "./hooks";
+import { ShimmerDots } from "./shimmer-dots";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export const formatBytes = (
   bytes: number,

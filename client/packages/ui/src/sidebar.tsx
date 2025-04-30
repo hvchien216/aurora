@@ -1,29 +1,24 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@leww/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useIsMobile } from "~/hooks/use-mobile";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
+import { cn } from "@leww/utils";
 
-import { Button } from "~/components/shared/button";
-import { Input } from "~/components/shared/input";
-import { Separator } from "~/components/shared/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-} from "~/components/shared/sheet";
-import { Skeleton } from "~/components/shared/skeleton";
+import { Button } from "./button";
+import { useIsMobile } from "./hooks/use-mobile";
+import { Input } from "./input";
+import { Separator } from "./separator";
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./sheet";
+import { Skeleton } from "./skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "~/components/shared/tooltip";
+} from "./tooltip";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
