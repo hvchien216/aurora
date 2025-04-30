@@ -1,7 +1,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
+import { getPage } from "@leww/utils";
 
 import { type PaginationState, type SortingState } from "~/types";
-import { getPage } from "~/utils";
 import { DEFAULT_ITEMS_PER_PAGE, locations } from "~/constants";
 
 const useLinksListParamsControl = (slug: string) => {

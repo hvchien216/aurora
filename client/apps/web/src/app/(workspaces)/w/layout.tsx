@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
+import { cn } from "@leww/utils";
 
 import { AppHeader, AppSidebar } from "~/components/layout";
 import { GradientBackground, SidebarProvider } from "~/components/shared";
-import { cn } from "~/lib";
 
 export default async function Layout({
   children,

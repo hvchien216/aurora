@@ -1,6 +1,7 @@
 "use client";
 
 import type * as React from "react";
+import { cn } from "@leww/utils";
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 
 import {
@@ -11,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/shared";
-import { cn } from "~/lib";
 
 import { DataTablePagination } from "./data-table-pagination";
 import { getCommonPinningStyles } from "./utils";

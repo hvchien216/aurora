@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image, { type ImageProps } from "next/image";
+import { cn } from "@leww/utils";
 import { LoaderCircle } from "lucide-react";
-
-import { cn } from "~/lib";
 
 export function BlurImage(props: ImageProps) {
   const [loading, setLoading] = useState(true);

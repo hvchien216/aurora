@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "~/lib";
+import { cn } from "@leww/utils";
 
 export function Wordmark({ className }: { className?: string }) {
   return (

@@ -1,11 +1,10 @@
 "use client";
 
+import { cn } from "@leww/utils";
+import { useCopyToClipboard } from "~/hooks/use-copy-to-clipboard";
 import { cva, type VariantProps } from "class-variance-authority";
 import { toast } from "sonner";
 import { Check, Copy, type LucideIcon } from "lucide-react";
-
-import { useCopyToClipboard } from "~/hooks/use-copy-to-clipboard";
-import { cn } from "~/lib";
 
 const copyButtonVariants = cva(
   "group relative rounded-full p-1.5 transition-all duration-75",

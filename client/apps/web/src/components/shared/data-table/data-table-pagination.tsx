@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@leww/utils";
 import type { Table } from "@tanstack/react-table";
 import {
   ChevronLeft,
@@ -16,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/shared";
-import { cn } from "~/lib";
 
 interface DataTablePaginationProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;

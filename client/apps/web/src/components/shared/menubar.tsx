@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@leww/utils";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
-import { cn } from "~/lib";
 import { Check, ChevronRight, Circle } from "lucide-react";
 
 const MenubarMenu = MenubarPrimitive.Menu;

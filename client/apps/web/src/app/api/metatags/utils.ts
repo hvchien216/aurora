@@ -1,7 +1,6 @@
+import { isValidUrl } from "@leww/utils";
 import he from "he";
 import { parse } from "node-html-parser";
-
-import { isValidUrl } from "~/utils";
 
 function fetchWithTimeout(
   input: RequestInfo | URL,

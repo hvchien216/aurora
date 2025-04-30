@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@leww/utils";
 import { useTheme } from "next-themes";
 import {
   CheckIcon,
@@ -26,7 +27,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/shared";
-import { cn } from "~/lib";
 import { baseColors } from "~/constants";
 
 export function ThemeCustomizer() {

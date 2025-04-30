@@ -1,4 +1,5 @@
 import type { ChangeEvent, ReactNode } from "react";
+import { cn } from "@leww/utils";
 import { useFormContext } from "react-hook-form";
 
 import {
@@ -11,7 +12,6 @@ import {
   TextareaAutosize,
   type TextareaAutosizeProps,
 } from "~/components/shared";
-import { cn } from "~/lib";
 
 interface RHFTextAreaProps extends TextareaAutosizeProps {
   name: string;

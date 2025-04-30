@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "~/lib";
+import { cn } from "@leww/utils";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";

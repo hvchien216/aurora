@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { clientSessionToken, httpRequest, tryCatch } from "@leww/utils";
 import { LoaderIcon } from "lucide-react";
-
-import { clientSessionToken, httpRequest } from "~/lib";
-import { tryCatch } from "~/utils";
 
 const CallbackPage = () => {
   const router = useRouter();

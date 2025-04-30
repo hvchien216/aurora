@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@leww/utils";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
-import { cn } from "~/lib";
 import { Check, ChevronRight, Circle } from "lucide-react";
 
 const ContextMenu = ContextMenuPrimitive.Root;

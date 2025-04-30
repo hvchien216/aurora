@@ -1,7 +1,6 @@
 import * as React from "react";
 import type { SVGProps } from "react";
-
-import { cn } from "~/lib";
+import { cn } from "@leww/utils";
 
 export const Facebook = ({ className, ...props }: SVGProps<SVGSVGElement>) => (
   <svg

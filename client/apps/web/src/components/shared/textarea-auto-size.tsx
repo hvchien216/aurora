@@ -1,11 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@leww/utils";
 import _TextareaAutosize, {
   type TextareaAutosizeProps as _TextareaAutosizeProps,
 } from "react-textarea-autosize";
-
-import { cn } from "~/lib";
 
 export type TextareaAutosizeProps = _TextareaAutosizeProps;
 

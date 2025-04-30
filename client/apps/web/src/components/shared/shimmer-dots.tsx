@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-import { cn } from "~/lib";
+import { cn } from "@leww/utils";
 
 const vertexShader = `
 attribute vec2 position;

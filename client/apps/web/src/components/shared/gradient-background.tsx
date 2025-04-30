@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-
-import { cn } from "~/lib";
+import { cn } from "@leww/utils";
 
 export function GradientBackground(props: { showAnimation?: boolean }) {
   const [isGridLoaded, setIsGridLoaded] = useState(false);

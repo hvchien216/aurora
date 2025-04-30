@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@leww/utils";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { HelpCircle } from "lucide-react";
-
-import { cn } from "~/lib";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 

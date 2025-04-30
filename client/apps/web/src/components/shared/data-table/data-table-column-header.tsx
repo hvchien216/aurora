@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@leww/utils";
 import type { Column } from "@tanstack/react-table";
 import {
   ChevronDown,
@@ -16,7 +17,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/shared";
-import { cn } from "~/lib";
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.ComponentProps<typeof DropdownMenuTrigger> {
