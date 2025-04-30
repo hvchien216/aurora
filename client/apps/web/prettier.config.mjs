@@ -20,7 +20,7 @@ const config = {
     "^~/components/(.*)$",
     "^~/hooks$",
     "^~/lib$",
-    "^~/utils$",
+    "^@leww/utils$",
     "^~/constants$",
     "^~/styles/(.*)$",
     "^~/features/(.*)$",
