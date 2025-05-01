@@ -23,7 +23,7 @@
 //   Checkbox,
 //   Button,
 //   Badge,
-// } from "~/components/shared";
+// } from "@leww/ui";
 
 // interface GetColumnsProps {
 //   setRowAction: React.Dispatch<

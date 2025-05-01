@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronsUpDown, Plus } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +13,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "~/components/shared";
+} from "@leww/ui";
+import { ChevronsUpDown, Plus } from "lucide-react";
 
 export function WorkspaceSwitcher({
   workspaces,

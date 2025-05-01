@@ -1,11 +1,6 @@
 "use client";
 
 import React, { Fragment, useEffect } from "react";
-import { getDomainWithoutWWW, getFirst } from "@leww/utils";
-import { useFormContext } from "react-hook-form";
-import { Earth, Eye, EyeClosed, PenIcon } from "lucide-react";
-
-import { Facebook, LinkedIn, XTwitter } from "~/components/shared/icons";
 import {
   Button,
   InfoTooltip,
@@ -17,8 +12,13 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~/components/shared";
-import { useDebounceValue } from "~/hooks";
+  useDebounceValue,
+  useFormContext,
+} from "@leww/ui";
+import { Facebook, LinkedIn, XTwitter } from "@leww/ui/icons";
+import { getDomainWithoutWWW, getFirst } from "@leww/utils";
+import { Earth, Eye, EyeClosed, PenIcon } from "lucide-react";
+
 import { useGetMetaTagsQuery } from "~/features/links/hooks";
 import { type CreateLinkForm } from "~/features/links/schemas";
 
@@ -57,6 +57,7 @@ const tabs = [
     id: "facebook",
   },
 ];
+
 const LinkPreview = () => {
   const { watch, setValue } = useFormContext<CreateLinkForm>();
   const [url, image, title, description, proxy] = watch([

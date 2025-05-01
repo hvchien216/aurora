@@ -1,7 +1,5 @@
 import Link from "next/link";
-
-import { GradientBackground } from "~/components/shared/gradient-background";
-import { Wordmark } from "~/components/shared/wordmark";
+import { GradientBackground, Wordmark } from "@leww/ui";
 
 export default function NotFound() {
   return (

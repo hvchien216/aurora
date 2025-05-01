@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { useParams } from "next/navigation";
-import { useDataTable } from "~/hooks/use-data-table";
+import { DataTable, useDataTable } from "@leww/ui";
 
-import { DataTable } from "~/components/shared";
 import { useGetLinkListQuery } from "~/features/links/hooks";
 
 import { columns } from "./columns";

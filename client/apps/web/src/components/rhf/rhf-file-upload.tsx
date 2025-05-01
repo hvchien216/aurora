@@ -1,7 +1,4 @@
 import type { ChangeEvent, ReactNode } from "react";
-import { cn } from "@leww/utils";
-import { useFormContext } from "react-hook-form";
-
 import {
   Dropzone,
   DropzoneContent,
@@ -12,9 +9,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  useUpload,
+  type FileWithPreview,
   type TextareaAutosizeProps,
-} from "~/components/shared";
-import { useUpload, type FileWithPreview } from "~/hooks";
+} from "@leww/ui";
+import { cn } from "@leww/utils";
+import { useFormContext } from "react-hook-form";
 
 interface RHFFileUploadProps extends TextareaAutosizeProps {
   name: string;
@@ -123,7 +123,7 @@ export const RHFFileUpload = ({
 
   return (
     <FormField
-      control={control}
+      control={control as any}
       name={name}
       render={({ field }) => (
         <FormItem className={cn(classNames?.formItem)}>

@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import {
+  ColumnSort,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -16,7 +17,9 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 
-import { type ExtendedColumnSort } from "~/types";
+interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
+  id: Extract<keyof TData, string>;
+}
 
 interface UseDataTableProps<TData>
   extends Omit<

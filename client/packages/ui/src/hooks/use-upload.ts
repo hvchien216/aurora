@@ -26,7 +26,16 @@ interface UseUploadOptions {
 
 export type UseUploadReturn = ReturnType<typeof useUpload>;
 
-export const useUpload = (options: UseUploadOptions) => {
+export const useUpload = (
+  options: UseUploadOptions,
+): {
+  files: FileWithPreview[];
+  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[]>>;
+  maxFileSize: number;
+  maxFiles: number;
+  allowedMimeTypes: string[];
+  handleRemoveFile: (file: FileWithPreview) => void;
+} & ReturnType<typeof useDropzone> => {
   const {
     allowedMimeTypes = [],
     maxFileSize = Number.POSITIVE_INFINITY,

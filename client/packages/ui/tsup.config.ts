@@ -3,6 +3,7 @@ import { defineConfig, Options } from "tsup";
 export default defineConfig((options: Options) => ({
   entry: {
     index: "src/index.ts",
+    "icons/index": "src/icons/index.ts",
   },
 
   format: ["esm"],
@@ -13,6 +14,6 @@ export default defineConfig((options: Options) => ({
   },
   dts: true,
   minify: true,
-  external: ["react"],
+  external: ["react", "react-dom", "react-hook-form"],
   ...options,
 }));

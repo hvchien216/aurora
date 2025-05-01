@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight } from "lucide-react";
-
 import {
   Badge,
   Collapsible,
@@ -24,7 +22,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "~/components/shared";
+} from "@leww/ui";
+import { ChevronRight } from "lucide-react";
 
 import type { NavCollapsible, NavGroup, NavItem, NavLink } from "./types";
 

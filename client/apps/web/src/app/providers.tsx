@@ -1,9 +1,7 @@
 import { type ReactNode } from "react";
+import { Toaster, TooltipProvider } from "@leww/ui";
+import { THEMES } from "@leww/utils";
 import { QueryClientProvider, ThemeProvider } from "~/providers";
-
-import { Toaster } from "~/components/shared/sonner";
-import { TooltipProvider } from "~/components/shared";
-import { THEMES } from "~/constants";
 
 // TODO: use this for all providers in the app
 export default function RootProviders({ children }: { children: ReactNode }) {

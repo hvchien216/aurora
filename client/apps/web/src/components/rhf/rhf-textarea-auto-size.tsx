@@ -1,7 +1,4 @@
 import type { ChangeEvent, ReactNode } from "react";
-import { cn } from "@leww/utils";
-import { useFormContext } from "react-hook-form";
-
 import {
   FormControl,
   FormDescription,
@@ -11,7 +8,9 @@ import {
   FormMessage,
   TextareaAutosize,
   type TextareaAutosizeProps,
-} from "~/components/shared";
+} from "@leww/ui";
+import { cn } from "@leww/utils";
+import { useFormContext } from "react-hook-form";
 
 interface RHFTextAreaProps extends TextareaAutosizeProps {
   name: string;
@@ -51,7 +50,7 @@ export const RHFTextAreaAutoSize = ({
 
   return (
     <FormField
-      control={control}
+      control={control as any}
       name={name}
       render={({ field }) => (
         <FormItem className={classNames?.formItem}>

@@ -4,9 +4,9 @@ import "~/styles/globals.css";
 import "~/styles/themes.css";
 
 import { cookies } from "next/headers";
+import { SonnerToaster } from "@leww/ui";
 import { SessionInjector } from "~/providers";
 
-import { Toaster } from "~/components/shared/toaster";
 import { inter } from "~/styles/fonts";
 import RootProviders from "~/app/providers";
 
@@ -35,7 +35,7 @@ export default async function RootLayout({
         >
           <RootProviders>{children}</RootProviders>
         </SessionInjector>
-        <Toaster />
+        <SonnerToaster />
       </body>
     </html>
   );

@@ -1,19 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@leww/utils";
 import type { Table } from "@tanstack/react-table";
 import { AnimatePresence, motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import { Loader, X } from "lucide-react";
+import { cn } from "@leww/utils";
 
-import {
-  Button,
-  Separator,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/shared";
+import { Button } from "../button";
+import { Separator } from "../separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip";
 
 interface DataTableActionBarProps<TData>
   extends React.ComponentProps<typeof motion.div> {

@@ -1,11 +1,10 @@
 import { notFound, redirect } from "next/navigation";
-import { getApexDomain, tryCatch } from "@leww/utils";
+import { BlurImage, BlurImageNative } from "@leww/ui";
+import { getApexDomain, GOOGLE_FAVICON_URL, tryCatch } from "@leww/utils";
 import { unescape } from "html-escaper";
 
-import { BlurImage, BlurImageNative } from "~/components/shared/blur-image";
 import { httpRequest } from "~/lib";
 import { metadataConstructor } from "~/utils";
-import { GOOGLE_FAVICON_URL } from "~/constants";
 import { type Link } from "~/features/links";
 
 export const runtime = "edge";

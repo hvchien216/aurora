@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-import { Button } from "~/components/shared";
+import { Button } from "@leww/ui";
 
 export const GoogleButton = () => {
   const [isLoading, setIsLoading] = useState(false);

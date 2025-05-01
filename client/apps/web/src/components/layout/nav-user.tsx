@@ -2,15 +2,6 @@
 
 import Link from "next/link";
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
-
-import {
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -25,7 +16,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "~/components/shared";
+} from "@leww/ui";
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from "lucide-react";
 
 export function NavUser({
   user,

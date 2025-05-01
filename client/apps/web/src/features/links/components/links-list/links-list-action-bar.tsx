@@ -1,11 +1,8 @@
 "use client";
 
+import { DataTableActionBar, DataTableActionBarSelection } from "@leww/ui";
 import type { Table } from "@tanstack/react-table";
 
-import {
-  DataTableActionBar,
-  DataTableActionBarSelection,
-} from "~/components/shared";
 import { type Link } from "~/features/links/schemas";
 
 interface TasksTableActionBarProps {

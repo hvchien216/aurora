@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { EarthIcon } from "lucide-react";
-
 import {
   Button,
   Dialog,
@@ -8,7 +6,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/shared";
+} from "@leww/ui";
+import { EarthIcon } from "lucide-react";
 
 import LinkBuilderForm from "./link-builder-form";
 

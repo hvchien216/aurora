@@ -6,7 +6,7 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "~/components/shared";
+} from "@leww/ui";
 
 import { SIDEBAR_DATA } from "./constants";
 import { NavGroup } from "./nav-group";

@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
-
-import { GradientBackground, Wordmark } from "~/components/shared";
+import { GradientBackground, Wordmark } from "@leww/ui";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (

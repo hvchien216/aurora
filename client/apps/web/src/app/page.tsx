@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@leww/ui";
+import { Button, GradientBackground, Wordmark } from "@leww/ui";
 import { tryCatch } from "@leww/utils";
 
-import { GradientBackground, Wordmark } from "~/components/shared";
 import { httpRequest } from "~/lib";
 import { type Workspace } from "~/features/workspaces";
 

@@ -1,8 +1,4 @@
-import {
-  SidebarTrigger,
-  ThemeCustomizer,
-  ThemeToggle,
-} from "~/components/shared";
+import { SidebarTrigger, ThemeCustomizer, ThemeToggle } from "@leww/ui";
 
 export function AppHeader() {
   return (

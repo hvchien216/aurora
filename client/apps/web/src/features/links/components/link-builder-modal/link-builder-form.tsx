@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, DialogFooter, Form, InfoTooltip, toast } from "@leww/ui";
 import { cn, getFirst } from "@leww/utils";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import { RHFInput } from "~/components/rhf";
-import { Button, DialogFooter, Form, InfoTooltip } from "~/components/shared";
 import { useUploadMutation } from "~/hooks";
 import {
   useCreateLinkMutation,
@@ -96,7 +95,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
   const { isDirty, isValid, isSubmitting } = form.formState;
 
   return (
-    <Form {...form}>
+    <Form {...(form as any)}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6"
