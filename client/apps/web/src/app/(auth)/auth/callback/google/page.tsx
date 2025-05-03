@@ -38,7 +38,8 @@ const CallbackPage = () => {
 
       // Redirect to dashboard or home page
       router.push("/w");
-      // router.refresh(); // Refresh the router to update server components
+      router.refresh();
+      // Refresh the router to update server components
     };
 
     if (searchParams.has("accessToken") || searchParams.has("refreshToken")) {

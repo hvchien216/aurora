@@ -21,11 +21,13 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken");
   const refreshToken = cookieStore.get("refreshToken");
+
   return (
     <html lang="en" className="mdl-js" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
         {/* keep SessionInjector outside to allow RootProviders caching. */}
         <SessionInjector
+          key={`${refreshToken?.value}-${accessToken?.value}`}
           initialSessionToken={{
             accessToken: accessToken?.value,
             refreshToken: refreshToken?.value,
