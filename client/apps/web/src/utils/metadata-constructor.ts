@@ -6,7 +6,7 @@ import { HOME_DOMAIN } from "~/constants";
 export const metadataConstructor = ({
   title,
   fullTitle,
-  description = "Lew.co is the open-source link shortener,link management platform.",
+  description = "Leww.space is the open-source URL shortener,link management platform.",
   image = "/background.svg",
   video,
   icons = [
@@ -46,7 +46,7 @@ export const metadataConstructor = ({
 } = {}): Metadata => {
   return {
     title:
-      fullTitle || (title ? `${title} | Lew.co` : "Lew.co - URL Shortener"),
+      fullTitle || (title ? `${title} | Leww` : "Leww - The URL Shortener"),
     description,
     openGraph: {
       title,
