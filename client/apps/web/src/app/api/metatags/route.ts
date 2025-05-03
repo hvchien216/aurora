@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+
 import { getMetaTagsSchema } from "~/features/links";
 
 import { getMetaTags } from "./utils";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
