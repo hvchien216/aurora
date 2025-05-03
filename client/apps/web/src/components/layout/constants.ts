@@ -7,11 +7,11 @@ import {
 import { type SidebarData } from "./types";
 
 export const SIDEBAR_DATA: SidebarData = {
-  user: {
-    name: "satnaing",
-    email: "satnaingdev@gmail.com",
-    avatar: "https://api.dicebear.com/9.x/micah/svg",
-  },
+  // user: {
+  //   name: "satnaing",
+  //   email: "satnaingdev@gmail.com",
+  //   avatar: "https://api.dicebear.com/9.x/micah/svg",
+  // },
   workspaces: [
     {
       name: "Lewis",

@@ -7,6 +7,7 @@ import {
 } from "~/middlewares/utils";
 
 import { extractUrl, httpRequest } from "~/lib";
+import { type User } from "~/features/user/schemas";
 import { type Workspace } from "~/features/workspaces";
 
 import { type CustomMiddleware } from "./chain";
@@ -24,7 +25,7 @@ export function withWorkspace(middleware: CustomMiddleware) {
       // TODO: create Profile type
       const [workspacesResult, profileResult] = await Promise.allSettled([
         httpRequest.get<Workspace[]>("/v1/workspaces"),
-        httpRequest.get<any>("/v1/profile"),
+        httpRequest.get<User>("/v1/profile", { cache: "default" }),
       ]);
 
       const workspaces =
