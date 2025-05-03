@@ -13,19 +13,19 @@ export const metadataConstructor = ({
     {
       rel: "apple-touch-icon",
       sizes: "32x32",
-      url: "/favicon.ico",
+      url: "/apple-touch-icon.png",
     },
     {
       rel: "icon",
       type: "image/png",
       sizes: "32x32",
-      url: "/favicon.ico",
+      url: "/favicon-32x32.png",
     },
     {
       rel: "icon",
       type: "image/png",
       sizes: "16x16",
-      url: "/favicon.ico",
+      url: "/favicon-16x16.png",
     },
   ],
   url,
