@@ -7,6 +7,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@leww/ui";
+import { type ColumnDef } from "@tanstack/react-table";
+import { Check, CircleCheck, MousePointerClick } from "lucide-react";
+
 import {
   cn,
   getApexDomain,
@@ -16,35 +19,33 @@ import {
   pluralize,
   timeAgo,
 } from "@leww/utils";
-import { type ColumnDef } from "@tanstack/react-table";
-import { Check, CircleCheck, MousePointerClick } from "lucide-react";
-
 import { A_BILLION } from "~/constants";
 import { type Link } from "~/features/links/schemas";
 
 export const columns: ColumnDef<Link>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <div className="my-1">
-        <SelectionWrapper
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={() =>
-            table.toggleAllPageRowsSelected(
-              !(
-                table.getIsAllPageRowsSelected() ||
-                (table.getIsSomePageRowsSelected() && "indeterminate")
-              ),
-            )
-          }
-        >
-          <div className="size-2 shrink-0 sm:size-6" />
-        </SelectionWrapper>
-      </div>
-    ),
+    header: ({ table }) =>
+      table.getRowCount() > 0 && (
+        <div className="my-1">
+          <SelectionWrapper
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={() =>
+              table.toggleAllPageRowsSelected(
+                !(
+                  table.getIsAllPageRowsSelected() ||
+                  (table.getIsSomePageRowsSelected() && "indeterminate")
+                ),
+              )
+            }
+          >
+            <div className="size-2 shrink-0 sm:size-6" />
+          </SelectionWrapper>
+        </div>
+      ),
     cell: ({ row }) => (
       <SelectionWrapper
         checked={row.getIsSelected()}

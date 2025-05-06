@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useParams } from "next/navigation";
-import { DataTable, useDataTable } from "@leww/ui";
+import { DataTable, EmptyState, useDataTable } from "@leww/ui";
+import { LinkIcon, MousePointerClick } from "lucide-react";
 
 import { useGetLinkListQuery } from "~/features/links/hooks";
 
@@ -10,10 +11,15 @@ import useLinksListParamsControl from "./use-links-list-params-control";
 
 const LinksList: React.FC = () => {
   const { slug: workspaceSlug } = useParams<{ slug: string }>();
-  const { pageIndex, pageSize, handlePaginationChange, handleSortingChange } =
-    useLinksListParamsControl(workspaceSlug);
+  const {
+    isFiltered,
+    pageIndex,
+    pageSize,
+    handlePaginationChange,
+    handleSortingChange,
+  } = useLinksListParamsControl(workspaceSlug);
 
-  const { data } = useGetLinkListQuery({
+  const { data, isLoading } = useGetLinkListQuery({
     page: pageIndex,
     limit: pageSize,
     workspaceSlug,
@@ -42,6 +48,23 @@ const LinksList: React.FC = () => {
       <DataTable
         table={table}
         actionBar={<LinksListActionBar table={table} />}
+        isLoading={isLoading}
+        emptyState={
+          <EmptyState
+            title={isFiltered ? "No links found" : "No links yet"}
+            description={isFiltered ? "Try a different search" : ""}
+            cardContent={
+              <>
+                <LinkIcon className="size-4 text-neutral-700" />
+                <div className="h-2.5 w-24 min-w-0 rounded-sm bg-neutral-200" />
+                <div className="hidden grow items-center justify-end gap-1.5 text-neutral-500 xs:flex">
+                  <MousePointerClick className="size-4 shrink-0 text-neutral-600/70" />
+                </div>
+              </>
+            }
+            className="border-none"
+          />
+        }
       />
     </>
   );
