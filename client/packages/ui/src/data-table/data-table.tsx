@@ -67,7 +67,7 @@ export function DataTable<TData>({
               Array.from({ length: 12 }).map((_, idx) => (
                 <TableRow key={idx} className="border-none">
                   <TableCell colSpan={table.getAllColumns().length}>
-                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-14 w-full" />
                   </TableCell>
                 </TableRow>
               ))
