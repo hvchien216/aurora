@@ -200,6 +200,7 @@ export const columns: ColumnDef<Link>[] = [
     },
   },
   {
+    enableSorting: false,
     accessorKey: "userId",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created By" />

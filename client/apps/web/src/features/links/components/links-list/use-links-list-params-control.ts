@@ -1,8 +1,10 @@
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { type PaginationState, type SortingState } from "~/types";
-import { getPage } from "@leww/utils";
+import { getPage, getSortBy, getValue } from "@leww/utils";
 import { DEFAULT_ITEMS_PER_PAGE, locations } from "~/constants";
+
+import { ALLOWED_SORTING_FIELDS, type AllowedSortingFields } from "./constants";
 
 const useLinksListParamsControl = (slug: string) => {
   const router = useRouter();
@@ -10,8 +12,20 @@ const useLinksListParamsControl = (slug: string) => {
 
   const pageIndex = getPage(searchParams.get("page"), 1);
   const pageSize = Math.min(
-    getPage(searchParams.get("pageSize"), DEFAULT_ITEMS_PER_PAGE),
+    getValue(searchParams.get("pageSize"), DEFAULT_ITEMS_PER_PAGE) as number,
     DEFAULT_ITEMS_PER_PAGE,
+  );
+
+  const orderBy = getSortBy(
+    searchParams.get("sort"),
+    [...ALLOWED_SORTING_FIELDS],
+    "clicks",
+  ) as AllowedSortingFields;
+
+  const orderDirection = getSortBy(
+    searchParams.get("order"),
+    ["asc", "desc"],
+    "desc",
   );
 
   const handlePaginationChange = (pagination: PaginationState) => {
@@ -27,11 +41,20 @@ const useLinksListParamsControl = (slug: string) => {
   };
 
   const handleSortingChange = (sorting: SortingState) => {
+    const sortParam = sorting?.[0];
+
     router.push(
-      locations.links(slug, {
-        sort: sorting?.[0]?.id,
-        order: sorting?.[0]?.desc ? "desc" : "asc",
-      }),
+      locations.links(
+        slug,
+        sortParam
+          ? {
+              sort: ALLOWED_SORTING_FIELDS.includes(sortParam.id)
+                ? sortParam.id
+                : "clicks",
+              order: sortParam.desc ? "desc" : "asc",
+            }
+          : undefined,
+      ),
       {
         scroll: false,
       },
@@ -44,6 +67,8 @@ const useLinksListParamsControl = (slug: string) => {
     isFiltered,
     pageIndex,
     pageSize,
+    orderBy,
+    orderDirection,
     handlePaginationChange,
     handleSortingChange,
   };

@@ -15,6 +15,8 @@ const LinksList: React.FC = () => {
     isFiltered,
     pageIndex,
     pageSize,
+    orderBy,
+    orderDirection,
     handlePaginationChange,
     handleSortingChange,
   } = useLinksListParamsControl(workspaceSlug);
@@ -22,18 +24,29 @@ const LinksList: React.FC = () => {
   const { data, isLoading } = useGetLinkListQuery({
     page: pageIndex,
     limit: pageSize,
+    orderBy,
+    orderDirection,
     workspaceSlug,
   });
 
   const totalPages = Math.ceil((data?.total || 0) / (data?.paging?.limit || 0));
 
   const normalizedData = useMemo(() => data?.data || [], [data]);
+  const defaultSorting = useMemo(
+    () => [
+      {
+        id: orderBy,
+        desc: orderDirection === "desc",
+      },
+    ],
+    [orderBy, orderDirection],
+  );
   const { table } = useDataTable({
     data: normalizedData, // your data array
     columns, // your defined columns
     pageCount: totalPages,
     initialState: {
-      // sorting: [{ id: "createdAt", desc: true }],
+      sorting: defaultSorting,
       // columnPinning: { right: ["actions"] },
       pagination: { pageIndex: pageIndex - 1, pageSize },
     },
