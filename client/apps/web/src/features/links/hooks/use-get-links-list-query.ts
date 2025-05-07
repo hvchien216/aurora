@@ -1,4 +1,3 @@
-import { injectParams } from "@leww/utils";
 import {
   useQuery,
   useQueryClient,
@@ -7,6 +6,7 @@ import {
 
 import type { ListResponse, PagingParams } from "~/types";
 import { customFetcher } from "~/lib";
+import { injectParams } from "@leww/utils";
 import { type Link } from "~/features/links/schemas";
 
 import { GET_LINKS_LIST } from "./query-keys";
@@ -25,15 +25,15 @@ export const useGetLinkListQuery = <TData extends Response>(
     {
       page: "page",
       limit: "limit",
-      order: "order",
-      sort: "sort",
+      orderBy: "orderBy",
+      orderDirection: "orderDirection",
       workspaceSlug: "workspaceSlug",
     },
     {
       page: variables.page,
       limit: variables.limit,
-      order: variables.order,
-      sort: variables.sort,
+      orderBy: variables.orderBy,
+      orderDirection: variables.orderDirection,
       workspaceSlug: variables.workspaceSlug,
     },
   );

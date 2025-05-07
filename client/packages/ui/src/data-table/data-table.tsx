@@ -4,6 +4,7 @@ import type * as React from "react";
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table";
 import { cn } from "@leww/utils";
 
+import { Skeleton } from "../skeleton";
 import {
   Table,
   TableBody,
@@ -18,11 +19,15 @@ import { getCommonPinningStyles } from "./utils";
 interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
+  emptyState?: React.ReactNode;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData>({
   table,
   actionBar,
+  emptyState,
+  isLoading,
   children,
   className,
   ...props
@@ -58,7 +63,15 @@ export function DataTable<TData>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              Array.from({ length: 12 }).map((_, idx) => (
+                <TableRow key={idx} className="border-none">
+                  <TableCell colSpan={table.getAllColumns().length}>
+                    <Skeleton className="h-14 w-full" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -85,7 +98,7 @@ export function DataTable<TData>({
                   colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {emptyState ?? "No results."}
                 </TableCell>
               </TableRow>
             )}

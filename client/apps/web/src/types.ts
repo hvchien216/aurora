@@ -28,8 +28,8 @@ export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
 //  ======== End Table Component ========
 
 type Sorting = {
-  sort?: string;
-  order?: "asc" | "desc";
+  orderBy?: string;
+  orderDirection?: "asc" | "desc";
 };
 
 type Paging = Sorting & {

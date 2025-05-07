@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { tryCatch } from "@leww/utils";
 import { LoaderIcon } from "lucide-react";
 
 import { clientSessionToken, httpRequest } from "~/lib";
+import { tryCatch } from "@leww/utils";
 
 const CallbackPage = () => {
   const router = useRouter();
@@ -37,8 +37,9 @@ const CallbackPage = () => {
       clientSessionToken.value = accessToken;
 
       // Redirect to dashboard or home page
-      router.push("/");
-      // router.refresh(); // Refresh the router to update server components
+      router.push("/w");
+      router.refresh();
+      // Refresh the router to update server components
     };
 
     if (searchParams.has("accessToken") || searchParams.has("refreshToken")) {

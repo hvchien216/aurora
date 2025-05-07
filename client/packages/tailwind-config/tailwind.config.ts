@@ -77,10 +77,15 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "infinite-scroll-y": {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(var(--scroll, -150%))" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "infinite-scroll-y": "infinite-scroll-y 20s linear infinite",
       },
     },
   },

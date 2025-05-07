@@ -16,9 +16,9 @@ import {
   useFormContext,
 } from "@leww/ui";
 import { Facebook, LinkedIn, XTwitter } from "@leww/ui/icons";
-import { getDomainWithoutWWW, getFirst } from "@leww/utils";
 import { Earth, Eye, EyeClosed, PenIcon } from "lucide-react";
 
+import { getDomainWithoutWWW, getFirst, isNil } from "@leww/utils";
 import { useGetMetaTagsQuery } from "~/features/links/hooks";
 import { type CreateLinkForm } from "~/features/links/schemas";
 
@@ -83,15 +83,17 @@ const LinkPreview = () => {
     if (metaTagData) {
       setValue("title", metaTagData.title, { shouldDirty: true });
       setValue("description", metaTagData.description, { shouldDirty: true });
-      setValue(
-        "image",
-        [
-          {
-            url: metaTagData?.image ? metaTagData.image : undefined,
-          },
-        ],
-        { shouldDirty: true, shouldValidate: true },
-      );
+      const imageValue = isNil(metaTagData?.image)
+        ? []
+        : [
+            {
+              url: metaTagData?.image ? metaTagData.image : undefined,
+            },
+          ];
+      setValue("image", imageValue, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     }
   }, [metaTagData, setValue]);
 

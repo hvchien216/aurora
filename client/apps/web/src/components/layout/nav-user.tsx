@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -17,14 +15,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@leww/ui";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
+
+import { LogoutButton } from "~/features/auth/ui";
 
 export function NavUser({
   user,
@@ -48,7 +41,16 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user?.name
+                    ? user.name
+                        .trim()
+                        .split(" ")
+                        .slice(0, 3)
+                        .map((word) => word[0])
+                        .join("")
+                    : ""}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
@@ -67,7 +69,16 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user?.name
+                      ? user.name
+                          .trim()
+                          .split(" ")
+                          .slice(0, 3)
+                          .map((word) => word[0])
+                          .join("")
+                      : ""}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
@@ -76,14 +87,14 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            <DropdownMenuSeparator /> */}
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link href="/settings/account">
                   <BadgeCheck />
@@ -103,10 +114,9 @@ export function NavUser({
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuSeparator /> */}
+            <DropdownMenuItem asChild>
+              <LogoutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,12 +1,19 @@
 import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, DialogFooter, Form, InfoTooltip, toast } from "@leww/ui";
-import { cn, getFirst } from "@leww/utils";
+import {
+  Button,
+  DialogFooter,
+  Form,
+  InfoTooltip,
+  toast,
+  useCopyToClipboard,
+} from "@leww/ui";
 import { useForm } from "react-hook-form";
 
 import { RHFInput } from "~/components/rhf";
 import { useUploadMutation } from "~/hooks";
+import { cn, getFirst, linkConstructor } from "@leww/utils";
 import {
   useCreateLinkMutation,
   useInvalidateLinksWorkspace,
@@ -25,6 +32,7 @@ type Props = {
 
 const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
   const { slug } = useParams<{ slug: string }>();
+  const [, copyToClipboard] = useCopyToClipboard();
 
   const invalidateLinksWorkspace = useInvalidateLinksWorkspace();
 
@@ -52,9 +60,17 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
   }, [ws, form]);
 
   const { mutateAsync } = useCreateLinkMutation({
-    onSuccess: () => {
+    onSuccess: async (data) => {
       handleClose();
       invalidateLinksWorkspace();
+
+      const domain = process.env.NEXT_PUBLIC_DOMAIN;
+      const shortLink = linkConstructor({
+        domain,
+        key: data.key,
+      });
+      await copyToClipboard(shortLink);
+      toast.info("Copied short link to clipboard!");
     },
   });
 

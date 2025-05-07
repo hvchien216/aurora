@@ -1,5 +1,7 @@
 import { memo, type ReactNode } from "react";
 import {
+  Avatar,
+  AvatarImage,
   CopyButton,
   DataTableColumnHeader,
   LinkLogo,
@@ -7,8 +9,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@leww/ui";
+import { type ColumnDef } from "@tanstack/react-table";
+import { Check, CircleCheck, MousePointerClick } from "lucide-react";
+
 import {
   cn,
+  formatDate,
   getApexDomain,
   getPrettyUrl,
   linkConstructor,
@@ -16,35 +22,33 @@ import {
   pluralize,
   timeAgo,
 } from "@leww/utils";
-import { type ColumnDef } from "@tanstack/react-table";
-import { Check, CircleCheck, MousePointerClick } from "lucide-react";
-
 import { A_BILLION } from "~/constants";
 import { type Link } from "~/features/links/schemas";
 
 export const columns: ColumnDef<Link>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <div className="my-1">
-        <SelectionWrapper
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={() =>
-            table.toggleAllPageRowsSelected(
-              !(
-                table.getIsAllPageRowsSelected() ||
-                (table.getIsSomePageRowsSelected() && "indeterminate")
-              ),
-            )
-          }
-        >
-          <div className="size-2 shrink-0 sm:size-6" />
-        </SelectionWrapper>
-      </div>
-    ),
+    header: ({ table }) =>
+      table.getRowCount() > 0 && (
+        <div className="my-1">
+          <SelectionWrapper
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={() =>
+              table.toggleAllPageRowsSelected(
+                !(
+                  table.getIsAllPageRowsSelected() ||
+                  (table.getIsSomePageRowsSelected() && "indeterminate")
+                ),
+              )
+            }
+          >
+            <div className="size-2 shrink-0 sm:size-6" />
+          </SelectionWrapper>
+        </div>
+      ),
     cell: ({ row }) => (
       <SelectionWrapper
         checked={row.getIsSelected()}
@@ -162,6 +166,54 @@ export const columns: ColumnDef<Link>[] = [
             </div>
           </TooltipContent>
         </Tooltip>
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created Date" />
+    ),
+    cell: ({ row }) => {
+      const createdAt = row.original.createdAt;
+
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <p className="flex w-min items-center">
+              <span className="text-nowrap leading-6 text-neutral-800 transition-colors hover:text-black">
+                {timeAgo(createdAt, {
+                  withAgo: true,
+                })}
+              </span>
+            </p>
+          </TooltipTrigger>
+          <TooltipContent className="px-2.5 py-2 text-xs">
+            {formatDate(createdAt, {
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            })}
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
+  },
+  {
+    enableSorting: false,
+    accessorKey: "userId",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created By" />
+    ),
+    cell: ({ row }) => {
+      const userId = row.original.userId;
+      const avatar = `https://api.dicebear.com/9.x/shapes/svg?seed=${userId}`;
+
+      // TODO: get user email
+      return (
+        <Avatar className="size-8 rounded-full">
+          <AvatarImage src={avatar} alt={"" + userId} />
+        </Avatar>
       );
     },
   },

@@ -44,6 +44,7 @@ export * from "./link-logo";
 export * from "./textarea-auto-size";
 export * from "./dropzone";
 export * from "./prompt-modal";
+export * from "./empty-state";
 
 export * from "./hooks";
 

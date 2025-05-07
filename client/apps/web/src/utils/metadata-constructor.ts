@@ -6,26 +6,26 @@ import { HOME_DOMAIN } from "~/constants";
 export const metadataConstructor = ({
   title,
   fullTitle,
-  description = "Lew.co is the open-source link shortener,link management platform.",
+  description = "Leww.space is the open-source URL shortener,link management platform.",
   image = "/background.svg",
   video,
   icons = [
     {
       rel: "apple-touch-icon",
       sizes: "32x32",
-      url: "/favicon.ico",
+      url: "/apple-touch-icon.png",
     },
     {
       rel: "icon",
       type: "image/png",
       sizes: "32x32",
-      url: "/favicon.ico",
+      url: "/favicon-32x32.png",
     },
     {
       rel: "icon",
       type: "image/png",
       sizes: "16x16",
-      url: "/favicon.ico",
+      url: "/favicon-16x16.png",
     },
   ],
   url,
@@ -46,7 +46,7 @@ export const metadataConstructor = ({
 } = {}): Metadata => {
   return {
     title:
-      fullTitle || (title ? `${title} | Lew.co` : "Lew.co - URL Shortener"),
+      fullTitle || (title ? `${title} | Leww` : "Leww - The URL Shortener"),
     description,
     openGraph: {
       title,
