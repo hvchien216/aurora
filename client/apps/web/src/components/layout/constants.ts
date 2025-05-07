@@ -1,40 +1,32 @@
-import {
-  AudioWaveform,
-  GalleryVerticalEnd,
-  LayoutDashboardIcon,
-} from "lucide-react";
+import type { ElementType } from "react";
+import { BarChart, LayoutDashboard } from "lucide-react";
 
-import { type SidebarData } from "./types";
+export interface NavItem {
+  title: string;
+  href: string;
+  icon: ElementType;
+}
 
-export const SIDEBAR_DATA: SidebarData = {
-  // user: {
-  //   name: "satnaing",
-  //   email: "satnaingdev@gmail.com",
-  //   avatar: "https://api.dicebear.com/9.x/micah/svg",
-  // },
-  workspaces: [
-    {
-      name: "Lewis",
-      logo: GalleryVerticalEnd,
-      plan: "Pro",
-    },
-    {
-      name: "Jisoo",
-      logo: AudioWaveform,
-      plan: "Free",
-    },
-  ],
-  navGroups: [
-    {
-      title: "General",
-      items: [
-        {
-          title: "Dashboard",
-          // TODO: fix this url, should be a fn take in slug as dynamic param
-          url: "/w/ho-van-chien",
-          icon: LayoutDashboardIcon,
-        },
-      ],
-    },
-  ],
-};
+export interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+export const SIDEBAR_DATA: NavGroup[] = [
+  {
+    title: "Overview",
+    items: [
+      {
+        title: "Dashboard",
+        href: "", // Base path without workspace
+        icon: LayoutDashboard,
+      },
+      {
+        title: "Analytics",
+        href: "/analytics", // Base path without workspace
+        icon: BarChart,
+      },
+    ],
+  },
+  // ... other nav groups
+];

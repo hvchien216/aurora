@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -17,16 +20,25 @@ import {
 import { ChevronsUpDown, Plus } from "lucide-react";
 
 export function WorkspaceSwitcher({
+  activeWorkspace,
   workspaces,
+  onWorkspaceChange,
 }: {
+  activeWorkspace?: {
+    name: string;
+    slug: string;
+    logo: string;
+    plan: string;
+  };
   workspaces: {
     name: string;
-    logo: React.ElementType;
+    slug: string;
+    logo: string;
     plan: string;
   }[];
+  onWorkspaceChange: (slug: string) => void;
 }) {
   const { isMobile } = useSidebar();
-  const [activeTeam, setWorkspace] = useState(workspaces[0]);
 
   return (
     <SidebarMenu>
@@ -38,15 +50,30 @@ export function WorkspaceSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {activeTeam?.logo ? (
-                  <activeTeam.logo className="size-4" />
-                ) : null}
+                <Avatar className="size-4 rounded-md">
+                  <AvatarImage
+                    src={activeWorkspace?.logo}
+                    alt={activeWorkspace?.name}
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {activeWorkspace?.name
+                      ? activeWorkspace.name
+                          .trim()
+                          .split(" ")
+                          .slice(0, 3)
+                          .map((word) => word[0])
+                          .join("")
+                      : ""}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam?.name}
+                  {activeWorkspace?.name}
                 </span>
-                <span className="truncate text-xs">{activeTeam?.plan}</span>
+                <span className="truncate text-xs">
+                  {activeWorkspace?.plan}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -63,11 +90,23 @@ export function WorkspaceSwitcher({
             {workspaces.map((workspace, index) => (
               <DropdownMenuItem
                 key={workspace.name}
-                onClick={() => setWorkspace(workspace)}
+                onClick={() => onWorkspaceChange(workspace.slug)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <workspace.logo className="size-4 shrink-0" />
+                  <Avatar className="size-4 rounded-md">
+                    <AvatarImage src={workspace?.logo} alt={workspace?.name} />
+                    <AvatarFallback className="rounded-lg">
+                      {workspace?.name
+                        ? workspace.name
+                            .trim()
+                            .split(" ")
+                            .slice(0, 3)
+                            .map((word) => word[0])
+                            .join("")
+                        : ""}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
                 {workspace.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
