@@ -35,7 +35,8 @@ export class LinkPrismaRepository implements ILinkRepository {
     paging: PagingDTO,
   ): Promise<Paginated<Link>> {
     const { workspaceId, title: _title, ...rest } = cond;
-
+    const { orderBy, orderDirection, defaultOrderDirection, defaultOrder } =
+      paging;
     let where = {
       ...rest,
     };
@@ -47,6 +48,15 @@ export class LinkPrismaRepository implements ILinkRepository {
       } as Omit<LinkCondDTO, 'workspaceSlug'> & { workspaceId: string };
     }
 
+    const order =
+      orderBy != null
+        ? {
+            [orderBy]:
+              orderDirection?.toLowerCase() ??
+              defaultOrderDirection?.toLowerCase(),
+          }
+        : defaultOrder;
+
     const total = await prisma.link.count({ where });
 
     const skip = (paging.page - 1) * paging.limit;
@@ -55,9 +65,7 @@ export class LinkPrismaRepository implements ILinkRepository {
       where,
       take: paging.limit,
       skip,
-      orderBy: {
-        id: 'desc',
-      },
+      orderBy: order,
     });
     return {
       data: result,

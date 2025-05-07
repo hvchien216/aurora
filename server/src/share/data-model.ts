@@ -24,8 +24,10 @@ export const pagingDTOSchema = z.object({
     .min(1, { message: 'Limit must be at least 1' })
     .max(100)
     .default(20),
-  sort: z.string().optional(),
-  order: z.string().optional(),
+  orderDirection: z.string().optional(),
+  orderBy: z.string().optional(),
+  defaultOrderDirection: z.string().optional(),
+  defaultOrder: z.record(z.enum(['asc', 'desc'])).optional(),
 });
 export interface PagingDTO extends z.infer<typeof pagingDTOSchema> {
   total?: number;

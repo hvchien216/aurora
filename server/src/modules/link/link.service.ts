@@ -115,7 +115,13 @@ export class LinkService implements ILinkService {
     paging: PagingDTO,
   ): Promise<Paginated<Link>> {
     cond = linkCondDTOSchema.parse(cond);
-    paging = pagingDTOSchema.parse(paging);
+    paging = pagingDTOSchema.parse({
+      ...paging,
+      defaultOrderDirection: 'desc',
+      defaultOrder: {
+        clicks: 'desc',
+      },
+    });
 
     const { workspaceSlug, ...restCond } = cond;
 
