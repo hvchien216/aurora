@@ -6,7 +6,7 @@ interface CustomRequestInit extends RequestInit {
   auth?: boolean;
 }
 export const customMutator = <TData, TVariables>(
-  method: "post" | "put" | "patch",
+  method: "post" | "put" | "patch" | "delete",
   url: string,
   variables?: TVariables,
   options: CustomRequestInit = {},
