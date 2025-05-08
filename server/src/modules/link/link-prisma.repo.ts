@@ -22,6 +22,17 @@ export class LinkPrismaRepository implements ILinkRepository {
     return link;
   }
 
+  async findByIds(ids: string[]): Promise<Link[]> {
+    const links = await prisma.link.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+    return links;
+  }
+
   async findByKey(key: string): Promise<Link | null> {
     const link = await prisma.link.findFirst({
       where: { key },
@@ -98,6 +109,16 @@ export class LinkPrismaRepository implements ILinkRepository {
   async delete(id: string): Promise<void> {
     await prisma.link.delete({
       where: { id },
+    });
+  }
+
+  async bulkDelete(ids: string[]): Promise<void> {
+    await prisma.link.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
     });
   }
 

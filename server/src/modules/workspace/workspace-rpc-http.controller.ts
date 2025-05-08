@@ -38,4 +38,10 @@ export class WorkspaceRPCHttpController {
 
     return { data };
   }
+
+  @Get('users/:userId')
+  async getUserWorkspaces(@Param('userId') userId: string) {
+    const data = await this.workspaceService.getUserWorkspaces(userId);
+    return { data };
+  }
 }

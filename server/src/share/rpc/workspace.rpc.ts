@@ -38,4 +38,15 @@ export class WorkspaceRPCClient implements IWorkspaceRPC {
       return null;
     }
   }
+
+  async getUserWorkspaces(userId: string): Promise<Workspace[]> {
+    try {
+      const { data } = await axios.get(
+        `${this.url}/rpc/workspaces/users/${userId}`,
+      );
+      return data.data || [];
+    } catch (error) {
+      return []; // Return an empty array on error
+    }
+  }
 }
