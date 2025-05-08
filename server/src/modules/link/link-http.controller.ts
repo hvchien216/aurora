@@ -15,7 +15,12 @@ import {
   RemoteAuthGuardOptional,
 } from 'src/share/guards/auth.guard';
 import { ILinkService } from './link.port';
-import { ClickLinkDTO, CreateLinkDTO, LinkCondDTO } from './link.model';
+import {
+  ClickLinkDTO,
+  CreateLinkDTO,
+  LinkCondDTO,
+  BulkDeleteLinkDTO,
+} from './link.model';
 import { Inject } from '@nestjs/common';
 import { PagingDTO, ReqWithRequester, ReqWithRequesterOpt } from 'src/share';
 import { LINK_SERVICE } from 'src/modules/link/link.di-tokens';
@@ -87,6 +92,16 @@ export class LinkHttpController {
   @UseGuards(RemoteAuthGuard)
   async deleteLink(@Param('id') id: string, @Req() req: ReqWithRequester) {
     await this.linkService.deleteLink(id, req.requester.sub);
+    return { data: true };
+  }
+
+  @Delete()
+  @UseGuards(RemoteAuthGuard)
+  async bulkDeleteLinks(
+    @Body() dto: BulkDeleteLinkDTO,
+    @Req() req: ReqWithRequester,
+  ) {
+    await this.linkService.bulkDeleteLinks(dto, req.requester.sub);
     return { data: true };
   }
 

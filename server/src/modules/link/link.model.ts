@@ -15,6 +15,13 @@ export const ErrKeyAlreadyExists = new Error('Short link key already exists');
 export const ErrInvalidKey = new Error(
   'Invalid short link key. Use only alphanumeric characters and hyphens',
 );
+export const ErrBulkDeleteFailed = new Error(
+  'Failed to delete one or more links',
+);
+export const ErrEmptyLinkIds = new Error('No link IDs provided for deletion');
+export const ErrTooManyLinks = new Error(
+  'Too many links selected for deletion. Maximum is 100 links at once.',
+);
 
 export const linkSchema = z.object({
   id: z.string().uuid(),
@@ -76,3 +83,13 @@ export const linkCondDTOSchema = z.object({
 });
 
 export type LinkCondDTO = z.infer<typeof linkCondDTOSchema>;
+
+export const bulkDeleteLinkDTOSchema = z.object({
+  ids: z
+    .array(z.string().uuid())
+    .min(1, { message: ErrEmptyLinkIds.message })
+    .max(100, { message: ErrTooManyLinks.message }),
+  workspaceId: z.string().uuid(),
+});
+
+export type BulkDeleteLinkDTO = z.infer<typeof bulkDeleteLinkDTOSchema>;

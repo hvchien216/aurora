@@ -50,6 +50,7 @@ export interface ITokenIntrospect {
 export interface IWorkspaceRPC {
   create(name: string, ownerId: string): Promise<Workspace | null>;
   findBySlug(slug: string): Promise<Workspace | null>;
+  getUserWorkspaces(userId: string): Promise<Workspace[]>;
 }
 
 export interface ICacheService {

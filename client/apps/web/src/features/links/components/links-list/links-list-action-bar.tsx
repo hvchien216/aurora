@@ -2,8 +2,11 @@
 
 import { DataTableActionBar, DataTableActionBarSelection } from "@leww/ui";
 import type { Table } from "@tanstack/react-table";
+import { useActiveWorkspace } from "~/providers";
 
 import { type Link } from "~/features/links/schemas";
+
+import { BulkDeleteLinksButton } from "./bulk-delete-links-button";
 
 interface TasksTableActionBarProps {
   table: Table<Link>;
@@ -11,6 +14,9 @@ interface TasksTableActionBarProps {
 
 export function LinksListActionBar({ table }: TasksTableActionBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows;
+
+  const { activeWorkspace } = useActiveWorkspace();
+  const selectedIds = rows.map((row) => row.id);
 
   return (
     <DataTableActionBar table={table} visible={rows.length > 0}>
@@ -28,14 +34,12 @@ export function LinksListActionBar({ table }: TasksTableActionBarProps) {
         >
           <Download />
         </DataTableActionBarAction>
-        <DataTableActionBarAction
-          size="icon"
-          tooltip="Delete"
-          isPending={getIsActionPending("delete")}
-          onClick={onTaskDelete}
-        >
-          <Trash2 />
-        </DataTableActionBarAction> */}
+        */}
+        <BulkDeleteLinksButton
+          workspaceId={activeWorkspace?.id as string}
+          selectedIds={selectedIds}
+          table={table}
+        />
       </div>
     </DataTableActionBar>
   );

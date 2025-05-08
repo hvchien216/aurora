@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Sidebar,
@@ -8,6 +9,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@leww/ui";
+import { useActiveWorkspace } from "~/providers";
 
 import { useWorkspaceSlug } from "~/hooks";
 import { locations } from "~/constants";
@@ -37,8 +39,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: workspacesData } = useGeWorkSpacesQuery();
 
   const currentWorkspaceSlug = useWorkspaceSlug();
+  const { setActiveWorkspace } = useActiveWorkspace();
+
+  useEffect(() => {
+    if (workspacesData) {
+      setActiveWorkspace(
+        (workspacesData || []).find(
+          (workspace) => workspace.slug === currentWorkspaceSlug,
+        ) || null,
+      );
+    }
+  }, [workspacesData, currentWorkspaceSlug, setActiveWorkspace]);
 
   const handleChangeWorkspace = (slug: string) => {
+    setActiveWorkspace(
+      (workspacesData || []).find((workspace) => workspace.slug === slug) ||
+        null,
+    );
     router.push(locations.links(slug));
   };
 

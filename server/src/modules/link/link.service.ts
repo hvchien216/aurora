@@ -10,6 +10,9 @@ import {
   LinkCondDTO,
   linkCondDTOSchema,
   clickLinkDTOSchema,
+  BulkDeleteLinkDTO,
+  bulkDeleteLinkDTOSchema,
+  ErrBulkDeleteFailed,
 } from './link.model';
 import {
   AppError,
@@ -184,6 +187,35 @@ export class LinkService implements ILinkService {
     }
 
     await this.linkRepository.delete(id);
+  }
+
+  async bulkDeleteLinks(dto: BulkDeleteLinkDTO, userId: string): Promise<void> {
+    const { ids, workspaceId } = bulkDeleteLinkDTOSchema.parse(dto);
+
+    const linksToDelete = await this.linkRepository.findByIds(ids);
+
+    const userWorkspaces = await this.workspaceRpc.getUserWorkspaces(userId);
+
+    // Check if all links exist and user has permission
+    const unauthorizedLinks = linksToDelete.filter((link) => {
+      if (!link) return true; // Link doesn't exist
+      if (link.workspaceId !== workspaceId) return true; // Link not in workspace
+      const isMember = userWorkspaces.some(
+        (workspace) => workspace.id === link.workspaceId,
+      );
+      if (!isMember) return true; // User is not a member of the workspace
+      return false;
+    });
+
+    if (unauthorizedLinks.length > 0) {
+      throw AppError.from(ErrUnauthorizedAccess, 403);
+    }
+
+    try {
+      await this.linkRepository.bulkDelete(ids);
+    } catch (error) {
+      throw AppError.from(ErrBulkDeleteFailed, 500);
+    }
   }
 
   async recordClick(dto: ClickLinkDTO): Promise<Link> {

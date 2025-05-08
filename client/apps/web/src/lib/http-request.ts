@@ -47,6 +47,23 @@ class HttpRequest {
       signal,
     );
   }
+
+  async delete<T>(
+    url: string,
+    data?: unknown,
+    options: CustomRequestInit = {},
+    signal?: AbortSignal,
+  ): Promise<T> {
+    return this._baseRequest._handleRequest<T>(
+      url,
+      {
+        ...options,
+        method: "DELETE",
+        body: JSON.stringify(data),
+      },
+      signal,
+    );
+  }
 }
 
 // Defer the initialization to avoid circular dependency
