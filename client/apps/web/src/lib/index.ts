@@ -6,3 +6,4 @@ export * from "./query-client";
 export * from "./custom-fetcher";
 export * from "./custom-mutator";
 export * from "./file-schema-constructor";
+export * from "./qr";
