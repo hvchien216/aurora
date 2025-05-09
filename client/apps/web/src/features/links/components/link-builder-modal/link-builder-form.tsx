@@ -25,6 +25,7 @@ import {
 import { useGeWorkSpaceBySlugQuery } from "~/features/workspaces/hooks";
 
 import LinkPreview from "./link-preview";
+import QRCodePreview from "./qr-code-preview";
 
 type Props = {
   handleClose: () => void;
@@ -128,7 +129,8 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
             <div className="scrollbar-hide px-6 md:overflow-auto md:pl-0 md:pr-4">
               <div className="relative">
                 <div className="border-primary-200 absolute inset-0 rounded-xl border bg-primary-foreground/50 [mask-image:linear-gradient(to_bottom,black,transparent)]"></div>
-                <div className="relative flex flex-col gap-6 p-4">
+                <div className="relative flex flex-col gap-3 p-4">
+                  <QRCodePreview />
                   <LinkPreview />
                 </div>
               </div>
