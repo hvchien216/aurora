@@ -1,4 +1,6 @@
 export * from "./use-get-metatags-query";
+export * from "./use-check-key-availability-query";
+export * from "./use-generate-key-query";
 export * from "./use-get-links-list-query";
 export * from "./use-create-link-mutation";
 export * from "./use-bulk-delete-links-mutation";
