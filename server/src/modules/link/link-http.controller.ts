@@ -58,6 +58,16 @@ export class LinkHttpController {
     };
   }
 
+  @Get('check-key-availability')
+  @UseGuards(RemoteAuthGuard)
+  async checkKeyAvailability(
+    @Query('key') key: string,
+    @Query('workspaceId') workspaceId: string,
+  ) {
+    const exists = await this.linkService.checkKeyExists(key, workspaceId);
+    return { data: { isAvailable: !exists, key } };
+  }
+
   @Get(':id')
   @UseGuards(RemoteAuthGuard)
   async getLink(@Param('id') id: string) {
@@ -69,6 +79,16 @@ export class LinkHttpController {
   async getLinkByKey(@Param('key') key: string) {
     const data = await this.linkService.getLinkByKey(key);
     return { data };
+  }
+
+  @Get('check-key/:key')
+  @UseGuards(RemoteAuthGuard)
+  async checkKeyExists(
+    @Param('key') key: string,
+    @Query('workspaceId') workspaceId: string,
+  ) {
+    const exists = await this.linkService.checkKeyExists(key, workspaceId);
+    return { data: exists };
   }
 
   @Post('click')

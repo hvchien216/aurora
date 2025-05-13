@@ -41,6 +41,17 @@ export class LinkPrismaRepository implements ILinkRepository {
     return link;
   }
 
+  async checkKeyExists(key: string, workspaceId: string): Promise<boolean> {
+    const count = await prisma.link.count({
+      where: {
+        key,
+        workspaceId,
+      },
+    });
+
+    return count > 0;
+  }
+
   async list(
     cond: Omit<LinkCondDTO, 'workspaceSlug'> & { workspaceId: string },
     paging: PagingDTO,

@@ -113,6 +113,16 @@ export class LinkService implements ILinkService {
     return link;
   }
 
+  async checkKeyExists(key: string, workspaceId: string): Promise<boolean> {
+    // First check cache
+    const cachedLink = await this.cacheService.getObject<Link>(`link:${key}`);
+    if (cachedLink && cachedLink.workspaceId === workspaceId) {
+      return true;
+    }
+
+    return this.linkRepository.checkKeyExists(key, workspaceId);
+  }
+
   async listInWorkspace(
     cond: LinkCondDTO,
     paging: PagingDTO,
