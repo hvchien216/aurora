@@ -49,7 +49,7 @@ export class LinkService implements ILinkService {
     let key = dto.key;
 
     if (!key) {
-      key = await this._getRandomKey();
+      key = await this.generateKey();
     }
 
     const newLink: Link = {
@@ -77,14 +77,14 @@ export class LinkService implements ILinkService {
     return link;
   }
 
-  async _getRandomKey(): Promise<string> {
+  async generateKey(): Promise<string> {
     const key = nanoid();
 
     // Check if key already exists
     const existing = await this.linkRepository.findByKey(key);
     if (existing) {
       /* recursively get random key till it gets one that's available */
-      return this._getRandomKey();
+      return this.generateKey();
     }
 
     return key;

@@ -40,4 +40,5 @@ export interface ILinkService {
   bulkDeleteLinks(dto: BulkDeleteLinkDTO, userId: string): Promise<void>;
   recordClick(dto: ClickLinkDTO): Promise<Link>;
   checkKeyExists(key: string, workspaceId: string): Promise<boolean>;
+  generateKey(): Promise<string>;
 }

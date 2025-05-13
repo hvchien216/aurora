@@ -68,6 +68,13 @@ export class LinkHttpController {
     return { data: { isAvailable: !exists, key } };
   }
 
+  @Get('generate-key')
+  @UseGuards(RemoteAuthGuard)
+  async generateKey() {
+    const key = await this.linkService.generateKey();
+    return { data: { key } };
+  }
+
   @Get(':id')
   @UseGuards(RemoteAuthGuard)
   async getLink(@Param('id') id: string) {
