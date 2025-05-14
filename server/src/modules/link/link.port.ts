@@ -31,11 +31,7 @@ export interface ILinkService {
     cond: LinkCondDTO,
     paging: PagingDTO,
   ): Promise<Paginated<Link>>;
-  updateLink(
-    id: string,
-    dto: Partial<CreateLinkDTO>,
-    userId: string,
-  ): Promise<Link>;
+  updateLink(id: string, dto: CreateLinkDTO, userId: string): Promise<Link>;
   deleteLink(id: string, userId: string): Promise<void>;
   bulkDeleteLinks(dto: BulkDeleteLinkDTO, userId: string): Promise<void>;
   recordClick(dto: ClickLinkDTO): Promise<Link>;

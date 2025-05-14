@@ -108,7 +108,7 @@ export class LinkHttpController {
   @UseGuards(RemoteAuthGuard)
   async updateLink(
     @Param('id') id: string,
-    @Body() dto: Partial<CreateLinkDTO>,
+    @Body() dto: CreateLinkDTO,
     @Req() req: ReqWithRequester,
   ) {
     const data = await this.linkService.updateLink(id, dto, req.requester.sub);

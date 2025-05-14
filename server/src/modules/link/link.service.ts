@@ -13,6 +13,7 @@ import {
   BulkDeleteLinkDTO,
   bulkDeleteLinkDTOSchema,
   ErrBulkDeleteFailed,
+  createLinkDTOSchema,
 } from './link.model';
 import {
   AppError,
@@ -157,32 +158,50 @@ export class LinkService implements ILinkService {
 
   async updateLink(
     id: string,
-    dto: Partial<CreateLinkDTO>,
+    dto: CreateLinkDTO,
     userId: string,
   ): Promise<Link> {
+    const data = createLinkDTOSchema.parse(dto);
+
     const link = await this.linkRepository.findById(id);
     if (!link) {
       throw AppError.from(ErrLinkNotFound, 404);
     }
 
-    if (link.userId !== userId) {
-      throw AppError.from(ErrUnauthorizedAccess, 403);
-    }
+    await this.ensureUserIsWorkspaceMember(link.workspaceId, userId);
 
-    // If updating key, check if new key already exists
-    if (dto.key && dto.key !== link.key) {
-      const existing = await this.linkRepository.findByKey(dto.key);
-      if (existing) {
-        throw AppError.from(ErrKeyAlreadyExists, 400);
+    const oldKey = link.key;
+    let key = data.key;
+    let shouldDeleteOldKey = false;
+
+    if (key !== link.key) {
+      // handle case when key is not provided | key can be null
+      if (!key) {
+        key = await this.generateKey();
       }
+
+      shouldDeleteOldKey = true;
     }
 
-    // TODO: when updating the key, set redis again
-
-    return this.linkRepository.update(id, {
-      ...dto,
+    const updatedLink = await this.linkRepository.update(id, {
+      ...data,
       updatedAt: new Date(),
     });
+
+    await this.cacheService.setObject(
+      `link:${key}`,
+      {
+        ...updatedLink,
+      },
+      5 * 60,
+    );
+
+    if (shouldDeleteOldKey) {
+      // Remove the old key from the cache
+      await this.cacheService.delete(`link:${oldKey}`);
+    }
+
+    return updatedLink;
   }
 
   async deleteLink(id: string, userId: string): Promise<void> {
@@ -260,5 +279,19 @@ export class LinkService implements ILinkService {
     ]);
 
     return link;
+  }
+
+  private async ensureUserIsWorkspaceMember(
+    workspaceId: string | null,
+    userId: string,
+  ) {
+    const userWorkspaces = await this.workspaceRpc.getUserWorkspaces(userId);
+    const isMember = userWorkspaces.some(
+      (workspace) => workspace.id === workspaceId,
+    );
+
+    if (!isMember) {
+      throw AppError.from(ErrUnauthorizedAccess, 403);
+    }
   }
 }
