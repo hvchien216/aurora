@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { RHFInput } from "~/components/rhf";
 import { useUploadMutation } from "~/hooks";
 import { cn, getFirst, linkConstructor } from "@leww/utils";
+import { ShortenKeyInput } from "~/features/links/components";
 import {
   useCreateLinkMutation,
   useInvalidateLinksWorkspace,
@@ -25,6 +26,7 @@ import {
 import { useGeWorkSpaceBySlugQuery } from "~/features/workspaces/hooks";
 
 import LinkPreview from "./link-preview";
+import QRCodePreview from "./qr-code-preview";
 
 type Props = {
   handleClose: () => void;
@@ -46,7 +48,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
       title: null,
       description: null,
       workspaceId: null,
-      key: undefined,
+      key: "",
     },
     mode: "onChange",
   });
@@ -128,13 +130,14 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
             <div className="scrollbar-hide px-6 md:overflow-auto md:pl-0 md:pr-4">
               <div className="relative">
                 <div className="border-primary-200 absolute inset-0 rounded-xl border bg-primary-foreground/50 [mask-image:linear-gradient(to_bottom,black,transparent)]"></div>
-                <div className="relative flex flex-col gap-6 p-4">
+                <div className="relative flex flex-col gap-3 p-4">
+                  <QRCodePreview />
                   <LinkPreview />
                 </div>
               </div>
             </div>
             <div className="scrollbar-hide px-6 md:overflow-auto">
-              <div className="flex min-h-full flex-col gap-6 pb-4">
+              <div className="flex min-h-full flex-col gap-x-6 gap-y-4 pb-4">
                 <RHFInput
                   name="url"
                   label="Destination Link"
@@ -148,6 +151,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
                     </InfoTooltip>
                   }
                 />
+                <ShortenKeyInput />
               </div>
             </div>
           </div>

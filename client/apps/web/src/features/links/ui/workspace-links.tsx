@@ -1,7 +1,7 @@
 "use client";
 
-import LinkBuilderModal from "./link-builder-modal";
-import LinksList from "./links-list";
+import LinkBuilderModal from "../components/link-builder-modal";
+import LinksList from "../components/links-list";
 
 export default function WorkspaceLinks() {
   return (

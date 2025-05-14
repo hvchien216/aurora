@@ -6,7 +6,7 @@ import { HOME_DOMAIN } from "~/constants";
 export const metadataConstructor = ({
   title,
   fullTitle,
-  description = "Leww.space is the open-source URL shortener,link management platform.",
+  description = "Leww.space is the open-source URL shortener, link management platform.",
   image = "/background.svg",
   video,
   icons = [

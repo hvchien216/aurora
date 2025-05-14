@@ -9,8 +9,9 @@ import {
   Input,
   type InputProps,
 } from "@leww/ui";
-import { cn } from "@leww/utils";
 import { useFormContext } from "react-hook-form";
+
+import { cn } from "@leww/utils";
 
 interface RHFInputProps extends InputProps {
   name: string;
@@ -125,6 +126,7 @@ export const RHFInput = ({
                   field.onChange(numericValue);
                   handleChange?.(numericValue);
                 }
+                props.onBlur?.(e);
                 field.onBlur();
               }}
             />

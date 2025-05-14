@@ -1,1 +1,1 @@
-export { default } from "./workspace-links";
+export * from "./shorten-key-input";

@@ -1,4 +1,4 @@
-import WorkspaceLinks from "~/features/links/components";
+import WorkspaceLinks from "~/features/links/ui";
 
 export default function WorkspaceLinksPage() {
   return <WorkspaceLinks />;

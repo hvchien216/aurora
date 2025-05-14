@@ -36,22 +36,20 @@ export const linkSchema = z.object({
 
 export type Link = z.infer<typeof linkSchema>;
 
-export const createLinkSchema = linkSchema
-  .pick({
-    proxy: true,
-    url: true,
-    image: true,
-    video: true,
-    title: true,
-    description: true,
-    workspaceId: true,
-  })
-  .merge(
-    z.object({
-      key: z.string().max(190).optional(),
-    }),
-    // TODO: add tags property
-  );
+export const createLinkSchema = linkSchema.pick({
+  proxy: true,
+  url: true,
+  image: true,
+  video: true,
+  title: true,
+  description: true,
+  workspaceId: true,
+  key: true,
+});
+// .merge(
+// z.object({}),
+// TODO: add tags property
+// );
 
 export type CreateLink = z.infer<typeof createLinkSchema>;
 
