@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { RHFInput } from "~/components/rhf";
 import { useUploadMutation } from "~/hooks";
 import { cn, getFirst, linkConstructor } from "@leww/utils";
+import { ShortenKeyInput } from "~/features/links/components";
 import {
   useCreateLinkMutation,
   useInvalidateLinksWorkspace,
@@ -47,7 +48,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
       title: null,
       description: null,
       workspaceId: null,
-      key: undefined,
+      key: "",
     },
     mode: "onChange",
   });
@@ -136,7 +137,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
               </div>
             </div>
             <div className="scrollbar-hide px-6 md:overflow-auto">
-              <div className="flex min-h-full flex-col gap-6 pb-4">
+              <div className="flex min-h-full flex-col gap-x-6 gap-y-4 pb-4">
                 <RHFInput
                   name="url"
                   label="Destination Link"
@@ -150,6 +151,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
                     </InfoTooltip>
                   }
                 />
+                <ShortenKeyInput />
               </div>
             </div>
           </div>
