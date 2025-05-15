@@ -3,7 +3,7 @@
 import LinkBuilderModal from "../components/link-builder-modal";
 import LinksList from "../components/links-list";
 
-export default function WorkspaceLinks() {
+export function WorkspaceLinks() {
   return (
     <div className="w-full space-y-4 p-4">
       <div className="flex justify-end">
