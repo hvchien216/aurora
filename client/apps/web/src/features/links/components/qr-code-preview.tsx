@@ -18,7 +18,7 @@ import { type CreateLinkForm } from "~/features/links/schemas";
 
 import CustomizeQRCodePreviewFormModal from "./customize-qr-code-preview-modal";
 
-const QRCodePreview = () => {
+export const QRCodePreview = () => {
   const [open, setOpen] = React.useState(false);
 
   const isMobile = useIsMobile();

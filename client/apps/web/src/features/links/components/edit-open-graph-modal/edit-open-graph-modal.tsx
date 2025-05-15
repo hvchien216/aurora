@@ -2,7 +2,7 @@ import React, { type Dispatch, type SetStateAction } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@leww/ui";
 import { LinkIcon } from "lucide-react";
 
-import EditOGForm from "~/features/links/components/link-builder-modal/edit-open-graph-modal/edit-og-form";
+import EditOGForm from "./edit-og-form";
 
 type Props = {
   open: boolean;

@@ -58,7 +58,7 @@ const tabs = [
   },
 ];
 
-const LinkPreview = () => {
+export const LinkPreview = () => {
   const { watch, setValue } = useFormContext<CreateLinkForm>();
   const [url, image, title, description, proxy] = watch([
     "url",
@@ -210,5 +210,3 @@ const ProxySwitch = () => {
     </Tooltip>
   );
 };
-
-export default LinkPreview;
