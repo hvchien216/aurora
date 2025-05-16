@@ -83,9 +83,8 @@ export function withWorkspace(middleware: CustomMiddleware) {
         return redirectToWorkspace(req, defaultWorkspace);
       }
 
-      return NextResponse.rewrite(
-        new URL(`/w/${requestedWorkspaceId}`, req.url),
-      );
+      // TODO: need to check 404 route
+      return middleware(req, ev, res);
     }
     // Nếu thỏa mãn, cho phép tiếp tục xử lý request
     return middleware(req, ev, res);
