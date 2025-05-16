@@ -19,4 +19,5 @@ export const locations = {
       },
       options,
     ),
+  linkDetails: (slug: string, id: string) => `/w/${slug}/links/${id}`,
 };

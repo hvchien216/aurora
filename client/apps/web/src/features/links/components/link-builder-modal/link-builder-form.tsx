@@ -14,7 +14,11 @@ import { useForm } from "react-hook-form";
 import { RHFInput } from "~/components/rhf";
 import { useUploadMutation } from "~/hooks";
 import { cn, getFirst, linkConstructor } from "@leww/utils";
-import { ShortenKeyInput } from "~/features/links/components";
+import {
+  LinkPreview,
+  QRCodePreview,
+  ShortenKeyInput,
+} from "~/features/links/components";
 import {
   useCreateLinkMutation,
   useInvalidateLinksWorkspace,
@@ -24,9 +28,6 @@ import {
   type CreateLinkForm,
 } from "~/features/links/schemas";
 import { useGeWorkSpaceBySlugQuery } from "~/features/workspaces/hooks";
-
-import LinkPreview from "./link-preview";
-import QRCodePreview from "./qr-code-preview";
 
 type Props = {
   handleClose: () => void;

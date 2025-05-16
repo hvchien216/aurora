@@ -58,8 +58,9 @@ const tabs = [
   },
 ];
 
-const LinkPreview = () => {
-  const { watch, setValue } = useFormContext<CreateLinkForm>();
+export const LinkPreview = () => {
+  const { watch, setValue, setError, clearErrors } =
+    useFormContext<CreateLinkForm>();
   const [url, image, title, description, proxy] = watch([
     "url",
     "image",
@@ -77,25 +78,44 @@ const LinkPreview = () => {
       },
     );
 
+  useEffect(() => {
+    if (isGeneratingMetatag) {
+      // just a tricky to prevent the form from being submitted
+      setError("image", { message: "Generating metatags..." });
+    } else {
+      clearErrors("image");
+    }
+  }, [isGeneratingMetatag, clearErrors, setError]);
+
   const [openOGModal, setOpenOGModal] = React.useState(false);
 
   useEffect(() => {
+    // if proxy is enabled, don't update the meta tags
+    if (proxy) return;
+
     if (metaTagData) {
-      setValue("title", metaTagData.title, { shouldDirty: true });
-      setValue("description", metaTagData.description, { shouldDirty: true });
-      const imageValue = isNil(metaTagData?.image)
-        ? []
-        : [
-            {
-              url: metaTagData?.image ? metaTagData.image : undefined,
-            },
-          ];
-      setValue("image", imageValue, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
+      if (metaTagData.title !== title) {
+        setValue("title", metaTagData.title, { shouldDirty: true });
+      }
+      if (metaTagData.description !== description) {
+        setValue("description", metaTagData.description, { shouldDirty: true });
+      }
+
+      if (getFirst(image)?.url !== metaTagData?.image) {
+        const imageValue = isNil(metaTagData?.image)
+          ? []
+          : [
+              {
+                url: metaTagData?.image ? metaTagData.image : undefined,
+              },
+            ];
+        setValue("image", imageValue, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
     }
-  }, [metaTagData, setValue]);
+  }, [metaTagData, setValue, proxy]);
 
   const host = getDomainWithoutWWW(debouncedUrl) ?? null;
   const imgUrl = getFirst(image)?.url || getFirst(image)?.preview;
@@ -103,7 +123,7 @@ const LinkPreview = () => {
   return (
     <>
       <EditOpenGraphModal open={openOGModal} setOpen={setOpenOGModal} />
-      <div className="flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-medium text-foreground">
             Custom Link Preview
@@ -207,8 +227,17 @@ const ProxySwitch = () => {
           Enter a URL to enable custom link previews.
         </TooltipContent>
       )}
+
+      {url && proxyChecked && (
+        <TooltipContent side="top">
+          Custom link previews are enabled.
+        </TooltipContent>
+      )}
+      {url && !proxyChecked && (
+        <TooltipContent side="top">
+          Custom link previews are turned off.
+        </TooltipContent>
+      )}
     </Tooltip>
   );
 };
-
-export default LinkPreview;

@@ -81,6 +81,14 @@ export class RedisClient implements ICacheService {
     await this.set(key, stringified, ttlInSeconds);
   }
 
+  public async delete(key: string): Promise<void> {
+    try {
+      await this.redisClient.del(key);
+    } catch (error) {
+      Logger.error(`delete | ${key}: ${(error as Error).message}`);
+    }
+  }
+
   public async disconnect(): Promise<void> {
     await this.redisClient.disconnect();
     Logger.log('Disconnected redis server');

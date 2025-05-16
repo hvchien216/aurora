@@ -58,6 +58,7 @@ export interface ICacheService {
   set(key: string, value: string, ttlInSeconds?: number): Promise<void>;
   getObject<T>(key: string): Promise<T | null>;
   setObject(key: string, value: object, ttlInSeconds?: number): Promise<void>;
+  delete(key: string): Promise<void>;
 }
 
 // =========CLOUD STORAGE CONFIGURATION==========

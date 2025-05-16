@@ -1,1 +1,2 @@
-export { default } from "./workspace-links";
+export * from "./workspace-links";
+export * from "./link-details";

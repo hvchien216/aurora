@@ -48,6 +48,23 @@ class HttpRequest {
     );
   }
 
+  async put<T>(
+    url: string,
+    data?: unknown,
+    options: CustomRequestInit = {},
+    signal?: AbortSignal,
+  ): Promise<T> {
+    return this._baseRequest._handleRequest<T>(
+      url,
+      {
+        ...options,
+        method: "PUT",
+        body: data instanceof FormData ? data : JSON.stringify(data),
+      },
+      signal,
+    );
+  }
+
   async delete<T>(
     url: string,
     data?: unknown,

@@ -1,7 +1,9 @@
 import { memo, type ReactNode } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Avatar,
   AvatarImage,
+  Button,
   CopyButton,
   DataTableColumnHeader,
   LinkLogo,
@@ -10,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@leww/ui";
 import { type ColumnDef } from "@tanstack/react-table";
-import { Check, CircleCheck, MousePointerClick } from "lucide-react";
+import { Check, CircleCheck, MousePointerClick, PenIcon } from "lucide-react";
 
 import {
   cn,
@@ -22,7 +24,7 @@ import {
   pluralize,
   timeAgo,
 } from "@leww/utils";
-import { A_BILLION } from "~/constants";
+import { A_BILLION, locations } from "~/constants";
 import { type Link } from "~/features/links/schemas";
 
 export const columns: ColumnDef<Link>[] = [
@@ -82,7 +84,7 @@ export const columns: ColumnDef<Link>[] = [
       const domain = process.env.NEXT_PUBLIC_DOMAIN;
 
       return (
-        <div className="flex max-w-20 items-center space-x-1.5">
+        <div className="flex items-center space-x-1.5">
           <span className="font-semibold leading-6 text-neutral-800 transition-colors hover:text-black">
             {linkConstructor({
               domain,
@@ -217,6 +219,17 @@ export const columns: ColumnDef<Link>[] = [
       );
     },
   },
+  {
+    id: "action",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
+    cell: ({ row }) => {
+      const id = row.original.id; // Assuming id is part of the row data
+
+      return <LinkDetailsAction id={id} />;
+    },
+    enableSorting: false,
+    size: 50,
+  },
 ];
 
 type SelectionWrapperProps = {
@@ -277,3 +290,33 @@ const SelectionWrapper = memo(
 );
 
 SelectionWrapper.displayName = "SelectionWrapper";
+
+type LinkDetailsActionProps = {
+  id: string;
+};
+
+const LinkDetailsAction: React.FC<LinkDetailsActionProps> = ({ id }) => {
+  const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    const url = locations.linkDetails(slug, id);
+    router.push(url);
+  };
+
+  return (
+    <Tooltip delayDuration={100}>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={handleRedirect}
+        >
+          <PenIcon className="size-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="top">Edit Link</TooltipContent>
+    </Tooltip>
+  );
+};
