@@ -27,14 +27,22 @@ export const useGetLinkById = <TData extends Response>(
 export const useInvalidateLinkDetails = (id: string) => {
   const queryClient = useQueryClient();
 
+  // const invalidateLinkQuery = () =>
+  //   queryClient.invalidateQueries({
+  //     predicate: (query) => {
+  //       return (
+  //         query.queryKey[0] === GET_LINK_BY_ID && query.queryKey[1]?.[0] === id
+  //       );
+  //     },
+  //   });
   const invalidateLinkQuery = () =>
     queryClient.invalidateQueries({
-      predicate: (query) => {
-        return (
-          query.queryKey[0] === GET_LINK_BY_ID && query.queryKey[1]?.[0] === id
-        );
-      },
+      queryKey: [GET_LINK_BY_ID, [id]],
     });
+  // This way is not working
+  // queryClient.invalidateQueries({
+  //   queryKey: [GET_LINK_BY_ID, id],
+  // });
 
   return invalidateLinkQuery;
 };
