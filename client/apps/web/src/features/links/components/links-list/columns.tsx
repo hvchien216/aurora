@@ -84,7 +84,7 @@ export const columns: ColumnDef<Link>[] = [
       const domain = process.env.NEXT_PUBLIC_DOMAIN;
 
       return (
-        <div className="flex max-w-20 items-center space-x-1.5">
+        <div className="flex items-center space-x-1.5">
           <span className="font-semibold leading-6 text-neutral-800 transition-colors hover:text-black">
             {linkConstructor({
               domain,
