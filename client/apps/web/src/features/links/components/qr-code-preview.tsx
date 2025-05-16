@@ -31,7 +31,7 @@ export const QRCodePreview = () => {
   return (
     <>
       <CustomizeQRCodePreviewFormModal open={open} setOpen={setOpen} />
-      <h2 className="text-sm font-medium text-foreground">QR Code</h2>
+      <h2 className="mb-3 text-sm font-medium text-foreground">QR Code</h2>
       <div className="relative aspect-[1200/450] w-full rounded-md border border-neutral-300 bg-white">
         {!isMobile && (
           <ShimmerDots className="pointer-events-none opacity-30 [mask-image:radial-gradient(40%_80%,transparent_50%,black)]" />
