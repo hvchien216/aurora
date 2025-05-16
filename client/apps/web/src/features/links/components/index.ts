@@ -4,3 +4,4 @@ export * from "./open-graph-previews";
 export * from "./edit-open-graph-modal";
 export * from "./qr-code-preview";
 export * from "./customize-qr-code-preview-modal";
+export * from "./link-action-bar";
