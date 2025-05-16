@@ -113,12 +113,12 @@ const LinkForm: React.FC<Props> = ({ link }) => {
   };
 
   return (
-    <div className="container mx-auto p-4 lg:min-h-[calc(100vh-48px)]">
+    <div className="lg:container lg:mx-auto lg:min-h-[calc(100vh-48px)] lg:p-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="h-full">
-          <div className="flex min-h-full flex-col gap-8 lg:flex-row">
+          <div className="relative flex min-h-full flex-col gap-8 lg:flex-row">
             {/* Main Content - Form */}
-            <div className="relative flex min-h-full flex-1 flex-col">
+            <div className="relative flex min-h-full flex-1 flex-col px-4 lg:px-0">
               <div className="rounded-lg border bg-background p-6">
                 <div className="space-y-4">
                   <RHFInput
@@ -138,13 +138,11 @@ const LinkForm: React.FC<Props> = ({ link }) => {
                 </div>
               </div>
               <div className="lg:grow" />
-              <div className="hidden lg:block">
-                <LinkActionBar />
-              </div>
+              <LinkActionBar className="hidden lg:block" />
             </div>
 
             {/* Right Sidebar - Previews */}
-            <div className="w-full space-y-4 lg:w-[400px]">
+            <div className="w-full space-y-4 px-4 lg:w-[400px] lg:px-0">
               <div className="rounded-lg border bg-card p-4">
                 <QRCodePreview />
               </div>
@@ -152,9 +150,7 @@ const LinkForm: React.FC<Props> = ({ link }) => {
                 <LinkPreview />
               </div>
             </div>
-          </div>
-          <div className="block lg:hidden">
-            <LinkActionBar />
+            <LinkActionBar className="block lg:hidden" />
           </div>
         </form>
       </Form>
