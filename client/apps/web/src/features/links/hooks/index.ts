@@ -4,4 +4,6 @@ export * from "./use-generate-key-query";
 export * from "./use-get-links-list-query";
 export * from "./use-create-link-mutation";
 export * from "./use-bulk-delete-links-mutation";
+export * from "./use-get-link-by-id-query";
+export * from "./use-update-link-mutation";
 export * from "./query-keys";
