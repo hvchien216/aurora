@@ -20,10 +20,12 @@ import { type CreateLinkForm } from "~/features/links/schemas";
 
 interface ShortenKeyInputProps {
   enableLock?: boolean;
+  originalKey?: string;
 }
 
 export const ShortenKeyInput: React.FC<ShortenKeyInputProps> = ({
   enableLock = false,
+  originalKey,
 }) => {
   // TODO: change CreateLinkForm to LinkForm for reusable in both creating & updating cases
   const { watch, setValue, setError, clearErrors } =
@@ -46,7 +48,6 @@ export const ShortenKeyInput: React.FC<ShortenKeyInputProps> = ({
   const {
     mutateAsync: generateKey,
     data: generateKeyData,
-    reset: resetGenerateKey,
     isPending: isGeneratingKey,
   } = useGenerateKeyLazyQuery({
     onSuccess: (data) => {
@@ -69,6 +70,7 @@ export const ShortenKeyInput: React.FC<ShortenKeyInputProps> = ({
         debouncedKey.length > 0 &&
         !isNil(workspaceId) &&
         generateKeyData?.key !== debouncedKey &&
+        originalKey !== debouncedKey &&
         isFocused,
     },
   );
@@ -79,7 +81,7 @@ export const ShortenKeyInput: React.FC<ShortenKeyInputProps> = ({
         await generateKey();
       })();
     }
-  }, [debouncedUrl]);
+  }, [debouncedUrl, generateKey, debouncedKey]);
 
   useEffect(() => {
     if (
@@ -88,7 +90,7 @@ export const ShortenKeyInput: React.FC<ShortenKeyInputProps> = ({
     ) {
       setError("key", { message: "✗ Key is not available" });
     }
-  }, [keyAvailabilityData]);
+  }, [keyAvailabilityData, setError]);
 
   const handleGenerateKey = async () => {
     await generateKey();
@@ -146,9 +148,9 @@ export const ShortenKeyInput: React.FC<ShortenKeyInputProps> = ({
                 onClick={handleLockKey}
               >
                 {isLocked ? (
-                  <Unlock className="size-4" />
-                ) : (
                   <Lock className="size-4" />
+                ) : (
+                  <Unlock className="size-4" />
                 )}
               </Button>
             )}
