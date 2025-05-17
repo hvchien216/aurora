@@ -5,22 +5,107 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Leww.space Backend
+
+This is the backend API for Leww.space, built with NestJS, PostgreSQL, and Redis.
+
+## Architecture Overview
+
+The backend follows a modular architecture based on NestJS best practices:
+
+```
+server/
+├── src/
+│   ├── modules/           # Feature modules
+│   │   ├── auth/         # Authentication module
+│   │   ├── links/        # URL shortening module
+│   │   └── users/        # User management module
+│   ├── share/            # Shared resources
+│   │   ├── decorators/   # Custom decorators
+│   │   ├── filters/      # Exception filters
+│   │   └── guards/       # Authentication guards
+│   └── utils/            # Utility functions
+├── prisma/               # Database schema and migrations
+└── test/                 # End-to-end tests
+```
+
+### Key Architectural Patterns
+
+- **Modular Architecture**: Each feature is a separate module
+- **Repository Pattern**: Database access through Prisma
+- **CQRS Pattern**: Separation of command and query responsibilities
+- **Caching Strategy**: Redis for caching and rate limiting
+- **Clean Architecture**: Separation of concerns between layers
+
+## Development Setup
+
+1. Install dependencies:
+
+```bash
+pnpm install
+```
+
+2. Set up environment variables:
+
+```bash
+cp .env.example .env
+```
+
+3. Start the development database and Redis:
+
+```bash
+docker-compose up -d postgres redis
+```
+
+4. Run database migrations:
+
+```bash
+pnpm prisma migrate dev
+```
+
+5. Start the development server:
+
+```bash
+pnpm start:dev
+```
+
+The API will be available at `http://localhost:3000`
+
+## Docker Development Environment
+
+To run the complete development environment using Docker:
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+```
+
+## Testing
+
+```bash
+# Run unit tests
+pnpm test
+
+# Run e2e tests
+pnpm test:e2e
+
+# Run tests with coverage
+pnpm test:cov
+```
+
+## Style Guide
+
+- Follow [NestJS style guide](https://docs.nestjs.com/guidelines/style-guide)
+- Use TypeScript decorators for dependency injection
+- Implement proper validation using DTOs
+- Use meaningful exception filters
+- Document APIs using Swagger decorators
 
 ## Description
 
@@ -58,19 +143,6 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
@@ -83,17 +155,3 @@ Check out a few resources that may come in handy when working with NestJS:
 - Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
 - To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
 - Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

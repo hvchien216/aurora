@@ -5,3 +5,7 @@ server/dist/
 client/.env*.local
 server/.env*.local
 client/.next/
+
+# Misc
+.DS_Store
+*.pem
