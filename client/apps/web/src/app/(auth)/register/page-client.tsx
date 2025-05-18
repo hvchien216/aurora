@@ -5,7 +5,7 @@ import { Wordmark } from "@leww/ui";
 
 import { GoogleButton } from "~/features/auth/ui";
 
-export default function LoginPageClient() {
+export default function RegisterPageClient() {
   return (
     <section className="flex min-h-screen px-4 py-16 dark:bg-transparent md:py-32">
       <form
@@ -18,13 +18,13 @@ export default function LoginPageClient() {
               <Wordmark />
             </Link>
             <h1 className="text-title mb-1 mt-4 text-xl font-semibold">
-              Get started with Leww
+              Create your Leww account
             </h1>
           </div>
 
           <div className="mt-6 space-y-6">
             <p className="text-center text-xs">
-              Sign-in with Email will coming soon.
+              Sign-up with Email will coming soon.
             </p>
           </div>
 
@@ -41,9 +41,9 @@ export default function LoginPageClient() {
 
         <div className="p-3">
           <p className="text-center text-xs text-accent-foreground">
-            Don&apos;t have an account?
-            <Link href="/register" className="px-2 text-xs underline">
-              <span>Create an account</span>
+            Already have an account?
+            <Link href="/login" className="px-2 text-xs underline">
+              <span>Sign in</span>
             </Link>
           </p>
         </div>

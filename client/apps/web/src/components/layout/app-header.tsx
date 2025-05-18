@@ -1,4 +1,4 @@
-import { SidebarTrigger, ThemeCustomizer, ThemeToggle } from "@leww/ui";
+import { SidebarTrigger, ThemeCustomizer } from "@leww/ui";
 
 export function AppHeader() {
   return (
@@ -9,7 +9,7 @@ export function AppHeader() {
 
       <div className="flex items-center gap-2 px-4">
         {/* <NavUser user={SIDEBAR_DATA.user} /> */}
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
         <ThemeCustomizer />
         {/* <ThemeSelector /> */}
       </div>
