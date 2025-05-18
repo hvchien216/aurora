@@ -4,8 +4,6 @@ Leww.space is an open-source URL shortener and link management platform that hel
 
 [![Tech Stacks](https://skillicons.dev/icons?i=nestjs,prisma,nextjs,ts,tailwind,react,postgresql,redis,pnpm,docker,nginx,aws&center=true&perline=13)](https://skill-icons-builder.vercel.app/)
 
-My Skills
-
 ## Project Overview
 
 This project is structured as a monorepo using Turborepo and pnpm for efficient package management and build orchestration.
@@ -127,7 +125,3 @@ pnpm lint
 ## Contributing
 
 Please check the individual README files in the `client/` and `server/` directories for detailed setup instructions and contribution guidelines.
-
-## License
-
-[MIT License](LICENSE) 
