@@ -18,13 +18,13 @@ export default function LoginPageClient() {
               <Wordmark />
             </Link>
             <h1 className="text-title mb-1 mt-4 text-xl font-semibold">
-              Get started with Lew
+              Get started with Leww
             </h1>
           </div>
 
           <div className="mt-6 space-y-6">
             <p className="text-center text-xs">
-              Sign-up with Email will coming soon.
+              Sign-in with Email will coming soon.
             </p>
           </div>
 
@@ -41,9 +41,9 @@ export default function LoginPageClient() {
 
         <div className="p-3">
           <p className="text-center text-xs text-accent-foreground">
-            Don&apos;t have an account ?
+            Don&apos;t have an account?
             <Link href="/register" className="px-2 text-xs underline">
-              <span>Create account</span>
+              <span>Create an account</span>
             </Link>
           </p>
         </div>
