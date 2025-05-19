@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GradientBackground, Wordmark } from "@leww/ui";
 
 import { HeroParallax } from "~/components/shared/hero-parallax";
+import { FEATURES_PREVIEW } from "~/constants";
 
 function Header() {
   return (
@@ -38,7 +39,7 @@ export default function Home() {
       <Header />
       <div className="relative max-h-screen min-h-screen w-full overflow-hidden">
         <main className="pt-4">
-          <HeroParallax products={products}>
+          <HeroParallax products={FEATURES_PREVIEW}>
             <div className="px-4 py-20 md:py-40">
               <div className="relative left-0 top-0 mx-auto max-w-7xl">
                 <h1 className="text-2xl font-bold dark:text-white md:text-7xl">
@@ -52,9 +53,9 @@ export default function Home() {
               <div className="left-0 top-0 mx-auto max-w-7xl">
                 <Link
                   href="/login"
-                  className="relative z-50 mt-2 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  className="relative z-50 mt-2 inline-block cursor-pointer rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
-                  Get Started
+                  Try for free
                 </Link>
               </div>
             </div>
@@ -64,84 +65,3 @@ export default function Home() {
     </>
   );
 }
-
-const products = [
-  {
-    title: "Moonbeam",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/moonbeam.png",
-  },
-  {
-    title: "Cursor",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/cursor.png",
-  },
-  {
-    title: "Rogue",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/rogue.png",
-  },
-
-  {
-    title: "Editorially",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/editorially.png",
-  },
-  {
-    title: "Editrix AI",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/editrix.png",
-  },
-  {
-    title: "Pixel Perfect",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/pixelperfect.png",
-  },
-
-  {
-    title: "Algochurn",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/algochurn.png",
-  },
-  {
-    title: "Aceternity UI",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/aceternityui.png",
-  },
-  {
-    title: "Tailwind Master Kit",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/tailwindmasterkit.png",
-  },
-  {
-    title: "SmartBridge",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/smartbridge.png",
-  },
-  {
-    title: "Renderwork Studio",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/renderwork.png",
-  },
-
-  {
-    title: "Creme Digital",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/cremedigital.png",
-  },
-  {
-    title: "Golden Bells Academy",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/goldenbellsacademy.png",
-  },
-  {
-    title: "Invoker Labs",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/invoker.png",
-  },
-  {
-    title: "E Free Invoice",
-    thumbnail:
-      "https://aceternity.com/images/products/thumbnails/new/efreeinvoice.png",
-  },
-];
