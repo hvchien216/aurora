@@ -12,3 +12,4 @@ export * from "./link-constructor";
 export * from "./file";
 export * from "./array";
 export * from "./download";
+export * from "./truncate";
