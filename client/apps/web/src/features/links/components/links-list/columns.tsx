@@ -309,11 +309,11 @@ const LinkDetailsAction: React.FC<LinkDetailsActionProps> = ({ id }) => {
       <TooltipTrigger asChild>
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           size="icon"
           onClick={handleRedirect}
         >
-          <PenIcon className="size-4" />
+          <PenIcon className="size-4 text-primary" />
         </Button>
       </TooltipTrigger>
       <TooltipContent side="top">Edit Link</TooltipContent>

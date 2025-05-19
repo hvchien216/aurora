@@ -9,15 +9,17 @@ import {
   type MotionValue,
 } from "framer-motion";
 
+type Product = {
+  title: string;
+  link?: string;
+  thumbnail: string | null;
+};
+
 export const HeroParallax = ({
   products,
   children,
 }: {
-  products: {
-    title: string;
-    link?: string;
-    thumbnail: string;
-  }[];
+  products: Product[];
   children: React.ReactNode;
 }) => {
   const firstRow = products.slice(0, 5);
@@ -71,29 +73,29 @@ export const HeroParallax = ({
         className=""
       >
         <motion.div className="mb-20 flex flex-row-reverse space-x-20 space-x-reverse">
-          {firstRow.map((product) => (
+          {firstRow.map((product, idx) => (
             <ProductCard
               product={product}
               translate={translateX}
-              key={product.title}
+              key={`line-1-${idx}`}
             />
           ))}
         </motion.div>
         <motion.div className="mb-20 flex flex-row space-x-20">
-          {secondRow.map((product) => (
+          {secondRow.map((product, idx) => (
             <ProductCard
               product={product}
               translate={translateXReverse}
-              key={product.title}
+              key={`line-2-${idx}`}
             />
           ))}
         </motion.div>
         <motion.div className="mb-20 flex flex-row space-x-20">
-          {thirdRow.map((product) => (
+          {thirdRow.map((product, idx) => (
             <ProductCard
               product={product}
               translate={translateXReverse}
-              key={product.title}
+              key={`line-3-${idx}`}
             />
           ))}
         </motion.div>
@@ -106,11 +108,7 @@ const ProductCard = ({
   product,
   translate,
 }: {
-  product: {
-    title: string;
-    link?: string;
-    thumbnail: string;
-  };
+  product: Product;
   translate: MotionValue<number>;
 }) => {
   return (
@@ -121,21 +119,18 @@ const ProductCard = ({
       whileHover={{
         y: -20,
       }}
-      key={product.title}
       className="group/product relative h-96 w-[30rem] shrink-0"
     >
       <span className="block group-hover/product:shadow-2xl">
-        <img
-          src={product.thumbnail}
-          height="600"
-          width="600"
-          className="absolute inset-0 size-full object-cover object-left-top"
-          alt={product.title}
-        />
+        {product?.thumbnail ? (
+          <img src={product.thumbnail} height="600" width="600" />
+        ) : (
+          <div className="relative h-full w-full bg-gray-600" />
+        )}
       </span>
       <div className="pointer-events-none absolute inset-0 size-full bg-black opacity-0 group-hover/product:opacity-80"></div>
       <h2 className="absolute bottom-4 left-4 text-white opacity-0 group-hover/product:opacity-100">
-        {product.title}
+        {product?.title || ""}
       </h2>
     </motion.div>
   );

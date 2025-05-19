@@ -18,7 +18,7 @@ import {
 import { Facebook, LinkedIn, XTwitter } from "@leww/ui/icons";
 import { Earth, Eye, EyeClosed, PenIcon } from "lucide-react";
 
-import { getDomainWithoutWWW, getFirst, isNil } from "@leww/utils";
+import { getDomainWithoutWWW, getFirst, isNil, truncate } from "@leww/utils";
 import { useGetMetaTagsQuery } from "~/features/links/hooks";
 import { type CreateLinkForm } from "~/features/links/schemas";
 
@@ -75,6 +75,8 @@ export const LinkPreview = () => {
       { url: debouncedUrl },
       {
         enabled: debouncedUrl?.length > 0,
+        staleTime: 0,
+        gcTime: 0,
       },
     );
 
@@ -94,11 +96,13 @@ export const LinkPreview = () => {
     if (proxy) return;
 
     if (metaTagData) {
-      if (metaTagData.title !== title) {
-        setValue("title", metaTagData.title, { shouldDirty: true });
+      const truncatedTitle = truncate(metaTagData.title, 120);
+      const truncatedDescription = truncate(metaTagData.description, 240);
+      if (truncatedTitle !== title) {
+        setValue("title", truncatedTitle, { shouldDirty: true });
       }
-      if (metaTagData.description !== description) {
-        setValue("description", metaTagData.description, { shouldDirty: true });
+      if (truncatedDescription !== description) {
+        setValue("description", truncatedDescription, { shouldDirty: true });
       }
 
       if (getFirst(image)?.url !== metaTagData?.image) {

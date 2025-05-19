@@ -1,8 +1,4 @@
-import {
-  useQuery,
-  useQueryClient,
-  type UseQueryOptions,
-} from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 
 import { customFetcher } from "~/lib";
 import { injectParams } from "@leww/utils";

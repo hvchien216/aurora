@@ -72,7 +72,7 @@ src/
 
 ![Dependency Graph][dependency-graph-domain]
 
-[dependency-graph-domain]: ./aaaa.svg
+[dependency-graph-domain]: ./dependency-graph-preview.png
 
 ## Development Setup
 
