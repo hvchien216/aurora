@@ -2,13 +2,7 @@
 
 import * as React from "react";
 import { useTheme } from "next-themes";
-import {
-  CheckIcon,
-  MoonIcon,
-  PaletteIcon,
-  RepeatIcon,
-  SunIcon,
-} from "lucide-react";
+import { CheckIcon, PaletteIcon, RepeatIcon } from "lucide-react";
 import { baseColors, cn } from "@leww/utils";
 
 import { Button } from "./button";
@@ -142,7 +136,7 @@ export function Customizer() {
             })}
           </div>
         </div>
-        <div className="space-y-1.5">
+        {/* <div className="space-y-1.5">
           <Label className="text-xs">Mode</Label>
           <div className="grid grid-cols-3 gap-2">
             {mounted ? (
@@ -193,7 +187,7 @@ export function Customizer() {
               </>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
