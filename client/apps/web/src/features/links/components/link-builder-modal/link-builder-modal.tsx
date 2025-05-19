@@ -24,7 +24,7 @@ const LinkBuilderModal = () => {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="flex max-w-screen-lg flex-col gap-0 p-0 sm:max-h-[min(660px,80vh)] sm:max-w-screen-lg [&>button:last-child]:top-3.5"
+        className="flex max-w-screen-lg flex-col gap-0 p-0 sm:max-h-[min(725px,80vh)] sm:max-w-screen-lg [&>button:last-child]:top-3.5"
         onOpenAutoFocus={(event) => {
           event.preventDefault();
         }}
