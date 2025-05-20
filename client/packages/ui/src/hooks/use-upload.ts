@@ -36,7 +36,7 @@ export const useUpload = (
   allowedMimeTypes: string[];
   handleRemoveFile: (file: FileWithPreview) => void;
   handlePaste: (event: ClipboardEvent) => void;
-  dropzoneRef: React.RefObject<HTMLDivElement>;
+  dropzoneRef: React.RefObject<HTMLDivElement | null>;
 } & ReturnType<typeof useDropzone> => {
   const {
     allowedMimeTypes = [],
@@ -48,7 +48,7 @@ export const useUpload = (
     disabled,
   } = options;
 
-  const dropzoneRef = useRef<HTMLDivElement>(null!);
+  const dropzoneRef = useRef<HTMLDivElement>(null);
 
   const [files, setFiles] = useControllableState<FileWithPreview[]>({
     prop: value || undefined,
@@ -122,7 +122,9 @@ export const useUpload = (
       if (!items) return;
 
       const imageItems = Array.from(items).filter(
-        (item) => item.kind === "file" && item.type.startsWith("image/"),
+        (item) =>
+          item.kind === "file" &&
+          (item.type.startsWith("image/") || item.type.startsWith("video/")),
       );
 
       if (imageItems.length === 0) return;
@@ -130,7 +132,7 @@ export const useUpload = (
       // Prevent default paste behavior
       event.preventDefault();
 
-      // Process only the first image if maxFiles is 1
+      // Process only the first media file if maxFiles is 1
       const itemsToProcess =
         maxFiles === 1 ? imageItems.slice(0, 1) : imageItems;
 
