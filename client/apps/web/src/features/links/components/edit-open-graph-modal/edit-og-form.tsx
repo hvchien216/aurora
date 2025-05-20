@@ -74,30 +74,30 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
     },
   });
 
-  const {
-    setShowPromptModal: setShowVideoPromptModal,
-    PromptModal: VideoPromptModal,
-  } = usePromptModal({
-    title: "Use video from URL",
-    description: "Paste a video URL to use for your link's social media cards.",
-    label: "Video URL",
-    inputProps: {
-      type: "url",
-      placeholder: "https://example.com/video.mp4",
-    },
-    onSubmit: (url) => {
-      if (!url) return;
+  // const {
+  //   setShowPromptModal: setShowVideoPromptModal,
+  //   PromptModal: VideoPromptModal,
+  // } = usePromptModal({
+  //   title: "Use video from URL",
+  //   description: "Paste a video URL to use for your link's social media cards.",
+  //   label: "Video URL",
+  //   inputProps: {
+  //     type: "url",
+  //     placeholder: "https://example.com/video.mp4",
+  //   },
+  //   onSubmit: (url) => {
+  //     if (!url) return;
 
-      form.setValue("video", [{ url }], { shouldDirty: true });
-    },
-  });
+  //     form.setValue("video", [{ url }], { shouldDirty: true });
+  //   },
+  // });
 
   const { isDirty, isValid, isSubmitting } = form.formState;
 
   return (
     <>
       <ImagePromptModal />
-      <VideoPromptModal />
+      {/* <VideoPromptModal /> */}
       <Form {...form}>
         <form
           ref={formRef}
@@ -137,7 +137,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
               }
             />
 
-            <RHFFileUpload
+            {/* <RHFFileUpload
               name="video"
               label="Video"
               dropzoneProps={{
@@ -164,7 +164,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
                   </TooltipContent>
                 </Tooltip>
               }
-            />
+            /> */}
 
             <RHFTextAreaAutoSize
               name="title"
