@@ -145,7 +145,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
                 className: "aspect-video",
                 previewStyle: "cover",
               }}
-              description="Recommended: MP4 format, max 50MB."
+              description="Recommended: 16/9 format."
               right={
                 <Tooltip delayDuration={100}>
                   <TooltipTrigger asChild>
