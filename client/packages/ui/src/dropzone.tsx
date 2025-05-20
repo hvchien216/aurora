@@ -19,6 +19,7 @@ import {
 } from "./hooks";
 import { ShimmerDots } from "./shimmer-dots";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
+import { VideoPlayerPreview } from "./video-player";
 
 export const formatBytes = (
   bytes: number,
@@ -53,10 +54,10 @@ const DropzoneContext = createContext<DropzoneContextType | undefined>(
   undefined,
 );
 
-type ShapeType = "rectangle" | "square" | "circle" | "custom";
-type PreviewStyleType = "cover" | "contain" | "fill" | "none";
+export type ShapeType = "rectangle" | "square" | "circle" | "custom";
+export type PreviewStyleType = "cover" | "contain" | "fill" | "none";
 
-type DropzoneProps = UseUploadReturn & {
+export type DropzoneProps = UseUploadReturn & {
   className?: string;
   shape?: ShapeType;
   previewStyle?: PreviewStyleType;
@@ -203,10 +204,24 @@ const DropzoneContent = ({ className }: { className?: string }) => {
       fileWithPreview?.originalFile?.name ||
       getUploadedFileName(fileWithPreview?.url || "");
 
+    // Check if it's a video file
+    const isVideo =
+      fileWithPreview?.originalFile?.type?.startsWith("video/") ||
+      (fileWithPreview?.url &&
+        fileWithPreview.url.match(/\.(mp4|webm|ogg|mov)($|\?)/i));
+
     return (
       <div className={cn("relative size-full", className)}>
-        {fileWithPreview?.originalFile?.type?.startsWith("image/") ||
-        fileWithPreview?.url?.startsWith("http") ? (
+        {isVideo ? (
+          <VideoPlayerPreview
+            src={previewUrl || ""}
+            className="size-full overflow-hidden rounded-lg object-cover"
+            muted
+            loop
+            showPreviewButton
+          />
+        ) : fileWithPreview?.originalFile?.type?.startsWith("image/") ||
+          fileWithPreview?.url?.startsWith("http") ? (
           <BlurImageNative
             src={previewUrl}
             alt={fileName}
@@ -325,13 +340,33 @@ const DropzoneContent = ({ className }: { className?: string }) => {
           getUploadedFileName(fileWithPreview?.url || "");
         const fileSize = fileWithPreview?.originalFile?.size || 0;
         const isOnCloud = fileWithPreview?.url?.startsWith("http");
+        const isVideo =
+          fileWithPreview?.originalFile?.type?.startsWith("video/") ||
+          (fileWithPreview?.url &&
+            fileWithPreview.url.match(/\.(mp4|webm|ogg|mov)($|\?)/i));
+
         return (
           <div
             key={`${fileWithPreview?.originalFile?.name}-${idx}`}
             className="flex items-center gap-x-4 border-b py-2 first:mt-4 last:mb-4"
           >
-            {fileWithPreview?.originalFile?.type?.startsWith("image/") ||
-            isOnCloud ? (
+            {isVideo ? (
+              <div className="relative">
+                <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted">
+                  <VideoPlayerPreview
+                    src={previewUrl || ""}
+                    className="size-full overflow-hidden object-cover"
+                    muted
+                    loop
+                    showPreviewButton
+                  />
+                </div>
+                {isOnCloud && (
+                  <CloudUpload className="absolute -right-2 top-0 z-10 size-3.5 rounded-full border bg-white/70 p-0.5 text-green-500" />
+                )}
+              </div>
+            ) : fileWithPreview?.originalFile?.type?.startsWith("image/") ||
+              isOnCloud ? (
               <div className="relative">
                 <div className="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-muted">
                   <BlurImageNative
