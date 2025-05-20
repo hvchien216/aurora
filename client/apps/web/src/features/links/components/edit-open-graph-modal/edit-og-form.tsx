@@ -10,13 +10,14 @@ import {
   useEnterSubmit,
   usePromptModal,
 } from "@leww/ui";
-import { resizeImageToFile } from "@leww/utils";
 import { useForm, useFormContext } from "react-hook-form";
-import { Link2 } from "lucide-react";
+import { Link2, Video } from "lucide-react";
 
 import { RHFFileUpload, RHFTextAreaAutoSize } from "~/components/rhf";
+import { resizeImageToFile } from "@leww/utils";
 import {
   OG_IMAGE_FILE_UPLOAD_CONFIGURATION,
+  OG_VIDEO_FILE_UPLOAD_CONFIGURATION,
   ogLinkFormDataSchema,
   type CreateLinkForm,
   type OGLinkFormData,
@@ -36,6 +37,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
     resolver: zodResolver(ogLinkFormDataSchema),
     defaultValues: {
       image: getValuesParent("image"),
+      video: getValuesParent("video"),
       title: getValuesParent("title") || "",
       description: getValuesParent("description") || "",
       proxy: getValuesParent("proxy"),
@@ -46,14 +48,17 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
   const onSubmit = async (values: OGLinkFormData) => {
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    (["image", "title", "description", "proxy"] as const).forEach((key) =>
-      setValueParent(key, values[key], { shouldDirty: true }),
+    (["image", "video", "title", "description", "proxy"] as const).forEach(
+      (key) => setValueParent(key, values[key], { shouldDirty: true }),
     );
 
     handleClose();
   };
 
-  const { setShowPromptModal, PromptModal } = usePromptModal({
+  const {
+    setShowPromptModal: setShowImagePromptModal,
+    PromptModal: ImagePromptModal,
+  } = usePromptModal({
     title: "Use image from URL",
     description:
       "Paste an image URL to use for your link's social media cards.",
@@ -69,11 +74,30 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
     },
   });
 
+  // const {
+  //   setShowPromptModal: setShowVideoPromptModal,
+  //   PromptModal: VideoPromptModal,
+  // } = usePromptModal({
+  //   title: "Use video from URL",
+  //   description: "Paste a video URL to use for your link's social media cards.",
+  //   label: "Video URL",
+  //   inputProps: {
+  //     type: "url",
+  //     placeholder: "https://example.com/video.mp4",
+  //   },
+  //   onSubmit: (url) => {
+  //     if (!url) return;
+
+  //     form.setValue("video", [{ url }], { shouldDirty: true });
+  //   },
+  // });
+
   const { isDirty, isValid, isSubmitting } = form.formState;
 
   return (
     <>
-      <PromptModal />
+      <ImagePromptModal />
+      {/* <VideoPromptModal /> */}
       <Form {...form}>
         <form
           ref={formRef}
@@ -92,7 +116,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
                 className: "aspect-[1200/630]",
                 transformFile: resizeImageToFile,
               }}
-              description="Recommended: 1200 x 630 pixels"
+              description="Recommended: 1200 x 630 pixels."
               right={
                 <Tooltip delayDuration={100}>
                   <TooltipTrigger asChild>
@@ -101,7 +125,7 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
                       variant="ghost"
                       size="icon"
                       className="h-fit rounded-full p-0"
-                      onClick={() => setShowPromptModal(true)}
+                      onClick={() => setShowImagePromptModal(true)}
                     >
                       <Link2 className="size-4" />
                     </Button>
@@ -112,6 +136,36 @@ const EditOGForm: React.FC<Props> = ({ handleClose }) => {
                 </Tooltip>
               }
             />
+
+            {/* <RHFFileUpload
+              name="video"
+              label="Video"
+              dropzoneProps={{
+                ...OG_VIDEO_FILE_UPLOAD_CONFIGURATION,
+                className: "aspect-video",
+                previewStyle: "cover",
+              }}
+              description="Recommended: 16/9 format."
+              right={
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-fit rounded-full p-0"
+                      onClick={() => setShowVideoPromptModal(true)}
+                    >
+                      <Video className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    Paste a URL to a video
+                  </TooltipContent>
+                </Tooltip>
+              }
+            /> */}
+
             <RHFTextAreaAutoSize
               name="title"
               label="Title"

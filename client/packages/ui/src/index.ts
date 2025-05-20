@@ -45,6 +45,7 @@ export * from "./textarea-auto-size";
 export * from "./dropzone";
 export * from "./prompt-modal";
 export * from "./empty-state";
+export * from "./video-player";
 
 export * from "./hooks";
 

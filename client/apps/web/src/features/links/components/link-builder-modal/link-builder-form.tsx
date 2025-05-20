@@ -44,7 +44,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
     defaultValues: {
       url: "",
       image: [],
-      video: null,
+      video: [],
       proxy: false,
       title: null,
       description: null,
@@ -98,6 +98,7 @@ const LinkBuilderForm: React.FC<Props> = ({ handleClose }) => {
       return mutateAsync({
         ...restValues,
         image: imgUrl,
+        video: null,
       });
     })();
 

@@ -11,10 +11,13 @@ import {
   FormMessage,
   useUpload,
   type FileWithPreview,
+  type PreviewStyleType,
+  type ShapeType,
   type TextareaAutosizeProps,
 } from "@leww/ui";
-import { cn } from "@leww/utils";
 import { useFormContext } from "react-hook-form";
+
+import { cn } from "@leww/utils";
 
 interface RHFFileUploadProps extends TextareaAutosizeProps {
   name: string;
@@ -36,6 +39,9 @@ interface RHFFileUploadProps extends TextareaAutosizeProps {
     | "maxFiles"
     | "className"
     | "transformFile"
+    | "shape"
+    | "previewStyle"
+    | "renderPreview"
   >;
 }
 
@@ -48,6 +54,12 @@ interface UploadDropzoneProps {
   maxFiles: number;
   disabled?: boolean;
   className?: string;
+  shape?: ShapeType;
+  previewStyle?: PreviewStyleType;
+  renderPreview?: (
+    file: FileWithPreview,
+    previewStyle: string,
+  ) => React.ReactNode;
 }
 
 const UploadDropzone = ({
@@ -59,6 +71,9 @@ const UploadDropzone = ({
   maxFiles,
   disabled,
   className,
+  shape,
+  previewStyle,
+  renderPreview,
 }: UploadDropzoneProps) => {
   const upload = useUpload({
     value: value || [],
@@ -97,8 +112,17 @@ const UploadDropzone = ({
     disabled,
   });
 
+  // We need to manually cast the props to fix the type error
+  const dropzoneProps = {
+    ...upload,
+    className,
+    shape,
+    previewStyle,
+    renderPreview,
+  };
+
   return (
-    <Dropzone {...upload} className={className}>
+    <Dropzone {...dropzoneProps}>
       <DropzoneEmptyState />
       <DropzoneContent />
     </Dropzone>
@@ -152,6 +176,9 @@ export const RHFFileUpload = ({
               className={dropzoneProps?.className}
               disabled={disabled}
               transformFile={dropzoneProps?.transformFile}
+              shape={dropzoneProps?.shape}
+              previewStyle={dropzoneProps?.previewStyle}
+              renderPreview={dropzoneProps?.renderPreview}
             />
           </FormControl>
           <FormMessage />
