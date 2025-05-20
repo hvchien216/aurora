@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image, { type ImageProps } from "next/image";
-import { cn } from "@leww/utils";
 import { LoaderCircle } from "lucide-react";
+import { cn } from "@leww/utils";
 
 export function BlurImage(props: ImageProps) {
   const [loading, setLoading] = useState(true);
@@ -76,9 +76,11 @@ export function BlurImageNative({
         alt={alt}
         onLoad={handleLoad}
         onError={handleError}
-        className={`object-cover transition-opacity duration-300 ${
-          loading ? "opacity-0" : "opacity-100"
-        } ${className}`}
+        className={cn(
+          "object-cover transition-opacity duration-300",
+          loading ? "opacity-0" : "opacity-100",
+          className,
+        )}
       />
     </div>
   );
