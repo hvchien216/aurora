@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
   useDropzone,
   type FileError,
@@ -35,6 +35,8 @@ export const useUpload = (
   maxFiles: number;
   allowedMimeTypes: string[];
   handleRemoveFile: (file: FileWithPreview) => void;
+  handlePaste: (event: ClipboardEvent) => void;
+  dropzoneRef: React.RefObject<HTMLDivElement>;
 } & ReturnType<typeof useDropzone> => {
   const {
     allowedMimeTypes = [],
@@ -45,6 +47,8 @@ export const useUpload = (
     onChange,
     disabled,
   } = options;
+
+  const dropzoneRef = useRef<HTMLDivElement>(null!);
 
   const [files, setFiles] = useControllableState<FileWithPreview[]>({
     prop: value || undefined,
@@ -104,9 +108,68 @@ export const useUpload = (
     (file: FileWithPreview) => {
       setFiles(() => files.filter((_file) => _file != file));
       const inp = dropzoneProps.inputRef;
-      inp.current.value = "";
+      if (inp.current) inp.current.value = "";
     },
     [files, setFiles, dropzoneProps.inputRef],
+  );
+
+  // Handle clipboard paste
+  const handlePaste = useCallback(
+    (event: ClipboardEvent) => {
+      if (disabled || files.length >= maxFiles) return;
+
+      const items = event.clipboardData?.items;
+      if (!items) return;
+
+      const imageItems = Array.from(items).filter(
+        (item) => item.kind === "file" && item.type.startsWith("image/"),
+      );
+
+      if (imageItems.length === 0) return;
+
+      // Prevent default paste behavior
+      event.preventDefault();
+
+      // Process only the first image if maxFiles is 1
+      const itemsToProcess =
+        maxFiles === 1 ? imageItems.slice(0, 1) : imageItems;
+
+      const newFiles = itemsToProcess
+        .map((item) => {
+          const file = item.getAsFile();
+          if (!file) return null;
+
+          // Check file size
+          const isFileTooLarge = file.size > maxFileSize;
+
+          return {
+            originalFile: file,
+            preview: URL.createObjectURL(file),
+            errors: isFileTooLarge
+              ? [
+                  {
+                    code: "file-too-large",
+                    message: `File is larger than ${maxFileSize} bytes`,
+                  },
+                ]
+              : [],
+          };
+        })
+        .filter(Boolean) as FileWithPreview[];
+
+      if (newFiles.length > 0) {
+        if (maxFiles === 1) {
+          // Replace existing files if maxFiles is 1
+          setFiles(newFiles);
+        } else {
+          // Add to existing files if maxFiles > 1
+          const totalFiles = [...files, ...newFiles];
+          const filesToAdd = totalFiles.slice(0, maxFiles);
+          setFiles(filesToAdd);
+        }
+      }
+    },
+    [files, setFiles, maxFiles, maxFileSize, disabled],
   );
 
   return {
@@ -116,6 +179,8 @@ export const useUpload = (
     maxFiles,
     allowedMimeTypes,
     handleRemoveFile,
+    handlePaste,
+    dropzoneRef,
     ...dropzoneProps,
   };
 };

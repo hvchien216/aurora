@@ -1,12 +1,22 @@
 "use client";
 
-import { createContext, useContext, type PropsWithChildren } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type PropsWithChildren,
+} from "react";
 import { CloudUpload, File, Upload, X } from "lucide-react";
 import { cn, getUploadedFileName } from "@leww/utils";
 
 import { BlurImageNative } from "./blur-image";
 import { Button } from "./button";
-import { useIsMobile, type UseUploadReturn } from "./hooks";
+import {
+  useIsMobile,
+  type FileWithPreview,
+  type UseUploadReturn,
+} from "./hooks";
 import { ShimmerDots } from "./shimmer-dots";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
@@ -31,14 +41,29 @@ export const formatBytes = (
 type DropzoneContextType = Omit<
   UseUploadReturn,
   "getRootProps" | "getInputProps"
->;
+> & {
+  previewStyle?: PreviewStyleType;
+  renderPreview?: (
+    file: FileWithPreview,
+    previewStyle: PreviewStyleType,
+  ) => React.ReactNode;
+};
 
 const DropzoneContext = createContext<DropzoneContextType | undefined>(
   undefined,
 );
 
+type ShapeType = "rectangle" | "square" | "circle" | "custom";
+type PreviewStyleType = "cover" | "contain" | "fill" | "none";
+
 type DropzoneProps = UseUploadReturn & {
   className?: string;
+  shape?: ShapeType;
+  previewStyle?: PreviewStyleType;
+  renderPreview?: (
+    file: UseUploadReturn["files"][0],
+    previewStyle: PreviewStyleType,
+  ) => React.ReactNode;
 };
 
 const Dropzone = ({
@@ -46,6 +71,9 @@ const Dropzone = ({
   children,
   getRootProps,
   getInputProps,
+  shape = "rectangle",
+  previewStyle = "cover",
+  renderPreview,
   ...restProps
 }: PropsWithChildren<DropzoneProps>) => {
   const isActive = restProps.isDragActive;
@@ -54,20 +82,57 @@ const Dropzone = ({
     restProps.files.some(
       (file) => file.errors?.length !== 0 && file.errors !== undefined,
     );
+  const onPaste = restProps.handlePaste;
+  const [isFocused, setIsFocused] = useState(false);
+
+  // Set up paste event listener
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const handlePaste = (e: ClipboardEvent) => {
+      if (isFocused) {
+        onPaste(e);
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener("paste", handlePaste, {
+      signal: controller.signal,
+    });
+    return () => {
+      controller.abort();
+    };
+  }, [isFocused, onPaste]);
+
+  // Generate shape classes
+  const shapeClasses = {
+    rectangle: "",
+    square: "aspect-square",
+    circle: "aspect-square rounded-full",
+    custom: "",
+  };
 
   return (
-    <DropzoneContext.Provider value={{ ...restProps }}>
+    <DropzoneContext.Provider
+      value={{ ...restProps, previewStyle, renderPreview }}
+    >
       <div
         {...getRootProps({
           className: cn(
-            "relative rounded-lg border border-gray-300  bg-card text-center text-foreground transition-colors duration-300",
+            "relative rounded-lg border border-gray-300 bg-card text-center text-foreground transition-colors duration-300",
             className,
+            shapeClasses[shape],
             restProps.files.length >= restProps.maxFiles
               ? "border-solid"
               : "border-dashed",
             isActive && "border-primary bg-primary/10",
             isInvalid && "border-destructive bg-destructive/10",
+            isFocused && "ring-2 ring-primary ring-opacity-50",
           ),
+          tabIndex: 0,
+          onFocus: () => setIsFocused(true),
+          onBlur: () => setIsFocused(false),
+          ref: restProps.dropzoneRef,
         })}
       >
         <input {...getInputProps()} />
@@ -78,15 +143,61 @@ const Dropzone = ({
 };
 
 const DropzoneContent = ({ className }: { className?: string }) => {
-  const { files, handleRemoveFile, maxFileSize, maxFiles } =
-    useDropzoneContext();
-
-  // const exceedMaxFiles = files.length > maxFiles;
+  const {
+    files,
+    handleRemoveFile,
+    maxFileSize,
+    maxFiles,
+    previewStyle,
+    renderPreview,
+  } = useDropzoneContext();
 
   // ----- NEW LOGIC FOR SINGLE FILE CASE -----
   // If maxFiles is 1 and one file is present, render a full-cover preview.
   if (maxFiles === 1 && files.length === 1) {
     const fileWithPreview = files[0];
+
+    // If custom render function is provided, use it
+    if (renderPreview) {
+      return (
+        <div className={cn("relative size-full", className)}>
+          {renderPreview(fileWithPreview, previewStyle || "cover")}
+
+          {/* Remove button */}
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="absolute right-2 top-2 z-10 h-8 w-fit px-1.5"
+                onClick={() => handleRemoveFile(fileWithPreview!)}
+              >
+                <X className="mx-px size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Remove</TooltipContent>
+          </Tooltip>
+
+          {/* Status overlay */}
+          {Number(fileWithPreview?.errors?.length) > 0 ? (
+            <p className="absolute bottom-2 left-2 rounded bg-white/70 px-1 text-xs text-destructive">
+              {fileWithPreview?.errors
+                .map((e) =>
+                  e.message.startsWith("File is larger than")
+                    ? `File is larger than ${formatBytes(
+                        maxFileSize,
+                        2,
+                      )} (Size: ${formatBytes(fileWithPreview?.originalFile?.size, 2)})`
+                    : e.message,
+                )
+                .join(", ")}
+            </p>
+          ) : null}
+        </div>
+      );
+    }
+
     const previewUrl = fileWithPreview?.preview || fileWithPreview?.url;
     const fileName =
       fileWithPreview?.originalFile?.name ||
@@ -99,7 +210,12 @@ const DropzoneContent = ({ className }: { className?: string }) => {
           <BlurImageNative
             src={previewUrl}
             alt={fileName}
-            className="size-full rounded-lg object-cover"
+            className={cn(
+              "size-full rounded-lg",
+              previewStyle === "cover" && "object-cover",
+              previewStyle === "contain" && "object-contain",
+              previewStyle === "fill" && "object-fill",
+            )}
           />
         ) : (
           <div className="flex size-full items-center justify-center rounded-lg bg-muted">
@@ -145,6 +261,64 @@ const DropzoneContent = ({ className }: { className?: string }) => {
   return (
     <div className={cn("flex flex-col px-2", className)}>
       {files.map((fileWithPreview, idx) => {
+        // If custom render function is provided, use it for each file
+        if (renderPreview) {
+          return (
+            <div
+              key={`${fileWithPreview?.originalFile?.name}-${idx}`}
+              className="flex items-center gap-x-4 border-b py-2 first:mt-4 last:mb-4"
+            >
+              <div className="relative size-10">
+                {renderPreview(fileWithPreview, previewStyle || "cover")}
+              </div>
+              <div className="flex shrink grow flex-col items-start truncate">
+                <p
+                  title={
+                    fileWithPreview?.originalFile?.name ||
+                    getUploadedFileName(fileWithPreview?.url || "")
+                  }
+                  className="max-w-full truncate text-sm"
+                >
+                  {fileWithPreview?.originalFile?.name ||
+                    getUploadedFileName(fileWithPreview?.url || "")}
+                </p>
+                {fileWithPreview.errors?.length > 0 ? (
+                  <p className="text-xs text-destructive">
+                    {fileWithPreview.errors
+                      .map((e) =>
+                        e.message.startsWith("File is larger than")
+                          ? `File is larger than ${formatBytes(
+                              maxFileSize,
+                              2,
+                            )} (Size: ${formatBytes(fileWithPreview?.originalFile?.size || 0, 2)})`
+                          : e.message,
+                      )
+                      .join(", ")}
+                  </p>
+                ) : !fileWithPreview?.url?.startsWith("http") ? (
+                  <p className="text-xs text-muted-foreground">
+                    {formatBytes(fileWithPreview?.originalFile?.size || 0, 2)}
+                  </p>
+                ) : null}
+              </div>
+              <Tooltip delayDuration={100}>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="icon"
+                    className="px-0.5 text-muted-foreground"
+                    onClick={() => handleRemoveFile(fileWithPreview!)}
+                  >
+                    <X className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Remove</TooltipContent>
+              </Tooltip>
+            </div>
+          );
+        }
+
         const previewUrl = fileWithPreview?.preview || fileWithPreview?.url;
         const fileName =
           fileWithPreview?.originalFile?.name ||
@@ -163,7 +337,11 @@ const DropzoneContent = ({ className }: { className?: string }) => {
                   <BlurImageNative
                     src={previewUrl}
                     alt={fileName}
-                    className="object-cover"
+                    className={cn(
+                      "object-cover",
+                      previewStyle === "contain" && "object-contain",
+                      previewStyle === "fill" && "object-fill",
+                    )}
                   />
                 </div>
                 {isOnCloud && (
@@ -217,13 +395,6 @@ const DropzoneContent = ({ className }: { className?: string }) => {
           </div>
         );
       })}
-      {/* {exceedMaxFiles && (
-        <p className="mt-2 text-left text-sm text-destructive">
-          You may upload only up to {maxFiles} file
-          {maxFiles > 1 ? "s" : ""}, please remove {files.length - maxFiles}{" "}
-          {files.length - maxFiles > 1 ? "files" : "file"}.
-        </p>
-      )} */}
     </div>
   );
 };
@@ -256,7 +427,7 @@ const DropzoneEmptyState = ({ className }: { className?: string }) => {
         </p>
         <div className="flex flex-col items-center gap-y-1">
           <p className="text-xs text-muted-foreground">
-            Drag and drop or{" "}
+            Drag and drop, paste or{" "}
             <a
               onClick={() => inputRef.current?.click()}
               className="cursor-pointer underline transition hover:text-foreground"

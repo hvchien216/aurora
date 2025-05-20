@@ -13,8 +13,9 @@ import {
   type FileWithPreview,
   type TextareaAutosizeProps,
 } from "@leww/ui";
-import { cn } from "@leww/utils";
 import { useFormContext } from "react-hook-form";
+
+import { cn } from "@leww/utils";
 
 interface RHFFileUploadProps extends TextareaAutosizeProps {
   name: string;
@@ -36,6 +37,9 @@ interface RHFFileUploadProps extends TextareaAutosizeProps {
     | "maxFiles"
     | "className"
     | "transformFile"
+    | "shape"
+    | "previewStyle"
+    | "renderPreview"
   >;
 }
 
@@ -48,6 +52,12 @@ interface UploadDropzoneProps {
   maxFiles: number;
   disabled?: boolean;
   className?: string;
+  shape?: "rectangle" | "square" | "circle" | "custom";
+  previewStyle?: "cover" | "contain" | "fill" | "none";
+  renderPreview?: (
+    file: FileWithPreview,
+    previewStyle: string,
+  ) => React.ReactNode;
 }
 
 const UploadDropzone = ({
@@ -59,6 +69,9 @@ const UploadDropzone = ({
   maxFiles,
   disabled,
   className,
+  shape,
+  previewStyle,
+  renderPreview,
 }: UploadDropzoneProps) => {
   const upload = useUpload({
     value: value || [],
@@ -98,7 +111,13 @@ const UploadDropzone = ({
   });
 
   return (
-    <Dropzone {...upload} className={className}>
+    <Dropzone
+      {...upload}
+      className={className}
+      shape={shape}
+      previewStyle={previewStyle}
+      renderPreview={renderPreview}
+    >
       <DropzoneEmptyState />
       <DropzoneContent />
     </Dropzone>
@@ -152,6 +171,9 @@ export const RHFFileUpload = ({
               className={dropzoneProps?.className}
               disabled={disabled}
               transformFile={dropzoneProps?.transformFile}
+              shape={dropzoneProps?.shape}
+              previewStyle={dropzoneProps?.previewStyle}
+              renderPreview={dropzoneProps?.renderPreview}
             />
           </FormControl>
           <FormMessage />
