@@ -55,7 +55,14 @@ export type CreateLink = z.infer<typeof createLinkSchema>;
 
 export const OG_IMAGE_FILE_UPLOAD_CONFIGURATION = {
   allowedMimeTypes: ["image/*"],
-  maxFileSize: 5 * 1024 * 1024,
+  maxFileSize: 5 * 1024 * 1024, // 5MB
+  maxFiles: 1,
+  minFiles: 0,
+};
+
+export const OG_VIDEO_FILE_UPLOAD_CONFIGURATION = {
+  allowedMimeTypes: ["video/*"],
+  maxFileSize: 50 * 1024 * 1024, // 50MB
   maxFiles: 1,
   minFiles: 0,
 };
@@ -63,6 +70,7 @@ export const OG_IMAGE_FILE_UPLOAD_CONFIGURATION = {
 export const createLinkFormSchema = createLinkSchema.merge(
   z.object({
     image: fileSchemaConstructor(OG_IMAGE_FILE_UPLOAD_CONFIGURATION),
+    video: fileSchemaConstructor(OG_VIDEO_FILE_UPLOAD_CONFIGURATION),
   }),
   // TODO: add tags property
 );
@@ -71,6 +79,7 @@ export type CreateLinkForm = z.infer<typeof createLinkFormSchema>;
 
 export const ogLinkFormDataSchema = createLinkFormSchema.pick({
   image: true,
+  video: true,
   title: true,
   description: true,
   proxy: true,
