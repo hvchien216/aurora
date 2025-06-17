@@ -1,8 +1,14 @@
 # Leww.space - Open Source URL Shortener
 
+> ## ⚠️⚠️⚠️ **Note:** ⚠️⚠️⚠️ The Backend-side is currently down for maintenance. I'm working on bringing it back online soon. Thank you for your understanding!
+
 Leww.space is an open-source URL shortener and link management platform that helps you create, track, and manage your shortened URLs efficiently.
 
 [![Tech Stacks](https://skillicons.dev/icons?i=nestjs,prisma,nextjs,ts,tailwind,react,postgresql,redis,pnpm,docker,nginx,aws&center=true&perline=13)](https://skill-icons-builder.vercel.app/)
+
+## Documentation (DeepWiki)
+
+> ### For detailed documentation and guides, please visit 🚀🚀🚀 [this page](https://deepwiki.com/hvchien216/aurora). 🚀🚀🚀
 
 ## Project Overview
 
