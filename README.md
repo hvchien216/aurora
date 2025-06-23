@@ -1,6 +1,6 @@
 # Leww.space - Open Source URL Shortener
 
-> ## ⚠️⚠️⚠️ **Note:** ⚠️⚠️⚠️ The Backend-side is currently down for maintenance. I'm working on bringing it back online soon. Thank you for your understanding!
+> ## 🚀🚀🚀 The Backend-side is live. 🚀🚀🚀
 
 Leww.space is an open-source URL shortener and link management platform that helps you create, track, and manage your shortened URLs efficiently.
 
